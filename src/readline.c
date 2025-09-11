@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/11 15:23:54 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/11 18:16:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,22 @@
 // 	}
 // }
 
-char **token_split(char *result, char **tokens) //!Could change this function for other purposes
-{
-	int	i;
-	int	j;
+// char **token_split(char *result, char **tokens) //!Could change this function for other purposes
+// {
+// 	int	i;
+// 	int	j;
 	
-	i = 0;
-	j = 0;
-	while (result[i])
-	{
-		if ((result[i] >= 'A' && result[i] <= 'Z') || 
-			(result[i] >= 'a' && result[i] <= 'z') || 
-			result[i] == 34 || result[i] == 39)
-				word_group(&tokens, result);
-		i++;
-	}
-}
+// 	i = 0;
+// 	j = 0;
+// 	while (result[i])
+// 	{
+// 		if ((result[i] >= 'A' && result[i] <= 'Z') || 
+// 			(result[i] >= 'a' && result[i] <= 'z') || 
+// 			result[i] == 34 || result[i] == 39)
+// 				word_group(&tokens, result);
+// 		i++;
+// 	}
+// }
 
 // if (result is queal to character "" or '', call function to handle count for quoted strings)
 // if (result is equal to character a to z plus '.' and the next is a space, add one count)
@@ -87,6 +87,8 @@ int	token_count(char *result)
 		if (result[i] == '\'' || result[i] == '"')
 		{
 			quote = result[i++];
+			if (quote != '\0')
+				printf("%c\n", quote);
 			while (result[i] && result[i] != quote)
 				i++;
 			count++;
@@ -133,6 +135,29 @@ int	token_count(char *result)
 	}
 	return (count);
 }
+
+// char	**split_syntax(char *result, char **tokens)
+// {
+// 	int	i;
+// 	char	quote;
+
+// 	i = 0;
+// 	quote = NULL;
+// 	while (result[i])
+// 	{
+// 		if (result[i] == ' ' || result[i] == '\t')
+// 			i++;
+// 		if (result[i] == '\'' || result[i] == '"')
+// 		{
+// 			quote = result[i++];
+// 			while (result[i] && result[i] != quote)
+// 				i++;
+// 			count++;
+// 			i++;
+// 		}
+		
+// 	}
+// }
 
 // char **ft_tokenize(char *result)
 // {
