@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/14 21:23:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/17 21:36:53 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,66 @@
 // 	return (tokens);
 // }
 
+t_token	*token_word(t_token *tokens, char *result, int start, int i)
+{
+	if (tokens == NULL)
+		tokens = create_node(tokens, result + start, i);
+	else
+		tokens = append_node(tokens, result + start, i);
+	tokens->token = WORD;
+	return (tokens);
+}
+
+t_token	*token_pipe(t_token *tokens, char *result)
+{
+	if (tokens == NULL)
+		tokens = create_node(tokens, result, 1);
+	else
+		tokens = append_node(tokens, result, 1);
+	tokens->token = PIPE;
+	return (tokens);
+}
+
+t_token	*token_operator(t_token *tokens, char *result, int op_count)
+{
+	if (tokens == NULL && op_count == 1)
+		tokens = create_node(tokens, result, 1);
+	else if (tokens == NULL && op_count == 2)
+		tokens = create_node(tokens, result, 2);
+	else if (tokens != NULL && op_count == 1)
+		tokens = append_node(tokens, result, 1);
+	else if (tokens != NULL && op_count == 2)
+		tokens = append_node(tokens, result, 2);
+	tokens->token = PIPE;
+	return (tokens);
+}
+
+t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
+{
+	if (result [*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
+	{
+		printf("%c\n", result[*i]);
+		printf("%d\n", *i);
+		if (result[*i + 1] && result[*i + 1] == result[*i])
+		{
+			tokens = token_operator(tokens, result + *i, 2);
+			*i += 2;
+		}
+		else if (result[*i + 1] && result[*i + 1] != result[*i])
+		{
+			tokens = token_operator(tokens, result + *i, 1);
+			(*i)++;
+		}
+	}
+	else if (result[*i] == '|')
+	{
+		printf("%c\n", result[*i]);
+		tokens = token_pipe(tokens, result + *i);
+		(*i)++;
+	}
+	return (tokens);
+}
+
 t_token *tokenize_word(char *result, t_token *tokens) //!Could change this function for other purposes
 {
 	int		i;
@@ -218,31 +278,34 @@ t_token *tokenize_word(char *result, t_token *tokens) //!Could change this funct
 	{
 		if (result[i] == ' ' || result[i] == '\t')
 		{
+			printf("%c\n", result[i]);
 			while (result[i] == ' ' || result[i] == '\t')
 				i++;
 		}
+		else if (result[i] == '|' || result[i] == '<' || result[i] == '>')
+		{
+			printf("%c\n", result[i]);
+			tokens = tokenize_operator(result, tokens, &i);
+		}
 		else if (result[i] && result[i] != ' ')
 		{
+			printf("%c\n", result[i]);
 			start = i;
 			while (result[i] && result[i] != '<' && result[i] != '>' &&
 				result[i] != '|' && result[i] != ' ' &&
 				result[i] != '\t' && result[i] != '\'' && result[i] != '"')
 					i++;
-			if (tokens == NULL)
-				tokens = create_node(tokens, result + start, i);
-			else
-				tokens = append_node(tokens, result + start, i);
+			tokens = token_word(tokens, result, start, i);
 		}
 	}
-	t_token	*temp = tokens;
-	while (temp != NULL)
-	{
-		printf("node string is %s\n", temp->lexeme);
-		temp = temp->next;
-	}
+	// t_token	*temp = tokens;
+	// while (temp != NULL)
+	// {
+	// 	printf("node string is %s\n", temp->lexeme);
+	// 	temp = temp->next;
+	// }
 	return (tokens);
 }
-
 
 void	free_tokens(t_token *tokens)
 {
@@ -274,7 +337,7 @@ int main(int argc, char **argv)
 		if (!result)
 			break;
 		add_history(result);
-		token = tokenization(result, token);
+		token = tokenize_word(result, token);
 		if (!token)
 		{
 			ft_putstr_fd("Fail to tokenize", 2);
