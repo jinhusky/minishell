@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/17 21:36:53 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/18 19:31:04 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,17 +227,56 @@ t_token	*token_pipe(t_token *tokens, char *result)
 	return (tokens);
 }
 
-t_token	*token_operator(t_token *tokens, char *result, int op_count)
+t_token	*token_single_operator(t_token *tokens, char *result)
 {
-	if (tokens == NULL && op_count == 1)
+	if (tokens == NULL && *result == '<')
+	{
 		tokens = create_node(tokens, result, 1);
-	else if (tokens == NULL && op_count == 2)
-		tokens = create_node(tokens, result, 2);
-	else if (tokens != NULL && op_count == 1)
+		tokens->token = REDIR_IN;
+	}
+	else if (tokens != NULL && *result == '<')
+	{
 		tokens = append_node(tokens, result, 1);
-	else if (tokens != NULL && op_count == 2)
+		tokens->token = REDIR_IN;
+	}
+	else if (tokens == NULL && *result == '>')
+	{
+		tokens = create_node(tokens, result, 1);
+		tokens->token = REDIR_OUT;
+	}
+	else if (tokens != NULL && *result == '>')
+	{
+		tokens = append_node(tokens, result, 1);
+		tokens->token = REDIR_OUT;
+	}
+	return (tokens);
+}
+
+t_token	*token_double_operator(t_token *tokens, char *result)
+{
+	int	i;
+	
+	i = 0;
+	if (tokens == NULL && result[i] == '<' && result[i + 1] == '<')
+	{
+		tokens = create_node(tokens, result, 2);
+		tokens->token = HEREDOC;
+	}
+	else if (tokens != NULL && result[i] == '<' && result[i + 1] == '<')
+	{
 		tokens = append_node(tokens, result, 2);
-	tokens->token = PIPE;
+		tokens->token = HEREDOC;
+	}
+	else if (tokens == NULL && result[i] == '>' && result[i + 1] == '>')
+	{
+		tokens = create_node(tokens, result, 2);
+		tokens->token = APPEND;
+	}
+	else if (tokens != NULL && result[i] == '>' && result[i + 1] == '>')
+	{
+		tokens = append_node(tokens, result, 2);
+		tokens->token = APPEND;
+	}
 	return (tokens);
 }
 
@@ -245,29 +284,50 @@ t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
 {
 	if (result [*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
 	{
-		printf("%c\n", result[*i]);
-		printf("%d\n", *i);
 		if (result[*i + 1] && result[*i + 1] == result[*i])
 		{
-			tokens = token_operator(tokens, result + *i, 2);
+			tokens = token_double_operator(tokens, result + *i);
 			*i += 2;
 		}
 		else if (result[*i + 1] && result[*i + 1] != result[*i])
 		{
-			tokens = token_operator(tokens, result + *i, 1);
+			tokens = token_single_operator(tokens, result + *i);
 			(*i)++;
 		}
 	}
 	else if (result[*i] == '|')
 	{
-		printf("%c\n", result[*i]);
 		tokens = token_pipe(tokens, result + *i);
 		(*i)++;
 	}
 	return (tokens);
 }
 
-t_token *tokenize_word(char *result, t_token *tokens) //!Could change this function for other purposes
+// t_token	*token_quotes(char *result, t_token *tokens)
+// {
+	
+// }
+
+// t_token	*tokenize_quotes(char *result, t_token *tokens, int *i)
+// {
+// 	int	i;
+// 	char quote;
+	
+// 	i = 0;
+// 	if (result[*i] == "\'" || result[*i] == '"')
+// 	{
+// 		quote = result[*i];
+// 		while (result[*i] && result[*i] != '<' && result[*i] != '>' &&
+// 			result[*i] != '|' && result[*i] != ' ' &&
+// 			result[*i] != '\t' && result[*i] != quote)
+// 		{
+// 			tokens = token_quotes(result, tokens, *i)
+// 		}
+// 	}
+	
+// }
+
+t_token	*tokenize_word(char *result, t_token *tokens) //!Could change this function for other purposes
 {
 	int		i;
 	int		start;
@@ -278,23 +338,31 @@ t_token *tokenize_word(char *result, t_token *tokens) //!Could change this funct
 	{
 		if (result[i] == ' ' || result[i] == '\t')
 		{
-			printf("%c\n", result[i]);
 			while (result[i] == ' ' || result[i] == '\t')
 				i++;
 		}
 		else if (result[i] == '|' || result[i] == '<' || result[i] == '>')
-		{
-			printf("%c\n", result[i]);
 			tokens = tokenize_operator(result, tokens, &i);
-		}
 		else if (result[i] && result[i] != ' ')
 		{
-			printf("%c\n", result[i]);
 			start = i;
 			while (result[i] && result[i] != '<' && result[i] != '>' &&
 				result[i] != '|' && result[i] != ' ' &&
-				result[i] != '\t' && result[i] != '\'' && result[i] != '"')
-					i++;
+				result[i] != '\t')
+			{
+				 if (result[i] == '\'' || result[i] == '"')
+                {
+                    char quote = result[i++];
+                    // keep moving until closing quote
+                    while (result[i] && result[i] != quote)
+                        i++;
+					printf("%c\n, %d\n", result[i], i);
+                    if (result[i] == quote)
+                        i++; // include the closing quote
+                }
+                else
+                    i++;
+			}
 			tokens = token_word(tokens, result, start, i);
 		}
 	}

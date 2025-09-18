@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/14 21:16:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/18 19:33:15 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*create_node(t_token *head, char *start, size_t end)
+t_token	*create_node(t_token *head, char *start, size_t end) //!fix the space problem in double quotes
 {
 	t_token	*temp;
 	size_t		i;
@@ -25,7 +25,7 @@ t_token	*create_node(t_token *head, char *start, size_t end)
 	temp->lexeme = malloc(sizeof(char) * end + 1);
 	if (!temp->lexeme)
 		return (NULL);
-	while (i < end && start[i] != ' ' && start[i])
+	while (i < end && start[i])
 	{
 		temp->lexeme[i] = start[i];
 		i++;
@@ -79,3 +79,4 @@ t_token	*append_node(t_token *head, char *start, size_t end)
 	printf("----------------------------------------------\n");
 	return (head);
 }
+
