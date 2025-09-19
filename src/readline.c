@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/18 19:31:04 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/19 14:39:30 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,17 +351,17 @@ t_token	*tokenize_word(char *result, t_token *tokens) //!Could change this funct
 				result[i] != '\t')
 			{
 				 if (result[i] == '\'' || result[i] == '"')
-                {
-                    char quote = result[i++];
-                    // keep moving until closing quote
-                    while (result[i] && result[i] != quote)
-                        i++;
+				{
+					char quote = result[i++];
+					// keep moving until closing quote
+					while (result[i] && result[i] != quote)
+						i++;
 					printf("%c\n, %d\n", result[i], i);
-                    if (result[i] == quote)
-                        i++; // include the closing quote
-                }
-                else
-                    i++;
+					if (result[i] == quote)
+						i++; // include the closing quote
+				}
+				else
+					i++;
 			}
 			tokens = token_word(tokens, result, start, i);
 		}
