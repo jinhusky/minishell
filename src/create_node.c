@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/21 17:08:45 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/21 20:28:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end
 	
 	i = 0;
 	printf("start iterator in append: %zu\n", n_start);
-	printf("start iterator in append: %zu\n", end);
+	printf("end iterator in append: %zu\n", end);
 	for(size_t j = 0; j < end; j++)
 		printf("%c\n", start[j]);
 	temp = NULL;
@@ -112,7 +112,7 @@ t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end
 		temp->lexeme[i++] = start[n_start];
 		n_start++;
 	}
-	temp->lexeme[n_start] = '\0';
+	temp->lexeme[i] = '\0';
 	temp->next = NULL;
 	
 	t_token *trave = NULL;
