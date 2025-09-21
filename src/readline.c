@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/19 14:39:30 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/21 16:51:41 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,10 +209,11 @@
 
 t_token	*token_word(t_token *tokens, char *result, int start, int i)
 {
+	printf("%d\n", i);
 	if (tokens == NULL)
-		tokens = create_node(tokens, result + start, i);
+		tokens = create_node(tokens, result, i);
 	else
-		tokens = append_node(tokens, result + start, i);
+		tokens = append_word_node(tokens, result, start, i);
 	tokens->token = WORD;
 	return (tokens);
 }
@@ -349,20 +350,14 @@ t_token	*tokenize_word(char *result, t_token *tokens) //!Could change this funct
 			while (result[i] && result[i] != '<' && result[i] != '>' &&
 				result[i] != '|' && result[i] != ' ' &&
 				result[i] != '\t')
-			{
-				 if (result[i] == '\'' || result[i] == '"')
 				{
-					char quote = result[i++];
-					// keep moving until closing quote
-					while (result[i] && result[i] != quote)
-						i++;
-					printf("%c\n, %d\n", result[i], i);
-					if (result[i] == quote)
-						i++; // include the closing quote
-				}
-				else
+					printf("current end character is %c$\n", result[i]);
 					i++;
-			}
+				}
+			for (int l = 0; l <= i; l++)
+				printf("character before token word: %c$\n", result[l]);
+			printf("start iterator before passing into token_word: %d\n", start);
+			printf("end iterator before passing into token_word: %d\n", i);
 			tokens = token_word(tokens, result, start, i);
 		}
 	}

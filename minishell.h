@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/18 19:18:39 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/21 16:42:21 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,6 @@ typedef struct s_token
 
 t_token	*create_node(t_token *head, char *start, size_t end);
 t_token	*append_node(t_token *head, char *start, size_t end);
+t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
 
 #endif
