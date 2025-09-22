@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/21 20:43:48 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/22 18:33:50 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
 			tokens = token_single_operator(tokens, result + *i);
 			(*i)++;
 		}
+		else if (result[*i + 1] == '\0')
+		{
+			tokens = token_single_operator(tokens, result + *i);
+			(*i)++;
+		}
 	}
 	else if (result[*i] == '|')
 	{
@@ -183,7 +188,9 @@ int main(int argc, char **argv)
 	(void)argv;
 	(void)argc;
 	t_token	*token;
+	int		error;
 	
+	error = 0;
 	while (1)
 	{
 		token = NULL;
@@ -198,6 +205,7 @@ int main(int argc, char **argv)
 			ft_putstr_fd("Fail to tokenize", 2);
 			exit (127);
 		}
+		error = error_syntax(token);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{
 			rl_clear_history();
