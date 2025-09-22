@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/22 18:33:50 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/22 21:00:49 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_token	*token_word(t_token *tokens, char *result, int start, int i)
 		tokens = create_node(tokens, result, i);
 	else
 		tokens = append_word_node(tokens, result, start, i);
+	tokens->token = 0;
 	tokens->token = WORD;
 	return (tokens);
 }
@@ -29,6 +30,7 @@ t_token	*token_pipe(t_token *tokens, char *result)
 		tokens = create_node(tokens, result, 1);
 	else
 		tokens = append_node(tokens, result, 1);
+	tokens->token = 0;
 	tokens->token = PIPE;
 	return (tokens);
 }
@@ -38,21 +40,25 @@ t_token	*token_single_operator(t_token *tokens, char *result)
 	if (tokens == NULL && *result == '<')
 	{
 		tokens = create_node(tokens, result, 1);
+		tokens->token = 0;
 		tokens->token = REDIR_IN;
 	}
 	else if (tokens != NULL && *result == '<')
 	{
 		tokens = append_node(tokens, result, 1);
+		tokens->token = 0;
 		tokens->token = REDIR_IN;
 	}
 	else if (tokens == NULL && *result == '>')
 	{
 		tokens = create_node(tokens, result, 1);
+		tokens->token = 0;
 		tokens->token = REDIR_OUT;
 	}
 	else if (tokens != NULL && *result == '>')
 	{
 		tokens = append_node(tokens, result, 1);
+		tokens->token = 0;
 		tokens->token = REDIR_OUT;
 	}
 	return (tokens);
@@ -66,21 +72,25 @@ t_token	*token_double_operator(t_token *tokens, char *result)
 	if (tokens == NULL && result[i] == '<' && result[i + 1] == '<')
 	{
 		tokens = create_node(tokens, result, 2);
+		tokens->token = 0;
 		tokens->token = HEREDOC;
 	}
 	else if (tokens != NULL && result[i] == '<' && result[i + 1] == '<')
 	{
 		tokens = append_node(tokens, result, 2);
+		tokens->token = 0;
 		tokens->token = HEREDOC;
 	}
 	else if (tokens == NULL && result[i] == '>' && result[i + 1] == '>')
 	{
 		tokens = create_node(tokens, result, 2);
+		tokens->token = 0;
 		tokens->token = APPEND;
 	}
 	else if (tokens != NULL && result[i] == '>' && result[i + 1] == '>')
 	{
 		tokens = append_node(tokens, result, 2);
+		tokens->token = 0;
 		tokens->token = APPEND;
 	}
 	return (tokens);
