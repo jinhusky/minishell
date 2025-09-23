@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/21 20:28:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/09/23 13:34:26 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_token	*create_node(t_token *head, char *start, size_t end) //!fix the space pr
 	temp = malloc(sizeof(t_token));
 	if (!temp)
 		return (NULL);
+	temp->token = 0;
 	temp->lexeme = NULL;
 	temp->lexeme = malloc(sizeof(char) * end + 1);
 	if (!temp->lexeme)
@@ -50,6 +51,7 @@ t_token	*append_node(t_token *head, char *start, size_t end)
 	temp = malloc(sizeof(t_token));
 	if (!temp)
 		return (NULL);
+	temp->token = 0;
 	temp->lexeme = NULL;
 	temp->lexeme = malloc(sizeof(char) * (end + 1));
 	if (!temp->lexeme)
@@ -97,6 +99,7 @@ t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end
 	temp = malloc(sizeof(t_token));
 	if (!temp)
 		return (NULL);
+	temp->token = 0;
 	temp->lexeme = NULL;
 	temp->lexeme = malloc(sizeof(char) * (end + 1));
 	if (!temp->lexeme)
