@@ -6,15 +6,8 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:23:28 by kationg           #+#    #+#             */
-/*   Updated: 2025/09/03 19:42:21 by kationg          ###   ########.fr       */
+/*   Updated: 2025/09/29 14:29:25 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Libft/libft.h"
 
-
-void env(void)
-{
-    
-    getenv    
-}

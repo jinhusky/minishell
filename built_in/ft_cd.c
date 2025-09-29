@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/20 14:25:51 by kationg           #+#    #+#             */
-/*   Updated: 2025/09/29 13:02:40 by kationg          ###   ########.fr       */
+/*   Created: 2025/09/27 14:39:59 by kationg           #+#    #+#             */
+/*   Updated: 2025/09/29 12:28:33 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <limits.h>
-#include <linux/limits.h>
 
-void    pwd(void)
+void	ft_cd(char **args)
 {
-    char buffer[PATH_MAX];
-    if (getcwd(buffer, sizeof(buffer)))
-        ft_printf("%s", buffer);
-    else 
-        perror("PWD error:");
-}
+	int	i;
 
-/*
-int main (void)
-{
-    pwd();
+	i = 0;
+	if (!args[1])
+		chdir(getenv("HOME"));
+	chdir(args[1]);
 }
-*/
