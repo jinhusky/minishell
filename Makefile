@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/09/22 18:09:55 by jhor             ###   ########.fr        #
+#    Updated: 2025/09/29 16:52:28 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ RM = rm -f
 LIBFT_DIR = Libft/
 LIBFT = $(LIBFT_DIR)libft.a
 
-SRC = src/readline.c src/create_node.c src/error_syntax.c
+SRC = src/readline.c src/create_node.c src/error_syntax.c src/ast/parse_pipe.c
 
 OBJ = $(SRC:.c=.o)
 
