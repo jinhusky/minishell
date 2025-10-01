@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/09/29 17:32:16 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/01 13:35:05 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ int main(int argc, char **argv)
 	t_token	*token;
 	int		error;
 	t_ast	node;
+	t_parser	p;
 	
 	error = 0;
 	while (1)
@@ -215,7 +216,8 @@ int main(int argc, char **argv)
 			ft_putstr_fd("Fail to tokenize", 2);
 			exit (127);
 		}
-		init_ast(&node, token);
+		init_ast(&node, &p, token);
+		parse_pipeline(&p);
 		// error = error_syntax(token);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{
