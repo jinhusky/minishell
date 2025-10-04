@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/04 18:35:55 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/04 21:51:38 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,57 +62,70 @@ void	assign_treenode(t_ast *branch, t_parser *p) //potentially not needed
 
 void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 {
+	int	i;
+
+	i = 0;
 	if (!branch || !leaf)
 		return;
-	branch->children = malloc(sizeof(char *) * 1);
+	if (!branch->children)
+	{
+		branch->children = malloc(sizeof(t_ast));
+		branch->childcount++;
+	}
 	if (!branch->children)
 		return;
-	while (*(branch->children))
+	if (!branch->children[0])
+		branch->children[0] = leaf;
+	else if (branch->children[0] != NULL)
 	{
-		
+		branch->children = realloc(branch->children, sizeof(t_ast)
+		* branch->childcount + 1);
+		branch->childcount++;
+		while (i < branch->childcount)
+			i++;
+		branch->children[i] = leaf;
 	}
 }
 
 t_ast	*parse_command_word(t_ast *branch, t_parser *p)
 {
 	branch->type = AST_WORD;
-	branch->children = malloc(sizeof(char *) * 1);
-	if (!branch->children)
+	branch->token_ref = p->cursor;
+	if (!branch->token_ref)
 		return (NULL);
-	//assign the token lexeme into children array
 	return (branch);
 }
 
-t_ast	*parse_component(t_ast *node, t_parser *p)
-{
-	t_ast	*temp;
+// t_ast	*parse_component(t_ast *node, t_parser *p)
+// {
+// 	t_ast	*temp;
 
-	temp = NULL;
-	if (token_peek(p)->token == WORD)
-	{
-		temp = create_treenode(temp);
-		temp->type = AST_ARGUMENT;
-		temp->token_ref = p->cursor->lexeme;
-		//if there are already existing AST_COMMAND, link AST_WORD to AST_COMMAND
-		p->cursor = get_token(p);
-	}
-	return (temp);
-}
+// 	temp = NULL;
+// 	if (token_peek(p)->token == WORD)
+// 	{
+// 		temp = create_treenode(temp);
+// 		temp->type = AST_ARGUMENT;
+// 		temp->token_ref = p->cursor;
+// 		//if there are already existing AST_COMMAND, link AST_WORD to AST_COMMAND
+// 		// p->cursor = get_token(p);
+// 	}
+// 	return (temp);
+// }
 
-t_ast	*parse_components(t_ast *node, t_parser *p)
-{
-	if (token_peek(p)->token == WORD)
-	{
-		parse_component(node, p);
-		p->cursor = get_token(p);
-		if (token_peek(p)->token == WORD)
-		{
-			parse_component(node, p);
-			attach_word();
-		}
-	}
-	return (node);
-}
+// t_ast	*parse_components(t_ast *node, t_parser *p)
+// {
+// 	if (token_peek(p)->token == WORD)
+// 	{
+// 		parse_component(node, p);
+// 		p->cursor = get_token(p);
+// 		if (token_peek(p)->token == WORD)
+// 		{
+// 			parse_component(node, p);
+// 			attach_word();
+// 		}
+// 	}
+// 	return (node);
+// }
 
 t_ast	*parse_simple_command(t_ast *branch, t_parser *p)
 {
@@ -136,7 +149,6 @@ t_ast	*parse_pipeline(t_ast *root, t_parser *p)
 	t_ast	*branch;
 
 	branch = NULL;
-	root = create_treenode(root);
 	if (token_peek(p)->token == WORD)
 	{
 		branch = create_treenode(branch);
@@ -164,6 +176,6 @@ t_ast	*parse_pipeline(t_ast *root, t_parser *p)
 
 void	parsing(t_ast *node, t_token *token, t_parser *p)
 {
-	init_ast(node, token, p);
+	init_ast(node, p, token);
 	parse_pipeline(node, p);
 }
