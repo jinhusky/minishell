@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/01 13:35:05 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/04 21:52:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ int main(int argc, char **argv)
 	char	*result;
 	t_token	*token;
 	int		error;
-	t_ast	node;
+	t_ast	*node;
 	t_parser	p;
 	
 	error = 0;
@@ -217,7 +217,7 @@ int main(int argc, char **argv)
 			exit (127);
 		}
 		init_ast(&node, &p, token);
-		parse_pipeline(&p);
+		node = parse_pipeline(node, &p);
 		// error = error_syntax(token);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{
