@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/01 15:36:20 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/06 17:19:42 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,9 @@ t_token	*create_node(t_token *head, char *start, size_t end);
 t_token	*append_node(t_token *head, char *start, size_t end);
 t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
 int		error_syntax(t_token *token);
-void	init_ast(t_ast *node, t_parser *p, t_token *token);
-t_ast	*parse_pipeline(t_ast *node, t_parser *p);
+t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token);
+void	parse_pipeline(t_ast *node, t_parser *p);
+t_ast	*parsing(t_ast *node, t_token *token, t_parser *p);
+void	ft_ast_visualize(t_ast *root);
 
 #endif

@@ -14,8 +14,16 @@
 
 void    ft_ast_visualize(t_ast *root)
 {
-    printf("%d\n", root->type);
+    int i = 0;
+
+	printf("%d\n", root->type);
     printf("|\n");
-    printf("_\n");
-    printf("")
+	if (root->children)
+	{
+    	while (i < root->childcount && root->children[i])
+		{
+			printf("%d, %d, %s\n", root->children[i]->type, root->children[i]->children[0]->type, root->children[i]->children[0]->token_ref->lexeme);
+			i++;
+		}
+	}
 }
