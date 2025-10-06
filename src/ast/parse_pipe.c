@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/06 18:18:43 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/06 21:42:35 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,26 +136,12 @@ t_ast	*parse_simple_command(t_ast *branch, t_parser *p)
 	t_ast	*command;
 
 	command = NULL;
-	if (branch == NULL)
-		printf("NULL inside parse_sc\n");
 	branch->type = AST_COMMAND;
 	if (token_peek(p)->token == WORD)
 	{
 		command = create_treenode(command);
 		parse_command_word(command, p); // create a fresh branch AST_COMMAND && AST_WORD following command_word -> word
-		printf("*inside parse_sc* %d, %s\n", command->type, command->token_ref->lexeme);
-		printf("*inside parse_sc* %d\n", branch->type);
 		attach_treenode(branch, command);
-		if (!branch->children)
-			printf("children doesn't exist\n");
-
-		for (int i = 0; i < branch->childcount; i++) 
-		{
-			t_ast *child = branch->children[i];
-			printf("child[%d]: type=%d\n", i, child->type);
-		}
-
-		printf("*inside parse_sc* %d\n", branch->type);
 	}
 	return (branch);
 	// p->cursor = get_token(p);
