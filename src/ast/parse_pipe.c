@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/06 21:42:35 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/07 22:20:35 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,58 +116,93 @@ void	parse_command_word(t_ast *branch, t_parser *p)
 // 	return (temp);
 // }
 
-// t_ast	*parse_components(t_ast *node, t_parser *p)
-// {
-// 	if (token_peek(p)->token == WORD)
-// 	{
-// 		parse_component(node, p);
-// 		p->cursor = get_token(p);
-// 		if (token_peek(p)->token == WORD)
-// 		{
-// 			parse_component(node, p);
-// 			attach_word();
-// 		}
-// 	}
-// 	return (node);
-// }
+bool	valid_component(t_parser *p)
+{
+	return (p->cursor->token == WORD
+		|| p->cursor->token == REDIR_IN
+		|| p->cursor->token == REDIR_OUT
+		|| p->cursor->token == HEREDOC
+		|| p->cursor->token == APPEND);
+}
 
-t_ast	*parse_simple_command(t_ast *branch, t_parser *p)
+void	parse_components(t_ast *prt, t_ast *chd, t_parser *p, t_ast *cur_ptr)
+{
+	//can this be made into recursion
+	while (token_peek(p)->token && valid_component(p))
+	{
+		if (token_peek(p)->token == WORD)
+		{
+			parse_argument(p);
+		}
+		else if (token_peek(p)->token != WORD && token_peek(p)->token != PIPE)
+		{
+			parse_redirection(p);
+		}
+	}
+	
+}
+
+void	parse_simple_command(t_ast *branch, t_parser *p, t_ast *cur_cmd)
 {
 	t_ast	*command;
 
 	command = NULL;
 	branch->type = AST_COMMAND;
-	if (token_peek(p)->token == WORD)
+	if (token_peek(p)->token == WORD && !cur_cmd->children)
 	{
 		command = create_treenode(command);
 		parse_command_word(command, p); // create a fresh branch AST_COMMAND && AST_WORD following command_word -> word
 		attach_treenode(branch, command);
 	}
-	return (branch);
+	else if (token_peek(p)->token == WORD && cur_cmd->children)
+	{
+		command = create_treenode(command);
+		parse_components(branch, command, p, cur_cmd);
+	}
+	printf("*parse_sc* parent: %d\n", cur_cmd->type);
+	for (int i = 0; i < cur_cmd->childcount; i++)
+		printf("*parse_sc* %d: %s\n", cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
+	return;
 	// p->cursor = get_token(p);
 	//else if (token_peek(p)->token == WORD) //existing AST_COMMAND branch
 	//	node = parse_components(); //create AST_WORD then attach to existing AST_COMMAND
 }
 
-void	parse_pipeline(t_ast *root, t_parser *p)
+void	parse_pipeline(t_ast *root, t_parser *p, t_ast *cur_cmd)
 {
 	t_ast	*branch;
 
 	branch = NULL;
 	if (token_peek(p) == NULL)
 		return;
-	if (token_peek(p)->token == WORD)
+	if (root->childcount == 0)
 	{
 		branch = create_treenode(branch);
-		if (branch)
-			printf("malloc-ed\n");
-		parse_simple_command(branch, p);
-		if (branch->children)
-			printf("*inside parse_pipeline* %d\n", branch->type);
+		cur_cmd = branch;
+	}
+	if (token_peek(p)->token == PIPE)
+	{
+		p = get_token(p);
+		branch = create_treenode(branch);
+		cur_cmd = branch;
+		parse_simple_command(branch, p, cur_cmd);
 		attach_treenode(root, branch);
 	}
+	else if (token_peek(p)->token != PIPE)
+	{
+		if (cur_cmd)
+			printf("malloc-ed\n");
+		parse_simple_command(cur_cmd, p, cur_cmd);
+		if (cur_cmd->children)
+			printf("*inside parse_pipeline* %d\n", root->type);
+		attach_treenode(root, cur_cmd);
+	}
 	p = get_token(p);
-	parse_pipeline(root, p);
+	printf("*parse_pipeline* parent: %d\n", root->type);
+	printf("*parse_pipeline* parent: %d\n", cur_cmd->type);
+	for (int i = 0; i < cur_cmd->childcount; i++)
+		printf("*parse_pipeline* %d: %s\n", cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
+	parse_pipeline(root, p, cur_cmd);
 	//if token_peek is WORD then call parse_simple_command;
 	//get_token to get the next token;
 	//if token_peek is REDIRECTION then call parse_simple_command;
@@ -185,12 +220,12 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		// error_handle;
 }
 
-t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
+t_ast	*parsing(t_ast *node, t_token *token, t_parser *p, t_ast *cur_cmd)
 {
 	node = init_ast(node, p, token);
 	if (!node)
 		printf("not initialized\n");
-	parse_pipeline(node, p);
+	parse_pipeline(node, p, cur_cmd);
 	if (node)
 		printf("*inside parsing* %d\n", node->type);
 	

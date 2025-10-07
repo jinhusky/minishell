@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/06 15:29:54 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/07 19:10:36 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,23 +189,21 @@ void	free_tokens(t_token *tokens)
 	free(tokens);
 }
 
-int main(int argc, char **argv)
+int main()
 {
-	// if (argc < 2)
-	// 	return (1);
-	(void)argv;
-	(void)argc;
-	char	*result;
-	t_token	*token;
-	int		error;
-	t_ast	*node;
+	char		*result;
+	t_token		*token;
+	int			error;
+	t_ast		*node;
 	t_parser	p;
+	t_ast *		cur_cmd;
 	
+	token = NULL;
+	result = NULL;
+	cur_cmd = NULL;
 	error = 0;
 	while (1)
 	{
-		token = NULL;
-		result = NULL;
 		result = readline("minishell$ ");
 		if (!result)
 			break;
@@ -216,7 +214,7 @@ int main(int argc, char **argv)
 			ft_putstr_fd("Fail to tokenize", 2);
 			exit (127);
 		}
-		node = parsing(node, token, &p);
+		node = parsing(node, token, &p, cur_cmd);
 		ft_ast_visualize(node);
 		// error = error_syntax(token);
 		if (ft_strncmp(result, "exit", 4) == 0)
