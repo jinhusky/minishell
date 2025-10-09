@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/09 17:40:19 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/09 23:02:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,6 @@ t_ast	*create_treenode(t_ast *treenode)
 	return (treenode);
 }
 
-void	assign_treenode(t_ast *branch, t_parser *p) //potentially not needed
-{
-	if (token_peek(p)->token == WORD && branch->childcount == 0)
-		branch->type = AST_WORD;
-	else if (token_peek(p)->token == WORD && branch->childcount > 0)
-		branch->type = AST_COMMAND;
-	return;
-}
-
 void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 {
 	t_ast	**new_children;
@@ -70,28 +61,36 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 	i = 0;
 	if (!branch || !leaf)
 		return;
-	printf("*attach_node* pass here\n");
 	if (branch->children == NULL)
 	{
+		printf("*attach_node* pass here\n");
 		branch->children = malloc(sizeof(t_ast *));
 		if (!branch->children)
 			return;
 		branch->children[0] = leaf;
 		branch->childcount = 1;
 	}
-	else
+	else //!figure out why the reallocation is not working
 	{
 		printf("*attach_node* entered here\n");
+		printf("*attach node* parent:%p, %d\n", branch->children, branch->type);
+		printf("*attach node* parent's childcout: %d\n", branch->childcount);
 		new_children = realloc(branch->children, sizeof(t_ast *) * (branch->childcount + 1));
+		printf("*attach node* parent:%p\n", new_children);
 		if (!new_children)
 			return;
 		branch->children = new_children;
+		printf("*attach node* new parent:%p\n", branch->children);
+		printf("*attach_treenode* parent's childcount after realloc: %d\n", branch->childcount);
+		printf("*attach_treenode* children's type: %d\n", leaf->type);
 		branch->children[branch->childcount] = leaf;
 		branch->childcount++;
-		printf("*attach_treenode* branch childcount: %d\n", branch->childcount);
-		// printf("*attach_treenode* branch children: %s\n", branch->children[0]->token_ref->lexeme);
-		// printf("*attach_treenode* branch children: %s\n", branch->children[2]->token_ref->lexeme);
-		// printf("*attach_treenode* branch children: %s\n", branch->children[3]->token_ref->lexeme);
+		// printf("*attach_treenode* parent's children after realloc: %s\n", branch->children[0]->token_ref->lexeme);
+		// printf("*attach_treenode* parent's children after realloc: %s\n", branch->children[1]->token_ref->lexeme);
+		// if (branch->children != NULL)
+		// 	printf("*attach_treenode* branch children: %s\n", branch->children[0]->token_ref->lexeme);
+		// printf("*attach_treenode* children children: %s\n", leaf->token_ref->lexeme);
+		// printf("*attach_treenode* branch childcount: %s\n", branch->children[1]->token_ref->lexeme);
 	}
 	return;
 }
@@ -104,22 +103,6 @@ void	parse_word(t_ast *branch, t_parser *p)
 		return;
 	return;
 }
-
-// t_ast	*parse_component(t_ast *node, t_parser *p)
-// {
-// 	t_ast	*temp;
-
-// 	temp = NULL;
-// 	if (token_peek(p)->token == WORD)
-// 	{
-// 		temp = create_treenode(temp);
-// 		temp->type = AST_ARGUMENT;
-// 		temp->token_ref = p->cursor;
-// 		//if there are already existing AST_COMMAND, link AST_WORD to AST_COMMAND
-// 		// p->cursor = get_token(p);
-// 	}
-// 	return (temp);
-// }
 
 t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 {
@@ -139,8 +122,9 @@ t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 		word_ptr = create_treenode(word_ptr);
 		parse_word(word_ptr, p);
 		attach_treenode(chd_ptr, word_ptr);
+		printf("*parse_argument* AST_ARGUMENT: %d\n", chd_ptr->type);
 		for (int i = 0; i < chd_ptr->childcount; i++)
-			printf("*parse_argument* %d: %s\n", chd_ptr->children[i]->type, chd_ptr->children[i]->token_ref->lexeme);
+			printf("*parse_argument* AST_WORD: %d: %s\n", chd_ptr->children[i]->type, chd_ptr->children[i]->token_ref->lexeme);
 	}
 	return (chd_ptr);
 }
@@ -167,12 +151,13 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 		if (token_peek(p)->token == WORD)
 		{
 			child = parse_argument(child, p);
+			printf("*parse_components* AST_COMMAND: %d\n", prt->type);
+			for (int i = 0; i < child->childcount; i++)
+				printf("*parse_components(1)* AST_ARGUMENT's children: %d: %s\n", child->children[i]->type, child->children[i]->token_ref->lexeme);
 			attach_treenode(prt, child);
 		}
-		printf("*parse_components* parent: %d\n", prt->type);
-		printf("*parse_components(1)* %d: %s\n", child->children[0]->type, child->children[0]->token_ref->lexeme);
 		// for (int i = 0; i < prt->childcount; i++)
-		// printf("*parse_components(2)* %d: %s\n", prt->children[0]->type, prt->children[0]->token_ref->lexeme);
+		// 	printf("*parse_components(2)* parent's children %d: %s\n", prt->children[i]->type, prt->children[i]->token_ref->lexeme);
 		// printf("*parse_components(3)* %d: %s\n", prt->children[1]->type, prt->children[1]->token_ref->lexeme);
 		// printf("*parse_components* %d: %s\n", prt->children[1]->type, prt->children[1]->token_ref->lexeme);
 		// printf("*parse_components* %d: %s\n", prt->children[2]->type, prt->children[2]->token_ref->lexeme);
@@ -207,8 +192,8 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 		attach_treenode(branch, command);
 	}
 	printf("*parse_sc* parent: %d\n", branch->type);
-	for (int i = 0; i < branch->childcount; i++)
-		printf("*parse_sc* %d: %s\n", branch->children[i]->type, branch->children[i]->token_ref->lexeme);
+	// for (int i = 0; i < branch->childcount; i++)
+	// 	printf("*parse_sc* %d: %s\n", branch->children[i]->type, branch->children[i]->token_ref->lexeme);
 	return;
 	// p->cursor = get_token(p);
 	//else if (token_peek(p)->token == WORD) //existing AST_COMMAND branch
@@ -241,7 +226,8 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		attach_treenode(root, p->cur_cmd);
 	}
 	p = get_token(p);
-	parse_pipeline(root, p);
+	if (token_peek(p))
+		parse_pipeline(root, p);
 }
 
 
