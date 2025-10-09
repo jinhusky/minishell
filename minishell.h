@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/07 21:57:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/09 17:31:08 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ typedef struct s_token //tokenization nodes
 	struct s_token	*next;
 }t_token;
 
-typedef struct	s_parser {
-	t_token *cursor;
-} t_parser;
 
 typedef struct s_ast {
 	t_node	type;
@@ -56,6 +53,11 @@ typedef struct s_ast {
 	int	childcount;
 	t_token *token_ref;
 } t_ast;
+
+typedef struct	s_parser {
+	t_token	*cursor;
+	t_ast	*cur_cmd;
+} t_parser;
 
 // typedef struct	s_token
 // {
@@ -77,8 +79,8 @@ t_token	*append_node(t_token *head, char *start, size_t end);
 t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
 int		error_syntax(t_token *token);
 t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token);
-void	parse_pipeline(t_ast *node, t_parser *p, t_ast *cur_cmd);
-t_ast	*parsing(t_ast *node, t_token *token, t_parser *p, t_ast *cur_cmd);
+void	parse_pipeline(t_ast *node, t_parser *p);
+t_ast	*parsing(t_ast *node, t_token *token, t_parser *p);
 void	ft_ast_visualize(t_ast *root);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/08 20:59:13 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/09 17:40:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 	i = 0;
 	if (!branch || !leaf)
 		return;
-	printf("pass here\n");
+	printf("*attach_node* pass here\n");
 	if (branch->children == NULL)
 	{
 		branch->children = malloc(sizeof(t_ast *));
@@ -81,7 +81,7 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 	}
 	else
 	{
-		printf("entered here\n");
+		printf("*attach_node* entered here\n");
 		new_children = realloc(branch->children, sizeof(t_ast *) * (branch->childcount + 1));
 		if (!new_children)
 			return;
@@ -186,97 +186,134 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 	return (prt);
 }
 
-void	parse_simple_command(t_ast *branch, t_parser *p, t_ast *cur_cmd)
+void	parse_simple_command(t_ast *branch, t_parser *p)
 {
 	t_ast	*command;
 
 	command = NULL;
 	branch->type = AST_COMMAND;
-	if (token_peek(p)->token == WORD)
+	if (!branch->children)
 	{
 		command = create_treenode(command);
 		parse_word(command, p); // create a fresh branch AST_COMMAND && AST_WORD following command_word -> word
 		attach_treenode(branch, command);
 	}
-	// else if (token_peek(p)->token == WORD && cur_cmd->children)
-	// {
-	// 	printf("*in here parse_simple_command*\n");
-	// 	command = parse_components(cur_cmd, command, p);
-	// 	if (command)
-	// 		printf("command ptr has content inside\n");
-	// 	branch = attach_treenode(branch, command);
-	// }
-	printf("*parse_sc* parent: %d\n", cur_cmd->type);
-	for (int i = 0; i < cur_cmd->childcount; i++)
-		printf("*parse_sc* %d: %s\n", cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
+	else if (branch->children)
+	{
+		printf("*in here parse_simple_command*\n");
+		command = parse_components(branch, command, p);
+		if (command)
+			printf("command ptr has content inside\n");
+		attach_treenode(branch, command);
+	}
+	printf("*parse_sc* parent: %d\n", branch->type);
+	for (int i = 0; i < branch->childcount; i++)
+		printf("*parse_sc* %d: %s\n", branch->children[i]->type, branch->children[i]->token_ref->lexeme);
 	return;
 	// p->cursor = get_token(p);
 	//else if (token_peek(p)->token == WORD) //existing AST_COMMAND branch
 	//	node = parse_components(); //create AST_WORD then attach to existing AST_COMMAND
 }
 
-void	parse_pipeline(t_ast *root, t_parser *p, t_ast *cur_cmd)
+void	parse_pipeline(t_ast *root, t_parser *p)
 {
 	t_ast	*branch;
 
 	branch = NULL;
-	if (token_peek(p) == NULL)
+	if (!token_peek(p))
 		return;
-	if (root->childcount == 0)
+	if (p->cur_cmd == NULL)
 	{
 		branch = create_treenode(branch);
-		cur_cmd = branch;
+		p->cur_cmd = branch;
 	}
 	if (token_peek(p)->token == PIPE)
 	{
 		p = get_token(p);
 		branch = create_treenode(branch);
-		cur_cmd = branch;
-		parse_simple_command(branch, p, cur_cmd);
-		attach_treenode(root, branch);
+		p->cur_cmd = branch;
+		parse_simple_command(p->cur_cmd, p);
+		attach_treenode(root, p->cur_cmd);
 	}
 	else if (token_peek(p)->token != PIPE)
 	{
-		if (cur_cmd)
-			printf("malloc-ed\n");
-		parse_simple_command(cur_cmd, p, cur_cmd);
-		if (cur_cmd->children)
-			printf("*inside parse_pipeline* %d\n", root->type);
-		attach_treenode(root, cur_cmd);
-		printf("*inside parse_pipeline* %d\n", root->children[0]->type);
+		parse_simple_command(p->cur_cmd, p);
+		attach_treenode(root, p->cur_cmd);
 	}
 	p = get_token(p);
-	printf("*parse_pipeline* parent: %d\n", root->type);
-	printf("*parse_pipeline* parent: %d\n", cur_cmd->type);
-	// printf("*parse_pipeline* parent: %d\n", branch->type);
-	// printf("*parse_pipeline* %d: %s\n", root->children[0]->type, root->children[0]->token_ref->lexeme);
-	// for (int i = 0; i < cur_cmd->childcount; i++)
-	// printf("*parse_pipeline* cur_cmd %d: %s\n", cur_cmd->children[0]->type, cur_cmd->children[0]->token_ref->lexeme);
-	// printf("*parse_pipeline* cur_cmd %d: %s\n", cur_cmd->children[1]->type, cur_cmd->children[1]->token_ref->lexeme);
-	parse_pipeline(root, p, cur_cmd);
-	//if token_peek is WORD then call parse_simple_command;
-	//get_token to get the next token;
-	//if token_peek is REDIRECTION then call parse_simple_command;
-	//if token_peek is PIPE then get_token to consume and call parse_simple_command
-	// else if (token_peek(p)->token == REDIR_IN || 
-	// 	token_peek(p)->token == REDIR_OUT ||
-	// 	token_peek(p)->token == HEREDOC || token_peek(p)->token == APPEND)
-	// 	parse_simple_command();
-	// if (token_peek(p)->token == PIPE)
-	// {
-	// 	p->cursor = get_token(p);
-	// 	parse_simple_command();
-	// }
-	// if (!token_peek(p))
-		// error_handle;
+	parse_pipeline(root, p);
 }
 
-t_ast	*parsing(t_ast *node, t_token *token, t_parser *p, t_ast *cur_cmd)
+
+
+
+
+// void	parse_pipeline(t_ast *root, t_parser *p, t_ast **cur_cmd)
+// {
+// 	t_ast	*branch;
+
+// 	branch = NULL; //this is causing the next recursive call to loss its reference to the previous command child
+// 	if (token_peek(p) == NULL)
+// 		return;
+// 	if (root->childcount == 0)
+// 	{
+// 		branch = create_treenode(branch);
+// 		*cur_cmd = branch;
+// 	}
+// 	if (token_peek(p)->token == PIPE)
+// 	{
+// 		p = get_token(p);
+// 		branch = create_treenode(branch);
+// 		*cur_cmd = branch;
+// 		parse_simple_command(&branch, p, cur_cmd);
+// 		attach_treenode(&root, branch);
+// 	}
+// 	else if (token_peek(p)->token != PIPE)
+// 	{
+// 		if (*cur_cmd)
+// 			printf("malloc-ed\n");
+// 		parse_simple_command(&branch, p, cur_cmd);
+// 		if ((*cur_cmd)->children)
+// 			printf("*inside parse_pipeline* %d\n", root->type);
+// 		attach_treenode(&root, *cur_cmd);
+// 		printf("*inside parse_pipeline* %d\n", root->children[0]->type);
+// 	}
+// 	p = get_token(p);
+// 	printf("*parse_pipeline* parent type: %d\n", root->type);
+// 	printf("*parse_pipeline* child of parent: %d\n", root->children[0]->type);
+// 	printf("*parse_pipeline* child type: %d\n", (*cur_cmd)->type);
+// 	printf("*parse_pipeline* children of child: %s\n", (*cur_cmd)->children[0]->token_ref->lexeme);
+// 	// if (cur_cmd->children)
+// 	// 	printf("*parse_pipeline* children of child: %s\n", cur_cmd->children[1]->token_ref->lexeme);
+// 	// printf("*parse_pipeline* parent: %d\n", branch->type);
+// 	// printf("*parse_pipeline* %d: %s\n", root->children[0]->type, root->children[0]->token_ref->lexeme);
+// 	// for (int i = 0; i < cur_cmd->childcount; i++)
+// 	// printf("*parse_pipeline* cur_cmd %d: %s\n", cur_cmd->children[0]->type, cur_cmd->children[0]->token_ref->lexeme);
+// 	// printf("*parse_pipeline* cur_cmd %d: %s\n", cur_cmd->children[1]->type, cur_cmd->children[1]->token_ref->lexeme);
+// 	parse_pipeline(root, p, cur_cmd);
+// 	//if token_peek is WORD then call parse_simple_command;
+// 	//get_token to get the next token;
+// 	//if token_peek is REDIRECTION then call parse_simple_command;
+// 	//if token_peek is PIPE then get_token to consume and call parse_simple_command
+// 	// else if (token_peek(p)->token == REDIR_IN || 
+// 	// 	token_peek(p)->token == REDIR_OUT ||
+// 	// 	token_peek(p)->token == HEREDOC || token_peek(p)->token == APPEND)
+// 	// 	parse_simple_command();
+// 	// if (token_peek(p)->token == PIPE)
+// 	// {
+// 	// 	p->cursor = get_token(p);
+// 	// 	parse_simple_command();
+// 	// }
+// 	// if (!token_peek(p))
+// 		// error_handle;
+// }
+
+t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
 {
 	node = init_ast(node, p, token);
 	if (!node)
 		printf("not initialized\n");
-	parse_pipeline(node, p, cur_cmd);
+	parse_pipeline(node, p);
 	if (node)
 		printf("*inside parsing* %d\n", node->type);
 	// for (int i = 0; node->children[i] && i < node->childcount; i++)
