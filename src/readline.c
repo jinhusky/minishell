@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/09 17:31:39 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/09 23:56:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,14 +193,12 @@ int main()
 {
 	char		*result;
 	t_token		*token;
-	int			error;
 	t_ast		*node;
 	t_parser	p;
 	
 	token = NULL;
 	result = NULL;
 	p.cur_cmd = NULL;
-	error = 0;
 	while (1)
 	{
 		result = readline("minishell$ ");
