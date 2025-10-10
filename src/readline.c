@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/09 23:56:51 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/10 15:15:34 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ t_token	*tokenizer(char *result, t_token *tokens) //!Could change this function 
 	ride = tokens;
 	while (ride != NULL)
 	{
-		printf("enum %d: %s$\n",ride->token, ride->lexeme);
+		printf("*link-list of tokens* enum %d: %s$\n",ride->token, ride->lexeme);
 		ride = ride->next;
 	}
 	// t_token	*temp = tokens;

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/10 01:29:18 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/10 17:24:49 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,11 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 		branch->children[0] = leaf;
 		branch->childcount = 1;
 	}
-	else //!figure out why the reallocation is not working
+	else
 	{
 		printf("*attach_node* entered here\n");
-		printf("*attach node* parent:%p, %s, %d\n", branch->children, branch->children[0]->token_ref->lexeme, branch->type);
+		if (branch->children[0]->token_ref)
+			printf("*attach node* parent:%p, %s, %d\n", branch->children, branch->children[0]->token_ref->lexeme, branch->type);
 		printf("*attach node* parent's childcout: %d\n", branch->childcount);
 		if (leaf->children)
 			printf("*attach_node* child's content: %s\n", leaf->children[0]->token_ref->lexeme);
@@ -104,6 +105,10 @@ void	parse_word(t_ast *branch, t_parser *p)
 		return;
 	return;
 }
+// t_ast	*parse_redirection()
+//!LOGIC: while loop check the current peek token is which redirection then assign enum to node
+//!LOGIC: have a pointer for filename (AST_WORD), attach_treenode them together.
+// t_ast	*parse_maybe_redirs() //!may not need it
 
 t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 {
@@ -139,6 +144,7 @@ bool	valid_component(t_parser *p)
 		|| p->cursor->token == APPEND);
 }
 
+//!add if statements for redirections and use parse_redirection
 t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 {
 	printf("*inside parse_components* cursor:%s\n", p->cursor->lexeme);
@@ -178,7 +184,12 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 
 	command = NULL;
 	branch->type = AST_COMMAND;
-	if (!branch->children)
+	if (!branch->children && token_peek(p)->token == REDIR_IN 
+	|| token_peek(p)->token == REDIR_OUT || token_peek(p)->token == APPEND 
+	|| token_peek(p)->token == HEREDOC)
+	//TODO: malloc with command pointer then pass it into parse_maybe_redirs. Change the enum of AST_REDIRECTION. 
+	//TODO: When redirection functions is done, try to work out the logic of after parse_maybe_redirs, the next WORD type token should be command and just parse as AST_WORD
+	if (!branch->children && token_peek(p)->token == WORD)
 	{
 		command = create_treenode(command);
 		parse_word(command, p); // create a fresh branch AST_COMMAND && AST_WORD following command_word -> word
@@ -195,9 +206,6 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 	for (int i = 0; i < branch->childcount; i++)
 		printf("*parse_sc* %d\n", branch->children[i]->type);
 	return;
-	// p->cursor = get_token(p);
-	//else if (token_peek(p)->token == WORD) //existing AST_COMMAND branch
-	//	node = parse_components(); //create AST_WORD then attach to existing AST_COMMAND
 }
 
 void	parse_pipeline(t_ast *root, t_parser *p)
@@ -211,12 +219,14 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 	{
 		branch = create_treenode(branch);
 		p->cur_cmd = branch;
+		attach_treenode(root, p->cur_cmd);
 	}
 	if (token_peek(p)->token == PIPE)
 	{
 		p = get_token(p);
 		branch = create_treenode(branch);
 		p->cur_cmd = branch;
+		printf("*parse_pipeline pipe statement* %d\n", p->cur_cmd->type);
 		parse_simple_command(p->cur_cmd, p);
 		attach_treenode(root, p->cur_cmd);
 	}
@@ -226,9 +236,13 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 	printf("*parse_pipeline* parent childcount: %d\n", root->childcount);
 	for (int i = 0; i < root->childcount; i++)
 		printf("*parse_pipeline* %d\n", root->children[i]->type);
-	p = get_token(p);
+	if (token_peek(p) && token_peek(p)->token != PIPE)
+		p = get_token(p);
 	if (token_peek(p))
+	{
+		printf("*parse_pipeline*, %s\n", p->cursor->lexeme);
 		parse_pipeline(root, p);
+	}
 }
 
 // void	parse_pipeline(t_ast *root, t_parser *p, t_ast **cur_cmd)
@@ -298,8 +312,25 @@ t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
 		printf("not initialized\n");
 	parse_pipeline(node, p);
 	if (node)
+	{
 		printf("*inside parsing* %d\n", node->type);
-	// for (int i = 0; node->children[i] && i < node->childcount; i++)
-	// 	printf("*parsing* %d: %s\n", node->children[i]->type, node->children[i]->token_ref->lexeme);
+		printf("*parsing* %d\n", node->children[0]->type);
+		printf("*parsing* %d\n", node->children[1]->type);
+		// printf("*parsing* %d\n", node->children[1]->type);
+		printf("*parsing* (1)first children of child(AST_COMMAND): %d, %s\n", node->children[0]->children[0]->type, node->children[0]->children[0]->token_ref->lexeme);
+		printf("*parsing* (1)second children of child(AST_COMMAND): %d, %s\n", node->children[0]->children[1]->type, node->children[0]->children[1]->children[0]->token_ref->lexeme);
+		printf("*parsing* (1)third children of child(AST_COMMAND): %d, %s\n", node->children[0]->children[2]->type, node->children[0]->children[2]->children[0]->token_ref->lexeme);
+		printf("*parsing* (1)fourth children of child(AST_COMMAND): %d, %s\n", node->children[0]->children[3]->type, node->children[0]->children[3]->children[0]->token_ref->lexeme);
+		
+		printf("*parsing* (2)first children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[0]->type, node->children[1]->children[0]->token_ref->lexeme);
+		printf("*parsing* (2)second children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[1]->type, node->children[1]->children[1]->children[0]->token_ref->lexeme);
+		printf("*parsing* (2)third children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[2]->type, node->children[1]->children[2]->children[0]->token_ref->lexeme);
+		printf("*parsing* (2)fourth children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[3]->type, node->children[1]->children[3]->children[0]->token_ref->lexeme);
+
+		printf("*parsing* (3)first children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[0]->type, node->children[2]->children[0]->token_ref->lexeme);
+		printf("*parsing* (3)second children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[1]->type, node->children[2]->children[1]->children[0]->token_ref->lexeme);
+		printf("*parsing* (3)third children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[2]->type, node->children[2]->children[2]->children[0]->token_ref->lexeme);
+		printf("*parsing* (3)fourth children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[3]->type, node->children[2]->children[3]->children[0]->token_ref->lexeme);
+	}
 	return (node);
 }
