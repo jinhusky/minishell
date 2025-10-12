@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/10 17:24:49 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/12 21:31:56 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,55 @@ void	parse_word(t_ast *branch, t_parser *p)
 		return;
 	return;
 }
-// t_ast	*parse_redirection()
+
+bool	valid_argument(t_parser *p)
+{
+	return ( p->cursor->token == REDIR_IN
+		|| p->cursor->token == REDIR_OUT
+		|| p->cursor->token == HEREDOC
+		|| p->cursor->token == APPEND);
+}
+
 //!LOGIC: while loop check the current peek token is which redirection then assign enum to node
 //!LOGIC: have a pointer for filename (AST_WORD), attach_treenode them together.
-// t_ast	*parse_maybe_redirs() //!may not need it
+t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
+{
+	t_ast	*wrd_ptr;
+
+	wrd_ptr = NULL;
+	chd_ptr = create_treenode(chd_ptr);
+	wrd_ptr = create_treenode(wrd_ptr);
+	if (!chd_ptr)
+		ft_putstr_fd("failed to malloc in parse redirection\n", 2);
+	if (token_peek(p)->token == WORD && cur_redir->token == REDIR_IN)
+		chd_ptr->type = AST_REDIR_IN;
+	else if (token_peek(p)->token == WORD && cur_redir->token == REDIR_OUT)
+		chd_ptr->type = AST_REDIR_OUT;
+	else if (token_peek(p)->token == WORD && cur_redir->token == HEREDOC)
+		chd_ptr->type = AST_HEREDOC;
+	else if (token_peek(p)->token == WORD && cur_redir->token == APPEND)
+		chd_ptr->type = AST_APPEND;
+	parse_word(wrd_ptr, p);
+	attach_treenode(chd_ptr, wrd_ptr);
+	return (chd_ptr);
+}
+
+void	parse_maybe_redirs(t_ast *prt, t_parser *p)
+{
+	t_ast	*chd;
+	t_token	*cur_redir;
+
+	chd = NULL;
+	cur_redir = NULL;
+	while (token_peek(p) && valid_redirection(p))
+	{
+		cur_redir = p->cursor;
+		p = get_token(p);
+		chd = parse_redirection(chd, p, cur_redir);
+		attach_treenode(prt, chd);
+		p = get_token(p);
+	}
+}
 
 t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 {
@@ -147,6 +192,9 @@ bool	valid_component(t_parser *p)
 //!add if statements for redirections and use parse_redirection
 t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 {
+	t_token	*cur_redir;
+
+	cur_redir = NULL;
 	printf("*inside parse_components* cursor:%s\n", p->cursor->lexeme);
 	printf("here inside parse_component loop(0)\n");
 	// if (token_peek(p))
@@ -163,16 +211,15 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 				printf("*parse_components(1)* AST_ARGUMENT's children: %d: %s\n", child->children[i]->type, child->children[i]->token_ref->lexeme);
 			attach_treenode(prt, child);
 		}
+		else
+		{
+			cur_redir = p->cursor; //!could tweak to handle the redir reference pointer inside parse_redirection
+			p = get_token(p);
+			child = parse_redirection(child, p, cur_redir);
+			attach_treenode(prt, child);
+		}
 		printf("*parse_components(2)* parent's children %d: %s\n", prt->children[0]->type, prt->children[0]->token_ref->lexeme);
 		printf("*parse_components(2)* parent's children %d: %s\n", prt->children[1]->type, prt->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parse_components(3)* %d: %s\n", prt->children[1]->type, prt->children[1]->token_ref->lexeme);
-		// printf("*parse_components* %d: %s\n", prt->children[1]->type, prt->children[1]->token_ref->lexeme);
-		// printf("*parse_components* %d: %s\n", prt->children[2]->type, prt->children[2]->token_ref->lexeme);
-		// else if (token_peek(p)->token != WORD && token_peek(p)->token != PIPE)
-		// {
-		// 	parse_redirection(p);
-		// 	attach_treenode(prt, child);
-		// }
 		p = get_token(p);
 	}
 	return (prt);
@@ -187,6 +234,11 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 	if (!branch->children && token_peek(p)->token == REDIR_IN 
 	|| token_peek(p)->token == REDIR_OUT || token_peek(p)->token == APPEND 
 	|| token_peek(p)->token == HEREDOC)
+	{
+		command = create_treenode(command);
+		parse_maybe_redirs(command, p);
+		attach_treenode(branch, command);
+	}
 	//TODO: malloc with command pointer then pass it into parse_maybe_redirs. Change the enum of AST_REDIRECTION. 
 	//TODO: When redirection functions is done, try to work out the logic of after parse_maybe_redirs, the next WORD type token should be command and just parse as AST_WORD
 	if (!branch->children && token_peek(p)->token == WORD)

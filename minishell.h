@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/10 17:25:21 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/12 21:19:10 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ typedef enum	e_node
 	AST_PIPELINE,
 	AST_COMMAND,
 	AST_ARGUMENT,
-	AST_REDIRECTION,
+	AST_REDIR_IN,
+	AST_REDIR_OUT,
+	AST_APPEND,
+	AST_HEREDOC,
 	AST_WORD,
 } t_node;
 
