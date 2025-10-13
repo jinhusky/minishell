@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/10 15:15:34 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:22:17 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ int main()
 			exit (127);
 		}
 		node = parsing(node, token, &p);
-		// ft_ast_visualize(node);
+		ft_ast_visualize(node);
 		// error = error_syntax(token);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{

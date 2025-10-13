@@ -12,17 +12,45 @@
 
 #include "../../../minishell.h"
 
-void    ft_ast_visualize(t_ast *root)
+void	ft_print_children(t_ast *cur_cmd)
 {
-    int i = 0;
+	int	i;
 
+	i = 0;
+	while (i < cur_cmd->childcount && cur_cmd->children[i])
+	{
+		if (cur_cmd->children[i]->type == AST_WORD)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
+		else if (cur_cmd->children[i]->type == AST_ARGUMENT)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+		else if (cur_cmd->children[i]->type == AST_REDIR_IN)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+		else if (cur_cmd->children[i]->type == AST_REDIR_OUT)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+		else if (cur_cmd->children[i]->type == AST_APPEND)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+		else if (cur_cmd->children[i]->type == AST_HEREDOC)
+			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+		i++;
+	}
+	printf("\n");
+}
+
+void	ft_ast_visualize(t_ast *root)
+{
+	int i = 0;
+	t_ast *cur_cmd;
+
+	cur_cmd = NULL;
 	printf("%d\n", root->type);
-    printf("|\n");
 	if (root->children)
 	{
-    	while (i < root->childcount && root->children[i])
+		while (i < root->childcount && root->children[i])
 		{
-			printf("%d, %d, %s\n", root->children[i]->type, root->children[i]->children[0]->type, root->children[i]->children[0]->token_ref->lexeme);
+			printf("|\n");
+			printf("%d\n", root->children[i]->type);
+			cur_cmd = root->children[i];
+			ft_print_children(cur_cmd);
 			i++;
 		}
 	}
