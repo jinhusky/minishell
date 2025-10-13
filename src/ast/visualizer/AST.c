@@ -20,17 +20,17 @@ void	ft_print_children(t_ast *cur_cmd)
 	while (i < cur_cmd->childcount && cur_cmd->children[i])
 	{
 		if (cur_cmd->children[i]->type == AST_WORD)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->token_ref->lexeme);
 		else if (cur_cmd->children[i]->type == AST_ARGUMENT)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
 		else if (cur_cmd->children[i]->type == AST_REDIR_IN)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
 		else if (cur_cmd->children[i]->type == AST_REDIR_OUT)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
 		else if (cur_cmd->children[i]->type == AST_APPEND)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
 		else if (cur_cmd->children[i]->type == AST_HEREDOC)
-			printf(" --> %d)Type: %d Children:%s", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
+			printf(" --> (%d)Type:[%d] Children Type:[%d] Children:[%s]", (i + 1), cur_cmd->children[i]->type, cur_cmd->children[i]->children[0]->type, cur_cmd->children[i]->children[0]->token_ref->lexeme);
 		i++;
 	}
 	printf("\n");
@@ -42,13 +42,13 @@ void	ft_ast_visualize(t_ast *root)
 	t_ast *cur_cmd;
 
 	cur_cmd = NULL;
-	printf("%d\n", root->type);
+	printf("Type:[%d](AST_PIPELINE)\n", root->type);
 	if (root->children)
 	{
 		while (i < root->childcount && root->children[i])
 		{
 			printf("|\n");
-			printf("%d\n", root->children[i]->type);
+			printf("Type:[%d](AST_COMMAND)\n", root->children[i]->type);
 			cur_cmd = root->children[i];
 			ft_print_children(cur_cmd);
 			i++;

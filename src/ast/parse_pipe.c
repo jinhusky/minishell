@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/13 18:00:38 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/13 21:39:38 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,8 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 }
 
 //TODO: When redirection functions is done, try to work out the logic of after parse_maybe_redirs, the next WORD type token should be command and just parse as AST_WORD
-//TODO: handle syntax errors such as redirection without a filename etc.
+//TODO: handle syntax errors such as redirection without a filename etc, base it on the bash behaviour.
+//TODO: strips the quotes when parsing into AST_WORD
 //TODO: write out a program to print out your tree (with improvement from chatgpt)
 //TODO: work out the code to free ast treenodes each prompt
 
