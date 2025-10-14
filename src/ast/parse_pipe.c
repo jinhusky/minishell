@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/13 21:39:38 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/14 14:49:56 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,13 +121,8 @@ t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 	t_ast	*wrd_ptr;
 
 	wrd_ptr = NULL;
-	if (!token_peek(p))
-	{
-		ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-		ft_putstr_fd(cur_redir->lexeme, 2);
-		ft_putstr_fd("'\n", 2);
-		exit(127);
-	}
+	if (!token_peek(p) || token_peek(p)->token != WORD)
+		error_redir(p->cursor);
 	chd_ptr = create_treenode(chd_ptr);
 	wrd_ptr = create_treenode(wrd_ptr);
 	if (!chd_ptr)
@@ -240,6 +235,7 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 //TODO: strips the quotes when parsing into AST_WORD
 //TODO: write out a program to print out your tree (with improvement from chatgpt)
 //TODO: work out the code to free ast treenodes each prompt
+//TODO: handle "", spaces without argument, reprompt
 
 void	parse_simple_command(t_ast *branch, t_parser *p)
 {
@@ -270,11 +266,11 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 		command = parse_components(branch, command, p);
 		if (command)
 			printf("command ptr has content inside\n");
-		printf("*parse_sc* AST_COMMAND'S children type: %d children: %s\n", branch->children[1]->type, branch->children[1]->children[0]->token_ref->lexeme);
+		// printf("*parse_sc* AST_COMMAND'S children type: %d children: %s\n", branch->children[1]->type, branch->children[1]->children[0]->token_ref->lexeme);
 	}
-	printf("*parse_sc* parent: %d\n", branch->type);
-	for (int i = 0; i < branch->childcount; i++)
-		printf("*parse_sc* %d\n", branch->children[i]->type);
+	// printf("*parse_sc* parent: %d\n", branch->type);
+	// for (int i = 0; i < branch->childcount; i++)
+		// printf("*parse_sc* %d\n", branch->children[i]->type);
 	return;
 }
 
@@ -293,7 +289,18 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 	}
 	if (token_peek(p)->token == PIPE)
 	{
+		if (!root->children[0]->children)
+		{
+			error_pipe(p->cursor);
+			return;
+		}
 		p = get_token(p);
+		// printf("what is p: %s\n", p->cursor->lexeme);
+		if (!p->cursor)
+		{
+			error_pipe(p->cursor);
+			return;
+		}
 		branch = create_treenode(branch);
 		p->cur_cmd = branch;
 		printf("*parse_pipeline pipe statement* %d\n", p->cur_cmd->type);
@@ -302,10 +309,10 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 	}
 	else if (token_peek(p)->token != PIPE)
 		parse_simple_command(p->cur_cmd, p);
-	printf("*parse_pipeline* parent: %d\n", root->type);
-	printf("*parse_pipeline* parent childcount: %d\n", root->childcount);
-	for (int i = 0; i < root->childcount; i++)
-		printf("*parse_pipeline* %d\n", root->children[i]->type);
+	// printf("*parse_pipeline* parent: %d\n", root->type);
+	// printf("*parse_pipeline* parent childcount: %d\n", root->childcount); //!uncomment if needed for debug (311 - 314)
+	// for (int i = 0; i < root->childcount; i++)
+		// printf("*parse_pipeline* %d\n", root->children[i]->type);
 	if (token_peek(p) && token_peek(p)->token != PIPE)
 		p = get_token(p);
 	if (token_peek(p))
