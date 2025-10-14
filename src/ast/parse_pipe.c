@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/14 14:49:56 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/14 22:08:23 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token)
 	node->childcount = 0;
 	node->token_ref = NULL;
 	p->cursor = token;
+	p->err_flag = 0;
 	return (node);
 }
 
@@ -292,6 +293,8 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		if (!root->children[0]->children)
 		{
 			error_pipe(p->cursor);
+			free_treenode(root);
+			p->err_flag = 1;
 			return;
 		}
 		p = get_token(p);
@@ -299,6 +302,8 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		if (!p->cursor)
 		{
 			error_pipe(p->cursor);
+			free_treenode(root);
+			p->err_flag = 1;
 			return;
 		}
 		branch = create_treenode(branch);
@@ -317,7 +322,7 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		p = get_token(p);
 	if (token_peek(p))
 	{
-		printf("*parse_pipeline*, %s\n", p->cursor->lexeme);
+		// printf("*parse_pipeline*, %s\n", p->cursor->lexeme);
 		parse_pipeline(root, p);
 	}
 }
@@ -328,6 +333,8 @@ t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
 	if (!node)
 		printf("not initialized\n");
 	parse_pipeline(node, p);
+	if (p->err_flag == 1)
+		return (NULL);
 	if (node)
 	{
 		printf("*inside parsing* %d\n", node->type);

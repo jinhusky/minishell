@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/13 17:22:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/14 22:08:27 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,8 +212,8 @@ int main()
 			exit (127);
 		}
 		node = parsing(node, token, &p);
-		ft_ast_visualize(node);
-		// error = error_syntax(token);
+		if (node)
+			ft_ast_visualize(node);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{
 			rl_clear_history();
@@ -221,20 +221,16 @@ int main()
 			free(result);
 			exit (EXIT_SUCCESS);
 		}
-		// tokens = split_syntax(result, tokens);
-		// char **tokens = NULL;
-		// tokens = ft_tokenize(result);
-		int i = 0;
-		t_token *ride = NULL;
-		ride = token;
-		while (ride != NULL)
-		{
-			printf("string %d: %s$\n", i, ride->lexeme);
-			ride = ride->next;
-			i++;
-		}
-		// free_tokens(tokens);
-		printf("%s\n", result);
+		// int i = 0;
+		// t_token *ride = NULL;
+		// ride = token;
+		// while (ride != NULL)
+		// {
+		// 	printf("string %d: %s$\n", i, ride->lexeme);
+		// 	ride = ride->next;
+		// 	i++;
+		// }
+		// printf("%s\n", result);
 		free_tokens(token);
 		free(result);
 	}
