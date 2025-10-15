@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/14 22:08:27 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:15:35 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_token	*token_word(t_token *tokens, char *result, int start, int i)
 {
-	printf("%d\n", i);
+	// printf("%d\n", i);
 	if (tokens == NULL)
 		tokens = create_node(tokens, result, i);
 	else
@@ -68,7 +68,7 @@ t_token	*token_double_operator(t_token *tokens, char *result)
 
 t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
 {
-	if (result [*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
+	if (result[*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
 	{
 		if (result[*i + 1] && result[*i + 1] == result[*i])
 		{
@@ -166,12 +166,12 @@ t_token	*tokenizer(char *result, t_token *tokens) //!Could change this function 
 		printf("*link-list of tokens* enum %d: %s$\n",ride->token, ride->lexeme);
 		ride = ride->next;
 	}
-	// t_token	*temp = tokens;
-	// while (temp != NULL)
-	// {
-	// 	printf("node string is %s\n", temp->lexeme);
-	// 	temp = temp->next;
-	// }
+	t_token	*temp = tokens;
+	while (temp != NULL)
+	{
+		printf("node string is %s\n", temp->lexeme);
+		temp = temp->next;
+	}
 	return (tokens);
 }
 
@@ -196,11 +196,11 @@ int main()
 	t_ast		*node;
 	t_parser	p;
 	
-	token = NULL;
-	result = NULL;
-	p.cur_cmd = NULL;
 	while (1)
 	{
+		token = NULL;
+		result = NULL;
+		p.cur_cmd = NULL;
 		result = readline("minishell$ ");
 		if (!result)
 			break;
@@ -212,15 +212,16 @@ int main()
 			exit (127);
 		}
 		node = parsing(node, token, &p);
-		if (node)
-			ft_ast_visualize(node);
 		if (ft_strncmp(result, "exit", 4) == 0)
 		{
 			rl_clear_history();
+			free_treenode(node);
 			free_tokens(token);
 			free(result);
 			exit (EXIT_SUCCESS);
 		}
+		if (node)
+			ft_ast_visualize(node);
 		// int i = 0;
 		// t_token *ride = NULL;
 		// ride = token;
@@ -231,6 +232,8 @@ int main()
 		// 	i++;
 		// }
 		// printf("%s\n", result);
+		if (node)
+			free_treenode(node);
 		free_tokens(token);
 		free(result);
 	}
