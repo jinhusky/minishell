@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/14 21:36:21 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/16 20:22:04 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct	s_parser {
 	t_token	*cursor;
 	t_ast	*cur_cmd;
 	int		err_flag;
+	char	*trim;
 } t_parser;
 
 // typedef struct	s_token

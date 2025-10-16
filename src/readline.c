@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/15 16:15:35 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/16 20:07:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,13 @@ void	free_tokens(t_token *tokens)
 	free(tokens);
 }
 
+char	*trim_prompt(char *trim)
+{
+	while (*trim == ' ' || *trim == '\t')
+		trim++;
+	return (trim);
+}
+
 int main()
 {
 	char		*result;
@@ -201,15 +208,21 @@ int main()
 		token = NULL;
 		result = NULL;
 		p.cur_cmd = NULL;
+		p.trim = NULL;
 		result = readline("minishell$ ");
-		if (!result)
-			break;
+		p.trim = result;
+		p.trim = trim_prompt(p.trim);
+		if ((*p.trim) == '\0')
+		{
+			free(result);
+			continue;
+		}
 		add_history(result);
 		token = tokenizer(result, token);
 		if (!token)
 		{
-			ft_putstr_fd("Fail to tokenize", 2);
-			exit (127);
+			free(result);
+			continue;
 		}
 		node = parsing(node, token, &p);
 		if (ft_strncmp(result, "exit", 4) == 0)
@@ -222,16 +235,7 @@ int main()
 		}
 		if (node)
 			ft_ast_visualize(node);
-		// int i = 0;
-		// t_token *ride = NULL;
-		// ride = token;
-		// while (ride != NULL)
-		// {
-		// 	printf("string %d: %s$\n", i, ride->lexeme);
-		// 	ride = ride->next;
-		// 	i++;
-		// }
-		// printf("%s\n", result);
+
 		if (node)
 			free_treenode(node);
 		free_tokens(token);

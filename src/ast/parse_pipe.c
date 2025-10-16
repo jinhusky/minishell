@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/15 20:26:40 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/16 20:08:17 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,52 +100,34 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 	return;
 }
 
-void	strip_quotes(char *lexeme)
+void strip_quotes(char *lexeme) //!handle incomplete quotes
 {
-	char	quote;
-	char	*src;
-	char	*dst;
+	char *src = lexeme;
+	char *dst = lexeme;
+	char quote = 0;
 
-	quote = NULL;
-	src = lexeme;
-	dst = lexeme;
-	while (*lexeme)
+	while (*src)
 	{
 		if (*src == '\'' || *src == '"')
-			if (quote == NULL)
+		{
+			if (quote == 0)
 				quote = *src;
-			else (quote == *src)
-				quote = NULL;
+			else if (quote == *src)
+				quote = 0;
+			else
+			*dst++ = *src;
+		}
 		else
 			*dst++ = *src;
-		src++
+		src++;
 	}
 	*dst = '\0';
 }
 
-// bool	check_quotes(char *lexeme) //!Work on how to link strip_quotes function to parse_word
-// {
-// 	char	quote;
-
-// 	quote = NULL;
-// 	while (*lexeme)
-// 	{
-// 		if (*src == '\'' || *src == '"')
-// 			if (quote == NULL)
-// 				quote = *src;
-// 			else (quote == *src)
-// 				quote = NULL;
-// 		else
-// 			*dst++ = *src;
-// 		src++
-// 	}
-// 	*dst = '\0';
-// }
-
 void	parse_word(t_ast *branch, t_parser *p)
 {
 	branch->type = AST_WORD;
-	if (p->cursor->lexeme )
+	strip_quotes(p->cursor->lexeme);
 	branch->token_ref = p->cursor;
 	if (!branch->token_ref)
 		return;
@@ -285,12 +267,12 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 	return (prt);
 }
 
-//TODO: When redirection functions is done, try to work out the logic of after parse_maybe_redirs, the next WORD type token should be command and just parse as AST_WORD
+//TODO: (*)When redirection functions is done, try to work out the logic of after parse_maybe_redirs, the next WORD type token should be command and just parse as AST_WORD
 //TODO: (*)handle syntax errors such as redirection without a filename etc, base it on the bash behaviour.
-//TODO: strips the quotes when parsing into AST_WORD
+//TODO: (*)strips the quotes when parsing into AST_WORD
 //TODO: (*)write out a program to print out your tree (with improvement from chatgpt)
 //TODO: (*)work out the code to free ast treenodes each prompt
-//TODO: handle "", spaces without argument, reprompt
+//TODO: (*)handle "", spaces without argument, reprompt
 
 bool	all_redirs(t_ast *branch)
 {
