@@ -6,65 +6,11 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/16 20:07:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/17 19:40:45 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-t_token	*token_word(t_token *tokens, char *result, int start, int i)
-{
-	// printf("%d\n", i);
-	if (tokens == NULL)
-		tokens = create_node(tokens, result, i);
-	else
-		tokens = append_word_node(tokens, result, start, i);
-	return (tokens);
-}
-
-t_token	*token_pipe(t_token *tokens, char *result)
-{
-	if (tokens == NULL)
-		tokens = create_node(tokens, result, 1);
-	else
-		tokens = append_node(tokens, result, 1);
-	return (tokens);
-}
-
-t_token	*token_single_operator(t_token *tokens, char *result)
-{
-	if (tokens == NULL && *result == '<')
-		tokens = create_node(tokens, result, 1);
-	else if (tokens != NULL && *result == '<')
-	{
-		tokens = append_node(tokens, result, 1);
-		printf("enum assign for REDIR_IN: %d\n", tokens->token);
-	}
-	else if (tokens == NULL && *result == '>')
-		tokens = create_node(tokens, result, 1);
-	else if (tokens != NULL && *result == '>')
-		tokens = append_node(tokens, result, 1);
-	return (tokens);
-}
-
-t_token	*token_double_operator(t_token *tokens, char *result)
-{
-	int	i;
-	
-	i = 0;
-	if (tokens == NULL && result[i] == '<' && result[i + 1] == '<')
-		tokens = create_node(tokens, result, 2);
-	else if (tokens != NULL && result[i] == '<' && result[i + 1] == '<')
-	{
-		tokens = append_node(tokens, result, 2);
-		printf("enum assign for HEREDOC: %d\n", tokens->token);
-	}
-	else if (tokens == NULL && result[i] == '>' && result[i + 1] == '>')
-		tokens = create_node(tokens, result, 2);
-	else if (tokens != NULL && result[i] == '>' && result[i + 1] == '>')
-		tokens = append_node(tokens, result, 2);
-	return (tokens);
-}
 
 t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
 {
@@ -114,7 +60,7 @@ void	assign_enum(t_token *token)
 	}
 }
 
-t_token	*tokenizer(char *result, t_token *tokens) //!Could change this function for other purposes
+t_token	*tokenizer(char *result, t_token *tokens)
 {
 	int		i;
 	int		start;
@@ -159,42 +105,42 @@ t_token	*tokenizer(char *result, t_token *tokens) //!Could change this function 
 		}
 	}
 	assign_enum(tokens);
-	t_token *ride = NULL;
-	ride = tokens;
-	while (ride != NULL)
-	{
-		printf("*link-list of tokens* enum %d: %s$\n",ride->token, ride->lexeme);
-		ride = ride->next;
-	}
-	t_token	*temp = tokens;
-	while (temp != NULL)
-	{
-		printf("node string is %s\n", temp->lexeme);
-		temp = temp->next;
-	}
+	// t_token *ride = NULL;
+	// ride = tokens;
+	// while (ride != NULL)
+	// {
+	// 	printf("*link-list of tokens* enum %d: %s$\n",ride->token, ride->lexeme);
+	// 	ride = ride->next;
+	// }
+	// t_token	*temp = tokens;
+	// while (temp != NULL)
+	// {
+	// 	printf("node string is %s\n", temp->lexeme);
+	// 	temp = temp->next;
+	// }
 	return (tokens);
 }
 
-void	free_tokens(t_token *tokens)
-{
-	t_token	*temp;
+// void	free_tokens(t_token *tokens)
+// {
+// 	t_token	*temp;
 
-	while (tokens != NULL)
-	{
-		temp = tokens;
-		tokens = tokens->next;
-		free(temp->lexeme);
-		free(temp);
-	}
-	free(tokens);
-}
+// 	while (tokens != NULL)
+// 	{
+// 		temp = tokens;
+// 		tokens = tokens->next;
+// 		free(temp->lexeme);
+// 		free(temp);
+// 	}
+// 	free(tokens);
+// }
 
-char	*trim_prompt(char *trim)
-{
-	while (*trim == ' ' || *trim == '\t')
-		trim++;
-	return (trim);
-}
+// char	*trim_prompt(char *trim)
+// {
+// 	while (*trim == ' ' || *trim == '\t')
+// 		trim++;
+// 	return (trim);
+// }
 
 int main()
 {

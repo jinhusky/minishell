@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/16 20:22:04 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/17 19:38:57 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ typedef struct	s_parser {
 t_token	*create_node(t_token *head, char *start, size_t end);
 t_token	*append_node(t_token *head, char *start, size_t end);
 t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
+t_token	*token_word(t_token *tokens, char *result, int start, int i);
+t_token	*token_pipe(t_token *tokens, char *result);
+t_token	*token_single_operator(t_token *tokens, char *result);
+t_token	*token_double_operator(t_token *tokens, char *result);
+void	free_tokens(t_token *tokens);
+char	*trim_prompt(char *trim);
 void	error_redir(t_token *token);
 void	error_pipe(t_token *token);
 t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token);

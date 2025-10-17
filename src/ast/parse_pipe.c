@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/16 20:08:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/17 19:24:21 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	attach_treenode(t_ast *branch, t_ast *leaf) //continue here
 	return;
 }
 
-void strip_quotes(char *lexeme) //!handle incomplete quotes
+void strip_quotes(char *lexeme, t_parser *p) //!handle incomplete quotes
 {
 	char *src = lexeme;
 	char *dst = lexeme;
@@ -115,22 +115,37 @@ void strip_quotes(char *lexeme) //!handle incomplete quotes
 			else if (quote == *src)
 				quote = 0;
 			else
-			*dst++ = *src;
+				*dst++ = *src;
 		}
 		else
 			*dst++ = *src;
 		src++;
 	}
 	*dst = '\0';
+	if (quote != 0)
+	{
+		p->err_flag = 1;
+		return;
+	}
+	return;
 }
 
 void	parse_word(t_ast *branch, t_parser *p)
 {
 	branch->type = AST_WORD;
-	strip_quotes(p->cursor->lexeme);
-	branch->token_ref = p->cursor;
-	if (!branch->token_ref)
-		return;
+	if (p->cursor)
+	{
+		//TODOD: if (inside the string has open and close double quotes as well as a '$' then call function to expand)
+		strip_quotes(p->cursor->lexeme, p);
+		if (p->err_flag == 1)
+		{
+			ft_putstr_fd("bash: unexpected EOF while ", 2);
+			ft_putstr_fd("looking for matching `\"'\n", 2);
+			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+			return;
+		}
+		branch->token_ref = p->cursor;
+	}
 	return;
 }
 
@@ -240,10 +255,10 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 	// printf("here inside parse_component loop(1)\n");
 	while (token_peek(p) && valid_component(p))
 	{
-		printf("here inside parse_component loop(2)\n");
+		// printf("here inside parse_component loop(2)\n");
 		if (token_peek(p)->token == WORD)
 		{
-			printf("here inside parse_component loop(3)\n");
+			// printf("here inside parse_component loop(3)\n");
 			child = parse_argument(child, p);
 			// printf("*parse_components* AST_COMMAND: %d\n", prt->type);
 			// for (int i = 0; i < child->childcount; i++)
@@ -252,7 +267,7 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 		}
 		else
 		{
-			cur_redir = p->cursor; //!could tweak to handle the redir reference pointer inside parse_redirection
+			cur_redir = p->cursor;
 			p = get_token(p);
 			child = parse_redirection(child, p, cur_redir);
 			if (p->err_flag == 1)
@@ -279,12 +294,12 @@ bool	all_redirs(t_ast *branch)
 	int	i;
 
 	i = 0;
-	printf("*all_redir* in here\n");
+	// printf("*all_redir* in here\n");
 	if (!branch || branch->childcount == 0)
 		return (false);
 	while (i < branch->childcount)
 	{
-		printf("*all_redir* in the loop\n");
+		// printf("*all_redir* in the loop\n");
 		// printf("*all_redir* children's type: %d\n", branch->children[i]->type);
 		// printf("*all_redir* children's children: %s\n", branch->children[i]->children[0]->token_ref->lexeme);
 		if (branch->children[i]->type != AST_REDIR_IN
@@ -294,7 +309,7 @@ bool	all_redirs(t_ast *branch)
 			return (false);
 		i++;
 	}
-	printf("*all_redir* end of function\n");
+	// printf("*all_redir* end of function\n");
 	return (true);
 }
 
@@ -308,27 +323,29 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 	token_peek(p)->token == REDIR_OUT || token_peek(p)->token == APPEND || 
 	token_peek(p)->token == HEREDOC))
 	{
-		printf("*parse_sc* inside maybe redir if statement\n");
+		// printf("*parse_sc* inside maybe redir if statement\n");
 		// command = create_treenode(command);
 		parse_maybe_redirs(branch, p);
 		if (p->err_flag == 1)
 			return;
-		printf("*parse_sc* AST_COMMAND'S type: %d\n", branch->type);
-		printf("*parse_sc* AST_REDIR's type: %d children: %d\n", branch->children[0]->type, branch->children[0]->children[0]->type);
+		// printf("*parse_sc* AST_COMMAND'S type: %d\n", branch->type);
+		// printf("*parse_sc* AST_REDIR's type: %d children: %d\n", branch->children[0]->type, branch->children[0]->children[0]->type);
 	}
 	// printf("*parse_sc* token: %s\n", p->cursor->lexeme);
 	if ((all_redirs(branch) == true || !branch->children) &&
-		token_peek(p)->token == WORD)
+		token_peek(p) && token_peek(p)->token == WORD)
 	{
 		command = create_treenode(command);
 		parse_word(command, p); // create a fresh branch AST_COMMAND && AST_WORD following command_word -> word
 		attach_treenode(branch, command);
+		if (p->err_flag == 1)
+			return;
 		p = get_token(p);
 	}
 	// printf("*parse_sc* token reference: %s\n", p->cursor->lexeme);
 	if (branch->children && token_peek(p))
 	{
-		printf("*in here parse_simple_command*\n");
+		// printf("*in here parse_simple_command*\n");
 		command = parse_components(branch, command, p);
 		if (p->err_flag == 1)
 			return;
@@ -336,9 +353,9 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 		// 	printf("command ptr has content inside\n");
 		// printf("*parse_sc* AST_COMMAND'S children type: %d children: %s\n", branch->children[1]->type, branch->children[1]->children[0]->token_ref->lexeme);
 	}
-	printf("*parse_sc* parent: %d\n", branch->type);
-	for (int i = 0; i < branch->childcount; i++)
-		printf("*parse_sc* %d\n", branch->children[i]->type);
+	// printf("*parse_sc* parent: %d\n", branch->type);
+	// for (int i = 0; i < branch->childcount; i++)
+	// 	printf("*parse_sc* %d\n", branch->children[i]->type);
 	return;
 }
 
@@ -367,7 +384,7 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		}
 		p = get_token(p);
 		// printf("what is p: %s\n", p->cursor->lexeme);
-		if (!p->cursor)
+		if (!p->cursor || token_peek(p)->token == PIPE)
 		{
 			// printf("here\n");
 			error_pipe(p->cursor);
@@ -411,39 +428,8 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
 {
 	node = init_ast(node, p, token);
-	if (!node)
-		printf("not initialized\n");
 	parse_pipeline(node, p);
 	if (p->err_flag == 1)
 		return (NULL);
-	if (node)
-	{
-		// printf("*inside parsing* %d\n", node->type);
-		// printf("*parsing* %d\n", node->children[0]->type);
-		// printf("*parsing* %d\n", node->children[1]->type);
-		// printf("*parsing* %d\n", node->children[1]->type);
-
-		// printf("*parsing* (1)first children of child(AST_COMMAND): %d: %s\n", node->children[0]->children[0]->type, node->children[0]->children[0]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (1)second children of child(AST_COMMAND): %d: %s\n", node->children[0]->children[1]->type, node->children[0]->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (1)third children of child(AST_COMMAND): %d\n", node->children[0]->children[2]->type);
-		// printf("*parsing* (1)fourth children of child(AST_COMMAND): %d\n", node->children[0]->children[3]->type);
-
-		// printf("*parsing* (2)first children of child(AST_COMMAND): %d: %s\n", node->children[1]->children[0]->type, node->children[1]->children[0]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (2)second children of child(AST_COMMAND): %d: %s\n", node->children[1]->children[1]->type, node->children[1]->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (1)first children of child(AST_COMMAND): %d, %d\n", node->children[0]->children[0]->type, node->children[0]->children[0]->type);
-		// printf("*parsing* (1)second children of child(AST_COMMAND): %d, %d\n", node->children[0]->children[1]->type, node->children[0]->children[1]->children[0]->type);
-		// printf("*parsing* (1)third children of child(AST_COMMAND): %d, %d\n", node->children[0]->children[2]->type, node->children[0]->children[2]->children[0]->type);
-		// printf("*parsing* (1)fourth children of child(AST_COMMAND): %d, %d\n", node->children[0]->children[3]->type, node->children[0]->children[3]->children[0]->type);
-		
-		// printf("*parsing* (2)first children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[0]->type, node->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (2)second children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[1]->type, node->children[1]->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (2)third children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[2]->type, node->children[1]->children[2]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (2)fourth children of child(AST_COMMAND): %d, %s\n", node->children[1]->children[3]->type, node->children[1]->children[3]->children[0]->token_ref->lexeme);
-
-		// printf("*parsing* (3)first children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[0]->type, node->children[2]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (3)second children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[1]->type, node->children[2]->children[1]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (3)third children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[2]->type, node->children[2]->children[2]->children[0]->token_ref->lexeme);
-		// printf("*parsing* (3)fourth children of child(AST_COMMAND): %d, %s\n", node->children[2]->children[3]->type, node->children[2]->children[3]->children[0]->token_ref->lexeme);
-	}
 	return (node);
 }
