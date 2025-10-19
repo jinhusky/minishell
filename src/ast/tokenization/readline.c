@@ -6,11 +6,11 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/17 19:40:45 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/19 19:43:10 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../../minishell.h"
 
 t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
 {
@@ -81,66 +81,13 @@ t_token	*tokenizer(char *result, t_token *tokens)
 		else if (result[i] && result[i] != ' ')
 		{
 			start = i;
-			while (result[i] && result[i] != '<' && result[i] != '>' &&
-				result[i] != '|' && result[i] != ' ' &&
-				result[i] != '\t')
-			{
-				if (result[i] == '\'' || result[i] == '"')
-				{
-					quote = result[i++];
-					while (result[i] && result[i] != quote)
-						i++;
-					if (result[i] == quote)
-						i++;
-				}
-				else
-					i++;
-					// printf("current end character is %c$\n", result[i]);
-			}
-			// for (int l = 0; l <= i; l++)
-			// 	printf("character before token word: %c$\n", result[l]);
-			// printf("start iterator before passing into token_word: %d\n", start);
-			// printf("end iterator before passing into token_word: %d\n", i);
+			quote_check(result, &i, quote);
 			tokens = token_word(tokens, result, start, i);
 		}
 	}
 	assign_enum(tokens);
-	// t_token *ride = NULL;
-	// ride = tokens;
-	// while (ride != NULL)
-	// {
-	// 	printf("*link-list of tokens* enum %d: %s$\n",ride->token, ride->lexeme);
-	// 	ride = ride->next;
-	// }
-	// t_token	*temp = tokens;
-	// while (temp != NULL)
-	// {
-	// 	printf("node string is %s\n", temp->lexeme);
-	// 	temp = temp->next;
-	// }
 	return (tokens);
 }
-
-// void	free_tokens(t_token *tokens)
-// {
-// 	t_token	*temp;
-
-// 	while (tokens != NULL)
-// 	{
-// 		temp = tokens;
-// 		tokens = tokens->next;
-// 		free(temp->lexeme);
-// 		free(temp);
-// 	}
-// 	free(tokens);
-// }
-
-// char	*trim_prompt(char *trim)
-// {
-// 	while (*trim == ' ' || *trim == '\t')
-// 		trim++;
-// 	return (trim);
-// }
 
 int main()
 {
@@ -169,6 +116,13 @@ int main()
 		{
 			free(result);
 			continue;
+		}
+		t_token *ptr = NULL;
+		ptr = token;
+		while (ptr)
+		{
+			printf("Current node in linked-list: %s\n", ptr->lexeme);
+			ptr = ptr->next;
 		}
 		node = parsing(node, token, &p);
 		if (ft_strncmp(result, "exit", 4) == 0)

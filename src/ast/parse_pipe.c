@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/17 19:24:21 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/19 19:47:08 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void	parse_word(t_ast *branch, t_parser *p)
 		strip_quotes(p->cursor->lexeme, p);
 		if (p->err_flag == 1)
 		{
-			ft_putstr_fd("bash: unexpected EOF while ", 2);
+			ft_putstr_fd("bash: unexpected EOF while looking for matching", 2);
 			ft_putstr_fd("looking for matching `\"'\n", 2);
 			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
 			return;
@@ -222,14 +222,9 @@ t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 	}
 	if (token_peek(p)->token == WORD)
 	{
-		// printf("inside parse_argument\n");
-		// printf("*inside parse_arguments* cursor:%s\n", p->cursor->lexeme);
 		word_ptr = create_treenode(word_ptr);
 		parse_word(word_ptr, p);
 		attach_treenode(chd_ptr, word_ptr);
-		// printf("*parse_argument* AST_ARGUMENT: %d\n", chd_ptr->type);
-		// for (int i = 0; i < chd_ptr->childcount; i++)
-		// 	printf("*parse_argument* AST_WORD: %d: %s\n", chd_ptr->children[i]->type, chd_ptr->children[i]->token_ref->lexeme);
 	}
 	return (chd_ptr);
 }
@@ -248,21 +243,13 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 	t_token	*cur_redir;
 
 	cur_redir = NULL;
-	// printf("*inside parse_components* cursor:%s\n", p->cursor->lexeme);
-	// printf("here inside parse_component loop(0)\n");
 	if (!token_peek(p))
 		return (NULL);
-	// printf("here inside parse_component loop(1)\n");
 	while (token_peek(p) && valid_component(p))
 	{
-		// printf("here inside parse_component loop(2)\n");
 		if (token_peek(p)->token == WORD)
 		{
-			// printf("here inside parse_component loop(3)\n");
 			child = parse_argument(child, p);
-			// printf("*parse_components* AST_COMMAND: %d\n", prt->type);
-			// for (int i = 0; i < child->childcount; i++)
-			// 	printf("*parse_components(1)* AST_ARGUMENT's children: %d: %s\n", child->children[i]->type, child->children[i]->token_ref->lexeme);
 			attach_treenode(prt, child);
 		}
 		else
@@ -274,11 +261,8 @@ t_ast	*parse_components(t_ast *prt, t_ast *child, t_parser *p)
 				return (prt);
 			attach_treenode(prt, child);
 		}
-		// printf("*parse_components(2)* parent's children %d: %d\n", prt->children[0]->type, prt->children[0]->children[0]->type);
-		// printf("*parse_components(2)* parent's children %d: %s\n", prt->children[1]->type, prt->children[1]->children[0]->token_ref->lexeme);
 		p = get_token(p);
 	}
-	// printf("*parse_components* token sending back %s\n", p->cursor->lexeme);
 	return (prt);
 }
 

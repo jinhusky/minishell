@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/17 19:38:57 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/19 18:31:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef struct	s_parser {
 	
 // };
 
+void	quote_check(char *result, int *i, char quote);
 t_token	*create_node(t_token *head, char *start, size_t end);
 t_token	*append_node(t_token *head, char *start, size_t end);
 t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end);

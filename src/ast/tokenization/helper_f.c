@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:38:06 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/17 19:38:35 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/19 19:43:23 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,22 @@ char	*trim_prompt(char *trim)
 	while (*trim == ' ' || *trim == '\t')
 		trim++;
 	return (trim);
+}
+
+void	quote_check(char *result, int *i, char quote)
+{
+	while (result[*i] && result[*i] != '<' && result[*i] != '>' &&
+		result[*i] != '|' && result[*i] != ' ' && result[*i] != '\t')
+	{
+		if (result[*i] == '\'' || result[*i] == '"')
+		{
+			quote = result[(*i)++];
+			while (result[*i] && result[*i] != quote)
+				(*i)++;
+			if (result[*i] == quote)
+				(*i)++;
+		}
+		else
+			(*i)++;
+	}
 }
