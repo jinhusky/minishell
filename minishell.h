@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/20 16:37:01 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/21 17:09:08 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,10 @@ typedef struct	s_parser {
 	t_ast	*cur_cmd;
 	int		err_flag;
 	char	*trim;
+	int		exit_flag;
 } t_parser;
 
+void		init_program(t_token **tkn, char **rslt, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
 t_token		*create_node(t_token *head, char *start, size_t end);
 t_token		*append_node(t_token *head, char *start, size_t end);
@@ -72,8 +74,12 @@ t_token		*token_word(t_token *tokens, char *result, int start, int i);
 t_token		*token_pipe(t_token *tokens, char *result);
 t_token		*token_single_operator(t_token *tokens, char *result);
 t_token		*token_double_operator(t_token *tokens, char *result);
+t_token		*tokenizer(char *result, t_token *tokens);
 void		free_tokens(t_token *tokens);
 char		*trim_prompt(char *trim);
+void		invalid_token(t_token *token, char *result);
+void		empty_line(t_parser *p, char *result);
+int			readline_exit(t_ast *node, t_token *token, char *result);
 void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
 t_ast		*init_ast(t_ast *node, t_parser *p, t_token *token);

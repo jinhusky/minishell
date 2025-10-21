@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/19 19:43:10 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/21 15:57:43 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,58 +89,3 @@ t_token	*tokenizer(char *result, t_token *tokens)
 	return (tokens);
 }
 
-int main()
-{
-	char		*result;
-	t_token		*token;
-	t_ast		*node;
-	t_parser	p;
-	
-	while (1)
-	{
-		token = NULL;
-		result = NULL;
-		p.cur_cmd = NULL;
-		p.trim = NULL;
-		result = readline("minishell$ ");
-		p.trim = result;
-		p.trim = trim_prompt(p.trim);
-		if ((*p.trim) == '\0')
-		{
-			free(result);
-			continue;
-		}
-		add_history(result);
-		token = tokenizer(result, token);
-		if (!token)
-		{
-			free(result);
-			continue;
-		}
-		t_token *ptr = NULL;
-		ptr = token;
-		while (ptr)
-		{
-			printf("Current node in linked-list: %s\n", ptr->lexeme);
-			ptr = ptr->next;
-		}
-		node = parsing(node, token, &p);
-		if (ft_strncmp(result, "exit", 4) == 0)
-		{
-			rl_clear_history();
-			free_treenode(node);
-			free_tokens(token);
-			free(result);
-			exit (EXIT_SUCCESS);
-		}
-		if (node)
-			ft_ast_visualize(node);
-
-		if (node)
-			free_treenode(node);
-		free_tokens(token);
-		free(result);
-	}
-	rl_clear_history();
-	return (0);
-}

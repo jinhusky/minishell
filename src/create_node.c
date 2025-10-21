@@ -6,11 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/20 16:41:08 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/21 18:09:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//TODO: add error_flag to malloc fail
 
 t_token	*create_node(t_token *head, char *start, size_t end)
 {
@@ -37,6 +39,20 @@ t_token	*create_node(t_token *head, char *start, size_t end)
 	return (head);
 }
 
+char	*lexeme_malloc(char *lexeme, size_t *i, char *start, size_t *end)
+{
+	lexeme = malloc(sizeof(char) * ((*end) + 1));
+	if (!lexeme)
+		return (NULL);
+	while (*i < (*end) && start[*i])
+	{
+		lexeme[*i] = start[*i];
+		(*i)++;
+	}
+	lexeme[*i] = '\0';
+	return (lexeme);
+}
+
 t_token	*append_node(t_token *head, char *start, size_t end)
 {
 	t_token	*temp;
@@ -49,15 +65,9 @@ t_token	*append_node(t_token *head, char *start, size_t end)
 		return (NULL);
 	temp->token = 0;
 	temp->lexeme = NULL;
-	temp->lexeme = malloc(sizeof(char) * (end + 1));
+	temp->lexeme = lexeme_malloc(temp->lexeme, &i, start, &end);
 	if (!temp->lexeme)
 		return (NULL);
-	while (i < end && start[i])
-	{
-		temp->lexeme[i] = start[i];
-		i++;
-	}
-	temp->lexeme[i] = '\0';
 	temp->next = NULL;
 	trave = NULL;
 	trave = head;

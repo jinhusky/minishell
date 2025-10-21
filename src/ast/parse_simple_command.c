@@ -37,10 +37,6 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 		p = get_token(p);
 	}
 	if (branch->children && token_peek(p))
-	{
 		parse_components(branch, command, p);
-		if (p->err_flag == 1)
-			return;
-	}
 	return;
 }

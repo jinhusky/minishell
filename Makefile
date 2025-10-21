@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/10/20 16:18:32 by jhor             ###   ########.fr        #
+#    Updated: 2025/10/21 16:08:10 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ RM = rm -f
 LIBFT_DIR = Libft/
 LIBFT = $(LIBFT_DIR)libft.a
 
-SRC = src/create_node.c src/ast/tokenization/readline.c \
+SRC = src/main.c src/create_node.c src/ast/tokenization/tokenizer.c \
 src/ast/tokenization/generation.c src/error_syntax.c \
 src/ast/tokenization/helper_f.c src/ast/parse_pipe.c \
 src/ast/visualizer/AST.c src/ast/helper_ast.c src/utils.c \
