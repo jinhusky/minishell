@@ -52,8 +52,6 @@ t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 	}
 	chd_ptr = create_treenode(chd_ptr);
 	wrd_ptr = create_treenode(wrd_ptr);
-	if (!chd_ptr)
-		ft_putstr_fd("failed to malloc in parse redirection\n", 2);
 	if (token_peek(p)->token == WORD && cur_redir->token == REDIR_IN)
 		chd_ptr->type = AST_REDIR_IN;
 	else if (token_peek(p)->token == WORD && cur_redir->token == REDIR_OUT)

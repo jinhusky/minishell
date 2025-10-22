@@ -12,16 +12,6 @@
 
 #include "../minishell.h"
 
-void    main_free(t_ast *node, t_token *token, char *result)
-{
-    if (node)
-		free_treenode(node);		
-    if (token)
-        free_tokens(token);
-    if (result)
-	    free(result);
-}
-
 int main()
 {
 	char		*result;
@@ -31,23 +21,23 @@ int main()
 	
 	while (1)
 	{
-        init_program(&token, &result, &node, &p);
+		init_program(&token, &result, &node, &p);
 		result = readline("minishell$ ");
-        empty_line(&p, result);
-	    if (p.err_flag == 1)
-            continue;
-        add_history(result);
+		empty_line(&p, result);
+		if (p.err_flag == 1)
+			continue;
+		add_history(result);
 		token = tokenizer(result, token);
-        invalid_token(token, result);
-        if (!result)
-            continue;
+		invalid_token(token, result);
+		if (!result)
+			continue;
 		node = parsing(node, token, &p);
-        p.exit_flag = readline_exit(node, token, result);
+		p.exit_flag = readline_exit(node, token, result);
 		if (p.exit_flag == 1)
-		    exit (EXIT_SUCCESS);
+			exit (EXIT_SUCCESS);
 		if (node)
 			ft_ast_visualize(node);
-        main_free(node, token, result);
+		main_free(node, token, result);
 	}
 	rl_clear_history();
 	return (0);

@@ -24,6 +24,8 @@ t_token	*token_peek(t_parser *p)
 	return (p->cursor);
 }
 
+//TODO: pass result and token into t_parser for easier reference to free
+
 t_ast	*create_treenode(t_ast *treenode)
 {
 	treenode = malloc(sizeof(t_ast));
@@ -47,7 +49,7 @@ void	attach_treenode(t_ast *branch, t_ast *leaf)
 	{
 		branch->children = malloc(sizeof(t_ast *));
 		if (!branch->children)
-			return;
+			
 		branch->children[0] = leaf;
 		branch->childcount = 1;
 	}

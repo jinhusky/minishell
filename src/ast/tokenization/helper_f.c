@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:38:06 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 18:07:01 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 16:41:29 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	free_tokens(t_token *tokens)
 	{
 		temp = tokens;
 		tokens = tokens->next;
-		free(temp->lexeme);
+		if (temp->lexeme)
+			free(temp->lexeme);
 		free(temp);
 	}
 	free(tokens);

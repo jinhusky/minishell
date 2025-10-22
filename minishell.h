@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 17:09:08 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 17:09:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,9 @@ t_token		*token_pipe(t_token *tokens, char *result);
 t_token		*token_single_operator(t_token *tokens, char *result);
 t_token		*token_double_operator(t_token *tokens, char *result);
 t_token		*tokenizer(char *result, t_token *tokens);
+void		main_free(t_ast *node, t_token *token, char *result);
+void		ast_exit(t_token *token, t_ast *node);
+void		token_exit(t_token *temp, t_token *head);
 void		free_tokens(t_token *tokens);
 char		*trim_prompt(char *trim);
 void		invalid_token(t_token *token, char *result);

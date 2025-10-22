@@ -1,39 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_node.c                                      :+:      :+:    :+:   */
+/*   append_word_node.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 17:15:50 by jhor             ###   ########.fr       */
+/*   Created: 2025/10/22 16:49:26 by jhor              #+#    #+#             */
+/*   Updated: 2025/10/22 17:02:52 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*create_node(t_token *head, char *start, size_t end)
+char	*word_malloc(t_token *token, char *start, size_t *n_start, size_t *end)
+{
+	size_t	i;
+
+	i = 0;
+	while (*n_start < *end && start[*n_start])
+	{
+		token->lexeme[i++] = start[*n_start];
+		(*n_start)++;
+	}
+	token->lexeme[i] = '\0';
+	return (token->lexeme);
+}
+
+t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end)
 {
 	t_token	*temp;
-	size_t	i;
+	t_token	*trave;
 	
-	i = 0;
+	temp = NULL;
 	temp = malloc(sizeof(t_token));
 	if (!temp)
 		token_exit(temp, head);
 	temp->token = 0;
 	temp->lexeme = NULL;
-	temp->lexeme = malloc(sizeof(char) * end + 1);
+	temp->lexeme = malloc(sizeof(char) * (end + 1));
 	if (!temp->lexeme)
 		token_exit(temp, head);
-	while (i < end && start[i])
-	{
-		temp->lexeme[i] = start[i];
-		i++;
-	}
-	temp->lexeme[i] = '\0';
+	word_malloc(temp, start, &n_start, &end);
 	temp->next = NULL;
-	head = temp;
+	trave = NULL;
+	trave = head;
+	while (trave->next != NULL)
+		trave = trave->next;
+	trave->next = temp;
 	return (head);
 }
-
