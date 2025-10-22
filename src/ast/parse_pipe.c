@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 17:17:58 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 23:36:46 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,32 @@ t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token)
 {
 	node = malloc(sizeof(t_ast));
 	if (!node)
-		ast_exit(token, node);
+		ast_exit(token, node, p->result);
 	node->type = 0;
 	node->children = NULL;
 	node->childcount = 0;
 	node->token_ref = NULL;
 	p->cursor = token;
+	p->malloc_flag = 0;
 	p->err_flag = 0;
 	return (node);
+}
+
+void	first_pipe(t_ast *root, t_ast *branch, t_parser *p)
+{
+	branch = create_treenode(branch, p);
+	if (p->malloc_flag == 1)
+	{
+		free_treenode(root);
+		return;
+	}
+	p->cur_cmd = branch;
+	attach_treenode(root, p->cur_cmd, p);
+	if (p->malloc_flag == 1)
+	{
+		free_treenode(root);
+		return;
+	}
 }
 
 void	pipe_checks(t_ast *root, t_ast *branch, t_parser *p)
@@ -41,10 +59,10 @@ void	pipe_checks(t_ast *root, t_ast *branch, t_parser *p)
 		p->err_flag = 1;
 		return;
 	}
-	branch = create_treenode(branch);
+	branch = create_treenode(branch, p);
 	p->cur_cmd = branch;
 	parse_simple_command(p->cur_cmd, p);
-	attach_treenode(root, p->cur_cmd);
+	attach_treenode(root, p->cur_cmd, p);
 }
 
 void	parse_pipeline(t_ast *root, t_parser *p)
@@ -56,15 +74,15 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 		return;
 	if (p->cur_cmd == NULL)
 	{
-		branch = create_treenode(branch);
-		p->cur_cmd = branch;
-		attach_treenode(root, p->cur_cmd);
+		first_pipe(root, branch, p);
+		if (p->malloc_flag == 1)
+			return;
 	}
 	if (token_peek(p)->token == PIPE)
 		pipe_checks(root, branch, p);
 	else if (token_peek(p)->token != PIPE)
 		parse_simple_command(p->cur_cmd, p);
-	if (p->err_flag == 1)
+	if (p->err_flag == 1 || p->malloc_flag == 1)
 	{
 		free_treenode(root);
 		return;
@@ -81,6 +99,8 @@ t_ast	*parsing(t_ast *node, t_token *token, t_parser *p)
 		return (NULL);
 	node = init_ast(node, p, token);
 	parse_pipeline(node, p);
+	if (p->malloc_flag == 1)
+		ast_exit(token, node, p->result);
 	if (p->err_flag == 1)
 		return (NULL);
 	return (node);

@@ -33,7 +33,7 @@ void	parse_components(t_ast *prt, t_ast *child, t_parser *p)
 		if (token_peek(p)->token == WORD)
 		{
 			child = parse_argument(child, p);
-			attach_treenode(prt, child);
+			attach_treenode(prt, child, p);
 		}
 		else
 		{

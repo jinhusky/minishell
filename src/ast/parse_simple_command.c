@@ -12,6 +12,18 @@
 
 #include "../../minishell.h"
 
+void	first_word(t_ast *branch, t_ast *command, t_parser *p)
+{
+	command = create_treenode(command, p);
+	if (p->malloc_flag == 1)
+		return;
+	parse_word(command, p);
+	attach_treenode(branch, command, p);
+	if (p->err_flag == 1 || p->malloc_flag == 1)
+		return;
+	p = get_token(p);
+}
+
 void	parse_simple_command(t_ast *branch, t_parser *p)
 {
 	t_ast	*command;
@@ -23,18 +35,15 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 	token_peek(p)->token == HEREDOC))
 	{
 		parse_maybe_redirs(branch, p);
-		if (p->err_flag == 1)
+		if (p->err_flag == 1 || p->malloc_flag == 1)
 			return;
 	}
 	if ((all_redirs(branch) == true || !branch->children) &&
 		token_peek(p) && token_peek(p)->token == WORD)
 	{
-		command = create_treenode(command);
-		parse_word(command, p);
-		attach_treenode(branch, command);
-		if (p->err_flag == 1)
+		first_word(branch, command, p);
+		if (p->malloc_flag == 1)
 			return;
-		p = get_token(p);
 	}
 	if (branch->children && token_peek(p))
 		parse_components(branch, command, p);

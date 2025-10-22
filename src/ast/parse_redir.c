@@ -39,6 +39,18 @@ bool	all_redirs(t_ast *branch)
 	return (true);
 }
 
+void	assign_type(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
+{
+	if (token_peek(p)->token == WORD && cur_redir->token == REDIR_IN)
+		chd_ptr->type = AST_REDIR_IN;
+	else if (token_peek(p)->token == WORD && cur_redir->token == REDIR_OUT)
+		chd_ptr->type = AST_REDIR_OUT;
+	else if (token_peek(p)->token == WORD && cur_redir->token == HEREDOC)
+		chd_ptr->type = AST_HEREDOC;
+	else if (token_peek(p)->token == WORD && cur_redir->token == APPEND)
+		chd_ptr->type = AST_APPEND;
+}
+
 t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 {
 	t_ast	*wrd_ptr;
@@ -50,18 +62,20 @@ t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 		p->err_flag = 1;
 		return (chd_ptr);
 	}
-	chd_ptr = create_treenode(chd_ptr);
-	wrd_ptr = create_treenode(wrd_ptr);
-	if (token_peek(p)->token == WORD && cur_redir->token == REDIR_IN)
-		chd_ptr->type = AST_REDIR_IN;
-	else if (token_peek(p)->token == WORD && cur_redir->token == REDIR_OUT)
-		chd_ptr->type = AST_REDIR_OUT;
-	else if (token_peek(p)->token == WORD && cur_redir->token == HEREDOC)
-		chd_ptr->type = AST_HEREDOC;
-	else if (token_peek(p)->token == WORD && cur_redir->token == APPEND)
-		chd_ptr->type = AST_APPEND;
+	chd_ptr = create_treenode(chd_ptr, p);
+	if (p->malloc_flag == 1)
+		return (NULL);
+	wrd_ptr = create_treenode(wrd_ptr, p);
+	if (p->malloc_flag == 1)
+	{
+		free_treenode(chd_ptr);
+		return (NULL);
+	}
+	assign_type(chd_ptr, p, cur_redir);
 	parse_word(wrd_ptr, p);
-	attach_treenode(chd_ptr, wrd_ptr);
+	attach_treenode(chd_ptr, wrd_ptr, p);
+	if (p->malloc_flag == 1)
+		free_treenode(wrd_ptr);
 	return (chd_ptr);
 }
 
@@ -77,9 +91,11 @@ void	parse_maybe_redirs(t_ast *prt, t_parser *p)
 		cur_redir = p->cursor;
 		p = get_token(p);
 		redir_chd = parse_redirection(redir_chd, p, cur_redir);
-		if (p->err_flag == 1)
+		if (p->err_flag == 1 || p->malloc_flag == 1)
 			return;
-		attach_treenode(prt, redir_chd);
+		attach_treenode(prt, redir_chd, p);
+		if (p->malloc_flag == 1)
+			return;
 		p = get_token(p);
 	}
 }

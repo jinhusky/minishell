@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 17:09:18 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 23:32:42 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,19 @@ typedef struct s_ast {
 } t_ast;
 
 typedef struct	s_parser {
+	char	*result;
 	t_token	*cursor;
 	t_ast	*cur_cmd;
 	int		err_flag;
 	char	*trim;
 	int		exit_flag;
+	int		malloc_flag;
 } t_parser;
 
-void		init_program(t_token **tkn, char **rslt, t_ast **nd, t_parser *p);
+void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
+t_token		*init_node(t_token *token);
+void		free_append_word(t_token *head, t_token *temp);
 t_token		*create_node(t_token *head, char *start, size_t end);
 t_token		*append_node(t_token *head, char *start, size_t end);
 t_token		*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
@@ -76,21 +80,21 @@ t_token		*token_single_operator(t_token *tokens, char *result);
 t_token		*token_double_operator(t_token *tokens, char *result);
 t_token		*tokenizer(char *result, t_token *tokens);
 void		main_free(t_ast *node, t_token *token, char *result);
-void		ast_exit(t_token *token, t_ast *node);
-void		token_exit(t_token *temp, t_token *head);
+void		ast_exit(t_token *token, t_ast *node, char *result);
+void		token_exit(t_token *token, char *result);
 void		free_tokens(t_token *tokens);
 char		*trim_prompt(char *trim);
 void		invalid_token(t_token *token, char *result);
-void		empty_line(t_parser *p, char *result);
+void		empty_line(t_parser *p);
 int			readline_exit(t_ast *node, t_token *token, char *result);
 void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
 t_ast		*init_ast(t_ast *node, t_parser *p, t_token *token);
 t_parser	*get_token(t_parser *p);
 t_token		*token_peek(t_parser *p);
-t_ast		*create_treenode(t_ast *treenode);
+t_ast		*create_treenode(t_ast *treenode, t_parser *p);
 void		free_treenode(t_ast *root);
-void		attach_treenode(t_ast *branch, t_ast *leaf);
+void		attach_treenode(t_ast *branch, t_ast *leaf, t_parser *p);
 void		parse_pipeline(t_ast *node, t_parser *p);
 void		parse_simple_command(t_ast *branch, t_parser *p);
 void		parse_maybe_redirs(t_ast *prt, t_parser *p);

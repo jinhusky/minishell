@@ -6,11 +6,17 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:49:26 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 17:02:52 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 22:27:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_append_word(t_token *head, t_token *temp)
+{
+	free_tokens(head);
+	free_tokens(temp);
+}
 
 char	*word_malloc(t_token *token, char *start, size_t *n_start, size_t *end)
 {
@@ -34,14 +40,18 @@ t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end
 	temp = NULL;
 	temp = malloc(sizeof(t_token));
 	if (!temp)
-		token_exit(temp, head);
-	temp->token = 0;
-	temp->lexeme = NULL;
+	{
+		free_append_word(head, temp);
+		return (NULL);
+	}
+	temp = init_node(temp);
 	temp->lexeme = malloc(sizeof(char) * (end + 1));
 	if (!temp->lexeme)
-		token_exit(temp, head);
+	{
+		free_append_word(head, temp);
+		return (NULL);
+	}
 	word_malloc(temp, start, &n_start, &end);
-	temp->next = NULL;
 	trave = NULL;
 	trave = head;
 	while (trave->next != NULL)

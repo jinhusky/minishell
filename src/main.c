@@ -14,30 +14,29 @@
 
 int main()
 {
-	char		*result;
 	t_token		*token;
 	t_ast		*node;
 	t_parser	p;
 	
 	while (1)
 	{
-		init_program(&token, &result, &node, &p);
-		result = readline("minishell$ ");
-		empty_line(&p, result);
+		init_program(&token, &node, &p);
+		p.result = readline("minishell$ ");
+		empty_line(&p);
 		if (p.err_flag == 1)
 			continue;
-		add_history(result);
-		token = tokenizer(result, token);
-		invalid_token(token, result);
-		if (!result)
+		add_history(p.result);
+		token = tokenizer(p.result, token);
+		invalid_token(token, p.result);
+		if (!p.result)
 			continue;
 		node = parsing(node, token, &p);
-		p.exit_flag = readline_exit(node, token, result);
+		p.exit_flag = readline_exit(node, token, p.result);
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
 		if (node)
 			ft_ast_visualize(node);
-		main_free(node, token, result);
+		main_free(node, token, p.result);
 	}
 	rl_clear_history();
 	return (0);

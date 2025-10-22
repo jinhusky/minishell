@@ -26,11 +26,14 @@ t_token	*token_peek(t_parser *p)
 
 //TODO: pass result and token into t_parser for easier reference to free
 
-t_ast	*create_treenode(t_ast *treenode)
+t_ast	*create_treenode(t_ast *treenode, t_parser *p)
 {
 	treenode = malloc(sizeof(t_ast));
 	if (!treenode)
+	{
+		p->malloc_flag = 1;
 		return (NULL);
+	}
 	treenode->children = NULL;
 	treenode->childcount = 0;
 	treenode->token_ref = NULL;
@@ -38,7 +41,21 @@ t_ast	*create_treenode(t_ast *treenode)
 	return (treenode);
 }
 
-void	attach_treenode(t_ast *branch, t_ast *leaf)
+void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_parser *p)
+{
+	new_chld = realloc(brch->children, sizeof(t_ast *) * (brch->childcount + 1));
+	if (!new_chld)
+	{
+		free_treenode(leaf);
+		p->malloc_flag = 1;
+		return;
+	}
+	brch->children = new_chld;
+	brch->children[brch->childcount] = leaf;
+	brch->childcount++;
+}
+
+void	attach_treenode(t_ast *branch, t_ast *leaf, t_parser *p)
 {
 	t_ast	**new_children;
 
@@ -49,18 +66,15 @@ void	attach_treenode(t_ast *branch, t_ast *leaf)
 	{
 		branch->children = malloc(sizeof(t_ast *));
 		if (!branch->children)
-			
+		{
+			free_treenode(leaf);
+			p->malloc_flag = 1;
+			return;
+		}
 		branch->children[0] = leaf;
 		branch->childcount = 1;
 	}
 	else
-	{
-		new_children = realloc(branch->children, sizeof(t_ast *) * (branch->childcount + 1));
-		if (!new_children)
-			return;
-		branch->children = new_children;
-		branch->children[branch->childcount] = leaf;
-		branch->childcount++;
-	}
+		realloc_child(new_children, branch, leaf, p);
 	return;
 }

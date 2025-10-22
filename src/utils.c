@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 17:13:30 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/22 22:32:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,23 @@ void	invalid_token(t_token *token, char *result)
 		free(result);
 }
 
-void	empty_line(t_parser *p, char *result)
+void	empty_line(t_parser *p)
 {
-	p->trim = result;
+	p->trim = p->result;
 	p->trim = trim_prompt(p->trim);
 	if ((*p->trim) == '\0')
 	{
-		free(result);
+		free(p->result);
 		p->err_flag = 1;
 	}
 	return;
 }
 
-void	init_program(t_token **tkn, char **rslt, t_ast **nd, t_parser *p)
+void	init_program(t_token **tkn, t_ast **nd, t_parser *p)
 {
 	*tkn = NULL;
-	*rslt = NULL;
 	*nd = NULL;
+	p->result = NULL;
 	p->cur_cmd = NULL;
 	p->trim = NULL;
 	p->exit_flag = 0;
