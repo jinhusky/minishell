@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 23:32:42 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 21:59:17 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 
-typedef enum	e_token
+typedef enum e_token
 {
 	WORD,
 	PIPE,
@@ -28,9 +28,9 @@ typedef enum	e_token
 	REDIR_OUT,
 	APPEND,
 	HEREDOC,
-}t_token_type;
+}	t_token_type;
 
-typedef enum	e_node
+typedef enum e_node
 {
 	AST_PIPELINE,
 	AST_COMMAND,
@@ -40,24 +40,25 @@ typedef enum	e_node
 	AST_APPEND,
 	AST_HEREDOC,
 	AST_WORD,
-} t_node;
+}	t_node;
 
 typedef struct s_token
 {
 	t_token_type	token;
 	char			*lexeme;
 	struct s_token	*next;
-}t_token;
+}	t_token;
 
+typedef struct s_ast
+{
+	t_node			type;
+	struct s_ast	**children;
+	int				childcount;
+	t_token			*token_ref;
+}	t_ast;
 
-typedef struct s_ast {
-	t_node	type;
-	struct s_ast **children;
-	int	childcount;
-	t_token *token_ref;
-} t_ast;
-
-typedef struct	s_parser {
+typedef struct s_parser
+{
 	char	*result;
 	t_token	*cursor;
 	t_ast	*cur_cmd;
@@ -65,7 +66,7 @@ typedef struct	s_parser {
 	char	*trim;
 	int		exit_flag;
 	int		malloc_flag;
-} t_parser;
+}	t_parser;
 
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
@@ -73,7 +74,7 @@ t_token		*init_node(t_token *token);
 void		free_append_word(t_token *head, t_token *temp);
 t_token		*create_node(t_token *head, char *start, size_t end);
 t_token		*append_node(t_token *head, char *start, size_t end);
-t_token		*append_word_node(t_token *head, char *start, size_t n_start, size_t end);
+t_token		*append_word_node(t_token *hd, char *srt, size_t n_srt, size_t end);
 t_token		*token_word(t_token *tokens, char *result, int start, int i);
 t_token		*token_pipe(t_token *tokens, char *result);
 t_token		*token_single_operator(t_token *tokens, char *result);

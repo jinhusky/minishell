@@ -15,7 +15,7 @@
 t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 {
 	t_ast	*word_ptr;
-	
+
 	word_ptr = NULL;
 	chd_ptr = create_treenode(chd_ptr, p);
 	if (p->malloc_flag == 1)
@@ -24,6 +24,7 @@ t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
 	if (!token_peek(p))
 	{
 		printf("*parse argument* Error: end of link-list\n");
+		p->err_flag = 1;
 		return (NULL);
 	}
 	if (token_peek(p)->token == WORD)

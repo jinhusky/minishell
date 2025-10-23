@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:48:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 22:29:05 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:39:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_token	*append_node(t_token *head, char *start, size_t end)
 	t_token	*temp;
 	size_t	i;
 	t_token	*trave;
-	
+
 	i = 0;
 	temp = malloc(sizeof(t_token));
 	if (!temp)

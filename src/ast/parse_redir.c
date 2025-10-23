@@ -14,7 +14,7 @@
 
 bool	valid_redirection(t_parser *p)
 {
-	return ( p->cursor->token == REDIR_IN
+	return (p->cursor->token == REDIR_IN
 		|| p->cursor->token == REDIR_OUT
 		|| p->cursor->token == HEREDOC
 		|| p->cursor->token == APPEND);
@@ -30,9 +30,9 @@ bool	all_redirs(t_ast *branch)
 	while (i < branch->childcount)
 	{
 		if (branch->children[i]->type != AST_REDIR_IN
-		&& branch->children[i]->type != AST_REDIR_OUT
-		&& branch->children[i]->type != AST_APPEND
-		&& branch->children[i]->type != AST_HEREDOC)
+			&& branch->children[i]->type != AST_REDIR_OUT
+			&& branch->children[i]->type != AST_APPEND
+			&& branch->children[i]->type != AST_HEREDOC)
 			return (false);
 		i++;
 	}
@@ -92,10 +92,10 @@ void	parse_maybe_redirs(t_ast *prt, t_parser *p)
 		p = get_token(p);
 		redir_chd = parse_redirection(redir_chd, p, cur_redir);
 		if (p->err_flag == 1 || p->malloc_flag == 1)
-			return;
+			return ;
 		attach_treenode(prt, redir_chd, p);
 		if (p->malloc_flag == 1)
-			return;
+			return ;
 		p = get_token(p);
 	}
 }

@@ -27,12 +27,12 @@ void	token_not_word(t_token *cur_rdr, t_ast *prt, t_ast *child, t_parser *p)
 	p = get_token(p);
 	child = parse_redirection(child, p, cur_rdr);
 	if (p->err_flag == 1)
-		return;
+		return ;
 	attach_treenode(prt, child, p);
 	if (p->malloc_flag == 1)
 	{
 		free_treenode(child);
-		return;
+		return ;
 	}
 }
 
@@ -42,7 +42,7 @@ void	parse_components(t_ast *prt, t_ast *child, t_parser *p)
 
 	cur_redir = NULL;
 	if (!token_peek(p))
-		return;
+		return ;
 	while (token_peek(p) && valid_component(p))
 	{
 		if (token_peek(p)->token == WORD)
@@ -50,15 +50,15 @@ void	parse_components(t_ast *prt, t_ast *child, t_parser *p)
 			child = parse_argument(child, p);
 			attach_treenode(prt, child, p);
 			if (p->malloc_flag == 1)
-				return;
+				return ;
 		}
 		else
 		{
 			token_not_word(cur_redir, prt, child, p);
 			if (p->malloc_flag == 1)
-				return;
+				return ;
 		}
 		p = get_token(p);
 	}
-	return;
+	return ;
 }

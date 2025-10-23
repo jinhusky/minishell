@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../minishell.h"
+#include "../minishell.h"
 
 void	ft_print_children(t_ast *cur_cmd)
 {

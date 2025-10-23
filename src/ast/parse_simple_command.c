@@ -16,11 +16,11 @@ void	first_word(t_ast *branch, t_ast *command, t_parser *p)
 {
 	command = create_treenode(command, p);
 	if (p->malloc_flag == 1)
-		return;
+		return ;
 	parse_word(command, p);
 	attach_treenode(branch, command, p);
 	if (p->err_flag == 1 || p->malloc_flag == 1)
-		return;
+		return ;
 	p = get_token(p);
 }
 
@@ -30,22 +30,23 @@ void	parse_simple_command(t_ast *branch, t_parser *p)
 
 	command = NULL;
 	branch->type = AST_COMMAND;
-	if (!branch->children && (token_peek(p)->token == REDIR_IN || 
-	token_peek(p)->token == REDIR_OUT || token_peek(p)->token == APPEND || 
-	token_peek(p)->token == HEREDOC))
+	if (!branch->children && (token_peek(p)->token == REDIR_IN
+			|| token_peek(p)->token == REDIR_OUT
+			|| token_peek(p)->token == APPEND
+			|| token_peek(p)->token == HEREDOC))
 	{
 		parse_maybe_redirs(branch, p);
 		if (p->err_flag == 1 || p->malloc_flag == 1)
-			return;
+			return ;
 	}
-	if ((all_redirs(branch) == true || !branch->children) &&
-		token_peek(p) && token_peek(p)->token == WORD)
+	if ((all_redirs(branch) == true || !branch->children)
+		&& token_peek(p) && token_peek(p)->token == WORD)
 	{
 		first_word(branch, command, p);
 		if (p->malloc_flag == 1)
-			return;
+			return ;
 	}
 	if (branch->children && token_peek(p))
 		parse_components(branch, command, p);
-	return;
+	return ;
 }

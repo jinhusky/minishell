@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:27:27 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 22:06:50 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:54:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_token	*token_single_operator(t_token *tokens, char *result)
 t_token	*token_double_operator(t_token *tokens, char *result)
 {
 	int	i;
-	
+
 	i = 0;
 	if (tokens == NULL && result[i] == '<' && result[i + 1] == '<')
 		tokens = create_node(tokens, result, 2);

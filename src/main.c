@@ -12,24 +12,24 @@
 
 #include "../minishell.h"
 
-int main()
+int	main(void)
 {
 	t_token		*token;
 	t_ast		*node;
 	t_parser	p;
-	
+
 	while (1)
 	{
 		init_program(&token, &node, &p);
 		p.result = readline("minishell$ ");
 		empty_line(&p);
 		if (p.err_flag == 1)
-			continue;
+			continue ;
 		add_history(p.result);
 		token = tokenizer(p.result, token);
 		invalid_token(token, p.result);
 		if (!p.result)
-			continue;
+			continue ;
 		node = parsing(node, token, &p);
 		p.exit_flag = readline_exit(node, token, p.result);
 		if (p.exit_flag == 1)

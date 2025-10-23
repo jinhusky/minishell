@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/10/23 15:05:39 by jhor             ###   ########.fr        #
+#    Updated: 2025/10/23 20:57:59 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 SRC = src/main.c src/create_node.c src/append_node.c src/append_word_node.c \
 src/ast/tokenization/tokenizer.c src/ast/tokenization/generation.c \
 src/error_syntax.c src/ast/tokenization/helper_f.c src/ast/parse_pipe.c \
-src/ast/visualizer/AST.c src/ast/helper_ast.c src/utils.c  src/utils2.c\
+ast_visualizer/AST.c src/ast/helper_ast.c src/utils.c  src/utils2.c\
 src/ast/parse_word.c src/ast/parse_redir.c src/ast/parse_argument.c \
 src/ast/parse_component.c src/ast/parse_simple_command.c src/ast/parsing.c\
 

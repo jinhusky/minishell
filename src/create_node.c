@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 15:04:31 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:42:22 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_token	*create_node(t_token *head, char *start, size_t end)
 {
 	t_token	*temp;
 	size_t	i;
-	
+
 	i = 0;
 	temp = malloc(sizeof(t_token));
 	if (!temp)
@@ -45,4 +45,3 @@ t_token	*create_node(t_token *head, char *start, size_t end)
 	head = temp;
 	return (head);
 }
-

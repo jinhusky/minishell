@@ -35,7 +35,7 @@ void	strip_quotes(char *lexeme, t_parser *p)
 	char	quote;
 	char	*src;
 	char	*dst;
-	
+
 	init_quotes(lexeme, &src, &dst);
 	quote = 0;
 	while (*src)
@@ -56,7 +56,7 @@ void	strip_quotes(char *lexeme, t_parser *p)
 	*dst = '\0';
 	if (quote != 0)
 		error_quotes(quote, p);
-	return;
+	return ;
 }
 
 void	parse_word(t_ast *branch, t_parser *p)
@@ -64,11 +64,12 @@ void	parse_word(t_ast *branch, t_parser *p)
 	branch->type = AST_WORD;
 	if (p->cursor)
 	{
+		//TODO: Heredoc behaviour, double quotes and single quotes expands regardless, test heredoc behaviour 
 		//TODOD: if (inside the string has open and close double quotes as well as a '$' then call function to expand)
 		strip_quotes(p->cursor->lexeme, p);
 		if (p->err_flag == 1)
-			return;
+			return ;
 		branch->token_ref = p->cursor;
 	}
-	return;
+	return ;
 }

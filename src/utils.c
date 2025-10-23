@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 22:32:51 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:39:03 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	free_treenode(t_ast *root)
 
 	i = 0;
 	if (!root)
-		return;
+		return ;
 	while (i < root->childcount)
 	{
 		free_treenode(root->children[i]);
@@ -43,7 +43,7 @@ void	empty_line(t_parser *p)
 		free(p->result);
 		p->err_flag = 1;
 	}
-	return;
+	return ;
 }
 
 void	init_program(t_token **tkn, t_ast **nd, t_parser *p)

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 15:01:38 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:53:49 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ void	first_pipe(t_ast *root, t_ast *branch, t_parser *p)
 	if (p->malloc_flag == 1)
 	{
 		free_treenode(root);
-		return;
+		return ;
 	}
 	p->cur_cmd = branch;
 	attach_treenode(root, p->cur_cmd, p);
 	if (p->malloc_flag == 1)
 	{
 		free_treenode(root);
-		return;
+		return ;
 	}
 }
 
@@ -50,14 +50,14 @@ void	pipe_checks(t_ast *root, t_ast *branch, t_parser *p)
 	{
 		error_pipe(p->cursor);
 		p->err_flag = 1;
-		return;
+		return ;
 	}
 	p = get_token(p);
 	if (!p->cursor || token_peek(p)->token == PIPE)
 	{
 		error_pipe(p->cursor);
 		p->err_flag = 1;
-		return;
+		return ;
 	}
 	branch = create_treenode(branch, p);
 	p->cur_cmd = branch;
@@ -71,12 +71,12 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 
 	branch = NULL;
 	if (!token_peek(p))
-		return;
+		return ;
 	if (p->cur_cmd == NULL)
 	{
 		first_pipe(root, branch, p);
 		if (p->malloc_flag == 1)
-			return;
+			return ;
 	}
 	if (token_peek(p)->token == PIPE)
 		pipe_checks(root, branch, p);
@@ -85,11 +85,10 @@ void	parse_pipeline(t_ast *root, t_parser *p)
 	if (p->err_flag == 1 || p->malloc_flag == 1)
 	{
 		free_treenode(root);
-		return;
+		return ;
 	}
 	if (token_peek(p) && token_peek(p)->token != PIPE)
 		p = get_token(p);
 	if (token_peek(p))
 		parse_pipeline(root, p);
 }
-

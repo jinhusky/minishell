@@ -43,12 +43,13 @@ t_ast	*create_treenode(t_ast *treenode, t_parser *p)
 
 void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_parser *p)
 {
-	new_chld = realloc(brch->children, sizeof(t_ast *) * (brch->childcount + 1));
+	new_chld = realloc(brch->children, sizeof(t_ast *)
+			* (brch->childcount + 1));
 	if (!new_chld)
 	{
 		free_treenode(leaf);
 		p->malloc_flag = 1;
-		return;
+		return ;
 	}
 	brch->children = new_chld;
 	brch->children[brch->childcount] = leaf;
@@ -61,7 +62,7 @@ void	attach_treenode(t_ast *branch, t_ast *leaf, t_parser *p)
 
 	new_children = NULL;
 	if (!branch || !leaf)
-		return;
+		return ;
 	if (branch->children == NULL)
 	{
 		branch->children = malloc(sizeof(t_ast *));
@@ -69,12 +70,12 @@ void	attach_treenode(t_ast *branch, t_ast *leaf, t_parser *p)
 		{
 			free_treenode(leaf);
 			p->malloc_flag = 1;
-			return;
+			return ;
 		}
 		branch->children[0] = leaf;
 		branch->childcount = 1;
 	}
 	else
 		realloc_child(new_children, branch, leaf, p);
-	return;
+	return ;
 }

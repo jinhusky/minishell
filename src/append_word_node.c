@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:49:26 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/22 22:27:18 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:41:42 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,30 @@ char	*word_malloc(t_token *token, char *start, size_t *n_start, size_t *end)
 	return (token->lexeme);
 }
 
-t_token	*append_word_node(t_token *head, char *start, size_t n_start, size_t end)
+t_token	*append_word_node(t_token *hd, char *srt, size_t n_srt, size_t end)
 {
 	t_token	*temp;
 	t_token	*trave;
-	
+
 	temp = NULL;
 	temp = malloc(sizeof(t_token));
 	if (!temp)
 	{
-		free_append_word(head, temp);
+		free_append_word(hd, temp);
 		return (NULL);
 	}
 	temp = init_node(temp);
 	temp->lexeme = malloc(sizeof(char) * (end + 1));
 	if (!temp->lexeme)
 	{
-		free_append_word(head, temp);
+		free_append_word(hd, temp);
 		return (NULL);
 	}
-	word_malloc(temp, start, &n_start, &end);
+	word_malloc(temp, srt, &n_srt, &end);
 	trave = NULL;
-	trave = head;
+	trave = hd;
 	while (trave->next != NULL)
 		trave = trave->next;
 	trave->next = temp;
-	return (head);
+	return (hd);
 }

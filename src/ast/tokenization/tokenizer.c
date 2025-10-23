@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readline.c                                         :+:      :+:    :+:   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 15:57:43 by jhor             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:55:34 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	assign_enum(t_token *token)
 			token->token = REDIR_IN;
 		else if (*(token->lexeme) == '|')
 			token->token = PIPE;
-		else 
+		else
 			token->token = WORD;
 		token = token->next;
 	}
@@ -65,7 +65,7 @@ t_token	*tokenizer(char *result, t_token *tokens)
 	int		i;
 	int		start;
 	char	quote;
-	
+
 	i = 0;
 	start = 0;
 	quote = '\0';
@@ -88,4 +88,3 @@ t_token	*tokenizer(char *result, t_token *tokens)
 	assign_enum(tokens);
 	return (tokens);
 }
-
