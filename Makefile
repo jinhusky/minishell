@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/10/22 17:08:12 by jhor             ###   ########.fr        #
+#    Updated: 2025/10/23 15:05:39 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ src/ast/tokenization/tokenizer.c src/ast/tokenization/generation.c \
 src/error_syntax.c src/ast/tokenization/helper_f.c src/ast/parse_pipe.c \
 src/ast/visualizer/AST.c src/ast/helper_ast.c src/utils.c  src/utils2.c\
 src/ast/parse_word.c src/ast/parse_redir.c src/ast/parse_argument.c \
-src/ast/parse_component.c src/ast/parse_simple_command.c \
+src/ast/parse_component.c src/ast/parse_simple_command.c src/ast/parsing.c\
 
 OBJ = $(SRC:.c=.o)
 
