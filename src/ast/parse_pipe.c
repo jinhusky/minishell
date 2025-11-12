@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 20:53:49 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/12 14:40:21 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token)
 	p->cursor = token;
 	p->malloc_flag = 0;
 	p->err_flag = 0;
+	p->heredoc_flag = 0;
 	return (node);
 }
 

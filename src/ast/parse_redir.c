@@ -46,7 +46,10 @@ void	assign_type(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 	else if (token_peek(p)->token == WORD && cur_redir->token == REDIR_OUT)
 		chd_ptr->type = AST_REDIR_OUT;
 	else if (token_peek(p)->token == WORD && cur_redir->token == HEREDOC)
+	{
 		chd_ptr->type = AST_HEREDOC;
+		p->heredoc_flag = 1;
+	}
 	else if (token_peek(p)->token == WORD && cur_redir->token == APPEND)
 		chd_ptr->type = AST_APPEND;
 }

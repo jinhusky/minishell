@@ -6,11 +6,11 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 20:42:07 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/12 15:50:20 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../../minishell.h"
 
 void	main_free(t_ast *node, t_token *token, char *result)
 {

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 21:59:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/12 14:39:03 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_parser
 	char	*trim;
 	int		exit_flag;
 	int		malloc_flag;
+	int		heredoc_flag;
 }	t_parser;
 
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
