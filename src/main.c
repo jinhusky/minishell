@@ -35,7 +35,10 @@ int	main(void)
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
 		if (node)
-			ft_ast_visualize(node);
+		{
+			// ft_ast_visualize(node);
+			ast_loop(node, &p);
+		}
 		main_free(node, token, p.result);
 	}
 	rl_clear_history();

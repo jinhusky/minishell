@@ -6,11 +6,11 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 15:09:08 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 20:37:05 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/12 15:49:58 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../../minishell.h"
 
 void	error_redir(t_token *token)
 {
