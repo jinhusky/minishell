@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 15:56:57 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/13 18:35:40 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	main(void)
+int	main(int argc, char *argv[], char **envp)
 {
 	t_token		*token;
 	t_ast		*node;
@@ -20,6 +20,8 @@ int	main(void)
 
 	while (1)
 	{
+        (void) argc;
+        (void) argv;
 		init_program(&token, &node, &p);
 		p.result = readline("minishell$ ");
 		empty_line(&p);
@@ -36,6 +38,14 @@ int	main(void)
 			exit (EXIT_SUCCESS);
 		if (node)
 			ft_ast_visualize(node);
+        t_shell envp_ls;
+        set_envp(envp, &envp_ls);
+        t_envp *ptr = envp_ls.head;
+        while (ptr)
+        {
+            ft_printf("%s\n", ptr->key);
+            ptr = ptr->next;
+        }   
 		main_free(node, token, p.result);
 	}
 	rl_clear_history();

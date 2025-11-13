@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 21:59:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/13 18:08:39 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,27 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <stdbool.h>
+
+typedef struct s_envp
+{
+	char *key;
+	char *value;
+	struct s_envp *next;
+}   t_envp;
+
+typedef struct shell
+{
+    t_envp *head;
+} t_shell;
+
+int ft_echo(char **argv);
+
+void    ft_pwd(void);
+
+void set_envp(char **envp, t_shell *env);
+
+void    ft_cd(char **envp);
+
 
 typedef enum e_token
 {

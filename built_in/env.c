@@ -6,8 +6,13 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:23:28 by kationg           #+#    #+#             */
-/*   Updated: 2025/09/29 14:29:25 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/13 14:08:39 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
 
+void	env(t_envp *env_var)
+{
+	
+}
