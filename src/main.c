@@ -6,20 +6,30 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/21 15:56:57 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/14 13:07:18 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	main(void)
+int	main(int argc, char *argv[], char **envp)
 {
 	t_token		*token;
 	t_ast		*node;
 	t_parser	p;
-
+    
+    (void) argc;
+    (void) argv;
 	while (1)
 	{
+        t_shell envp_ls;
+        set_envp(envp, &envp_ls);
+	    t_envp *ptr = envp_ls.head;
+	    while (ptr)
+	    {
+		    ft_printf("%s\n", ptr->key);
+		    ptr = ptr->next;
+	    }
 		init_program(&token, &node, &p);
 		p.result = readline("minishell$ ");
 		empty_line(&p);
