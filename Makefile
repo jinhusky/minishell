@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/11/13 16:02:02 by jhor             ###   ########.fr        #
+#    Updated: 2025/11/17 14:31:57 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ src/ast/parse_pipe.c ast_visualizer/AST.c src/ast/helper_ast.c \
 src/ast/helper/utils.c  src/ast/helper/utils2.c src/ast/parse_word.c \
 src/ast/parse_redir.c src/ast/parse_argument.c src/ast/parse_component.c \
 src/ast/parse_simple_command.c src/ast/parsing.c src/heredoc/heredoc_active.c \
+src/set_envp.c
 
 OBJ = $(SRC:.c=.o)
 

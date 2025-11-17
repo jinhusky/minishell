@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_envp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/14 13:01:11 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/17 15:18:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void set_envp(char **envp, t_shell *shell)
 
     char    *delim;
     t_envp  *node;
-    t_envp  *prev;
+    t_envp  *prev; 
 
     i = 0;
     prev = NULL;

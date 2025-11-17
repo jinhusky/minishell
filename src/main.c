@@ -17,19 +17,21 @@ int	main(int argc, char *argv[], char **envp)
 	t_token		*token;
 	t_ast		*node;
 	t_parser	p;
-    
-    (void) argc;
-    (void) argv;
+	
+	(void) argc;
+	(void) argv;
 	while (1)
 	{
-        t_shell envp_ls;
-        set_envp(envp, &envp_ls);
-	    t_envp *ptr = envp_ls.head;
-	    while (ptr)
-	    {
-		    ft_printf("%s\n", ptr->key);
-		    ptr = ptr->next;
-	    }
+		t_shell envp_ls;
+		set_envp(envp, &envp_ls);
+		t_envp *ptr = envp_ls.head;
+		// t_envp *tmp = ptr;
+		// while (tmp)
+		// {
+		// 	printf("%s=", tmp->key);
+		// 	printf("%s\n", tmp->value);
+		// 	tmp = tmp->next;
+		// }
 		init_program(&token, &node, &p);
 		p.result = readline("minishell$ ");
 		empty_line(&p);
@@ -41,15 +43,16 @@ int	main(int argc, char *argv[], char **envp)
 		if (!p.result)
 			continue ;
 		node = parsing(node, token, &p);
-		p.exit_flag = readline_exit(node, token, p.result);
+		p.exit_flag = readline_exit(node, token, p.result, ptr);
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
 		if (node)
 		{
 			// ft_ast_visualize(node);
 			ast_loop(node, &p);
+			expansion_engine(node);
 		}
-		main_free(node, token, p.result);
+		main_free(node, token, p.result, ptr);
 	}
 	rl_clear_history();
 	return (0);

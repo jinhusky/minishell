@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/13 15:39:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/17 15:11:07 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,19 @@ typedef struct s_parser
 	int		heredoc_flag;
 }	t_parser;
 
+//KAI'S PART
+typedef struct s_envp
+{
+	char			*key;
+	char			*value;
+	struct s_envp	*next;
+}	t_envp;
+
+typedef struct shell
+{
+	t_envp	*head;
+}	t_shell;
+
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
 t_token		*init_node(t_token *token);
@@ -82,14 +95,14 @@ t_token		*token_pipe(t_token *tokens, char *result);
 t_token		*token_single_operator(t_token *tokens, char *result);
 t_token		*token_double_operator(t_token *tokens, char *result);
 t_token		*tokenizer(char *result, t_token *tokens);
-void		main_free(t_ast *node, t_token *token, char *result);
+void		main_free(t_ast *node, t_token *token, char *result, t_envp *ptr);
 void		ast_exit(t_token *token, t_ast *node, char *result);
 void		token_exit(t_token *token, char *result);
 void		free_tokens(t_token *tokens);
 char		*trim_prompt(char *trim);
 void		invalid_token(t_token *token, char *result);
 void		empty_line(t_parser *p);
-int			readline_exit(t_ast *node, t_token *token, char *result);
+int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);
 void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
 t_ast		*init_ast(t_ast *node, t_parser *p, t_token *token);
@@ -112,5 +125,6 @@ void		strip_quotes(char *lexeme, t_parser *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_parser *p);
 void		ft_ast_visualize(t_ast *root);
 void		ast_loop(t_ast *root, t_parser *p);
-
+void		set_envp(char **envp, t_shell *env);
+void		free_envp(t_envp *ptr);
 #endif
