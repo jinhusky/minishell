@@ -6,17 +6,17 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/14 13:01:11 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/18 02:15:26 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../minishell.h"
 
-char	*envp_value(char *k, char *v, t_shell *envp)
+char	*envp_value(char *k, char *v, t_shell envp)
 {
 	t_envp	*ptr;
 
-	ptr = envp->head;
+	ptr = envp.envp_head;
 	while(ptr)
 	{
 		if (ft_strncmp(ptr->key, k, ft_strlen(k)) == 0)
@@ -37,7 +37,7 @@ void set_envp(char **envp, t_shell *shell)
     char    *delim;
     t_envp  *node;
     t_envp  *prev;
-
+	
     i = 0;
     prev = NULL;
     while (envp[i])
@@ -45,7 +45,7 @@ void set_envp(char **envp, t_shell *shell)
 		
 		node = malloc(sizeof(t_envp));
 		if (i == 0)
-			shell->head = node;
+			shell->envp_head = node;
 		if (prev)
 			prev->next = node;
         delim = ft_strchr(envp[i], '=');
@@ -54,6 +54,7 @@ void set_envp(char **envp, t_shell *shell)
 		prev = node;
         i++;
     }
+	shell->size = i;
 	prev->next = NULL;
 }
 

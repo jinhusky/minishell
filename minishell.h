@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/14 13:03:25 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/17 18:51:43 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <stdbool.h>
+# include <sys/wait.h>
 
 typedef struct s_envp
 {
@@ -29,7 +30,9 @@ typedef struct s_envp
 
 typedef struct shell
 {
-    t_envp *head;
+    t_envp *envp_head;
+	int size;
+	t_envp *tail;
 } t_shell;
 
 typedef enum e_token
@@ -127,4 +130,7 @@ void		ast_loop(t_ast *root, t_parser *p);
 
 
 void set_envp(char **envp, t_shell *shell);
+char	*envp_value(char *k, char *v, t_shell envp);
+
+void simple_execution(t_ast *root, t_shell *shell);
 #endif

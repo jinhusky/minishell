@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/14 13:15:35 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/17 17:52:33 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,19 @@ int	main(int argc, char *argv[], char **envp)
     
     (void) argc;
     (void) argv;
+	t_shell shell;
+	set_envp(envp, &shell);
+	t_envp *ptr = shell.envp_head;
+	while (ptr)	
+	{
+		ft_printf("%s",ptr->key);
+		ft_printf("=");
+		ft_printf("%s\n", ptr->value);
+		ptr = ptr->next;
+	}
+	ft_printf("%d\n", shell.size);
 	while (1)
 	{
-        t_shell envp_ls;
-        set_envp(envp, &envp_ls);
-	    t_envp *ptr = envp_ls.head;
-	    while (ptr)
-	    {
-		    ft_printf("%s", ptr->key);
-            ft_printf("=%s\n", ptr->value);
-		    ptr = ptr->next;
-	    }
 		init_program(&token, &node, &p);
 		p.result = readline("minishell$ ");
 		empty_line(&p);
@@ -47,7 +49,8 @@ int	main(int argc, char *argv[], char **envp)
 			exit (EXIT_SUCCESS);
 		if (node)
 		{
-			// ft_ast_visualize(node);
+			ft_ast_visualize(node);
+            simple_execution(node, &shell);
 			ast_loop(node, &p);
 		}
 		main_free(node, token, p.result);

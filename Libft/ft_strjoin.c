@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:34:18 by jhor              #+#    #+#             */
-/*   Updated: 2024/11/19 17:34:18 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/17 16:44:14 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ char	*ft_strjoin(char *s1, char const *s2)
 		newstr[i++] = s2[j++];
 	}
 	newstr[i] = '\0';
+	//for minishell (free)
+	free(s1);
 	return (newstr);
 }
 
