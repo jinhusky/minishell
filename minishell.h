@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/13 15:39:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/14 13:03:25 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,18 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <stdbool.h>
+
+typedef struct s_envp
+{
+	char *key;
+	char *value;
+	struct s_envp *next;
+}   t_envp;
+
+typedef struct shell
+{
+    t_envp *head;
+} t_shell;
 
 typedef enum e_token
 {
@@ -113,4 +125,6 @@ t_ast		*parsing(t_ast *node, t_token *token, t_parser *p);
 void		ft_ast_visualize(t_ast *root);
 void		ast_loop(t_ast *root, t_parser *p);
 
+
+void set_envp(char **envp, t_shell *shell);
 #endif
