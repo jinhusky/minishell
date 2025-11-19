@@ -6,7 +6,7 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:03:35 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/18 02:17:35 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/19 13:47:35 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char **build_argv(t_ast *root)
 	int	i;
 	int	j;
 
+	char *arg;
 	i = 0;
 	char **argv;
 	t_ast *ptr;
@@ -24,18 +25,22 @@ char **build_argv(t_ast *root)
 	argv = ft_calloc(root->children[i]->childcount + 1, sizeof(char *));
 	while (i < root->childcount && root->children[i])
 	{
+		ptr = root->children[i];
 		if (root->children[i]->type == AST_COMMAND)
 		{
-			ptr = root->children[i];
 			j = 0;
 			while (j < ptr->childcount && ptr->children[j])
 			{
-				char *arg;
 				if (ptr->children[j]->type == AST_WORD)
+				{
 					arg = ptr->children[j]->token_ref->lexeme;
+					argv[j] = ft_strdup(arg);
+				}
 				else if (ptr->children[j]->type == AST_ARGUMENT)
+				{
 					arg = ptr->children[j]->children[0]->token_ref->lexeme;
-				argv[j] = ft_strdup(arg);
+					argv[j] = ft_strdup(arg);
+				}
 				j++;
 			}
 			
@@ -102,9 +107,14 @@ void simple_execution(t_ast *root, t_shell *shell)
 	(void) root;
 	char **envp_exec = build_envp(*shell);
 	char **argv = build_argv(root);
+	for (int i = 0; argv[i]; i++)
+	{
+		printf("%s\n", argv[i]);
+	}
 	int pid = fork();
 	if (pid == 0)
 	{
+		walk_ast(root);
 		execute(envp_exec, argv, shell);		
 	}
 	else 

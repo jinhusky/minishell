@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/17 17:52:33 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/19 11:20:09 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,18 @@ int	main(int argc, char *argv[], char **envp)
     (void) argv;
 	t_shell shell;
 	set_envp(envp, &shell);
+	/*
 	t_envp *ptr = shell.envp_head;
+	
 	while (ptr)	
 	{
 		ft_printf("%s",ptr->key);
 		ft_printf("=");
-		ft_printf("%s\n", ptr->value);
+		ft_printf("%s\n", ptr->value);	
 		ptr = ptr->next;
 	}
 	ft_printf("%d\n", shell.size);
+	*/
 	while (1)
 	{
 		init_program(&token, &node, &p);
