@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/17 15:11:07 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/19 17:01:22 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,6 @@ typedef struct s_ast
 	int				heredoc_fd[2];
 }	t_ast;
 
-typedef struct s_parser
-{
-	char	*result;
-	t_token	*cursor;
-	t_ast	*cur_cmd;
-	int		err_flag;
-	char	*trim;
-	int		exit_flag;
-	int		malloc_flag;
-	int		heredoc_flag;
-}	t_parser;
-
 //KAI'S PART
 typedef struct s_envp
 {
@@ -82,6 +70,23 @@ typedef struct shell
 {
 	t_envp	*head;
 }	t_shell;
+
+typedef struct s_parser
+{
+	char	*result;
+	t_token	*token;
+	t_ast	*node;
+	t_token	*cursor;
+	t_ast	*cur_cmd;
+	int		err_flag;
+	char	*trim;
+	int		exit_flag;
+	int		malloc_flag;
+	int		heredoc_flag;
+	t_shell	envp_ls;
+	t_envp	*ptr;
+}	t_parser;
+
 
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
@@ -105,6 +110,7 @@ void		empty_line(t_parser *p);
 int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);
 void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
+void		error_quotes(char quote, t_parser *p);
 t_ast		*init_ast(t_ast *node, t_parser *p, t_token *token);
 t_parser	*get_token(t_parser *p);
 t_token		*token_peek(t_parser *p);
@@ -125,6 +131,7 @@ void		strip_quotes(char *lexeme, t_parser *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_parser *p);
 void		ft_ast_visualize(t_ast *root);
 void		ast_loop(t_ast *root, t_parser *p);
+void		expansion_engine(t_ast *root, t_parser *p);
 void		set_envp(char **envp, t_shell *env);
 void		free_envp(t_envp *ptr);
 #endif
