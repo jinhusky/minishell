@@ -6,13 +6,34 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 02:42:34 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/19 14:32:09 by kationg          ###   ########.fr       */
+/*   Updated: 2025/11/20 16:45:19 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void redirection(t_ast *node)
+void	prep_here_doc(t_ast *node)
+{
+	char	*deli;
+	char	*line;
+	if (node->type == AST_HEREDOC)
+	{
+		deli = node->children[0]->token_ref->lexeme;
+		pipe(node->heredoc_fd);
+		line = readline("heredoc> ");
+		while (ft_strncmp(line, deli, ft_strlen(line)) != 0 && line)
+		{
+			write(node->heredoc_fd[1], line, ft_strlen(line));
+			write(node->heredoc_fd[1], "\n", 1);
+			free(line);
+			line = readline("heredoc> ");
+			
+		}
+	}
+	
+}
+
+void	redirection(t_ast *node)
 {
 	int	new_fd;
 	if (node->type == AST_REDIR_IN)
@@ -43,7 +64,8 @@ void walk_ast(t_ast *node)
 
     if (!node)
         return;
-    redirection(node);  
+	prep_here_doc(node);
+    redirection(node);
 
     i = 0;
     while (i < node->childcount)
