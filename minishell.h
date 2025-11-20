@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/19 17:01:22 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/20 07:55:36 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_parser
 	int		heredoc_flag;
 	t_shell	envp_ls;
 	t_envp	*ptr;
+	char	*value;
 }	t_parser;
 
 

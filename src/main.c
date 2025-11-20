@@ -40,7 +40,7 @@ int	main(int argc, char *argv[], char **envp)
 		if (!p.result)
 			continue ;
 		p.node = parsing(p.node, p.token, &p);
-		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
+		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr); //!test case: exita exit as well
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
 		if (p.node)
