@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/20 07:56:05 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/21 15:50:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,5 @@ void	init_program(t_token **tkn, t_ast **nd, t_parser *p)
 	p->exit_flag = 0;
 	p->err_flag = 0;
 	p->ptr = NULL;
+	p->dollar_flag = 0;
 }
