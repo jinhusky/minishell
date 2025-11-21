@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/20 17:50:46 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/21 11:55:21 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,6 @@ char	*ft_expand(char *lxm, size_t start, size_t end, t_parser *p)
 	printf("errflagtest: %d\n", p->err_flag);
 	while (tmp)
 	{
-		// printf("*ft_expand* start:%zu\n", start);
-		// printf("*ft_expand* start:%zu\n", end);
-		// printf("*ft_expand* key string:%c\n", lxm[start + 1]);
-		// printf("*ft_expand* key string:%c\n", lxm[start + 2]);
-		// printf("*ft_expand* key string:%c\n", lxm[start + 3]);
-		// printf("*ft_expand* key string:%c\n", lxm[start + 4]);
-		// printf("*ft_expand* key string:%c\n", lxm[end]);
-		// printf("*ft_expand* env key string:%s\n", tmp->key);
 		if ((ft_strncmp(lxm + start + 1, tmp->key, key_len)) == 0
 			&& ft_strlen(tmp->key) == key_len)
 		{
@@ -69,6 +61,20 @@ int	iter_dollar(char *lxm)
 	return (0);
 }
 
+int	iter_dollar_quotes(char *lxm, size_t start, t_parser *p)
+{
+	size_t	len;
+	size_t	end;
+
+	end = start;
+	while (end < len && lxm[end] == '$')
+		end++;
+	len = end - (start + 1);
+	if (start == len)
+		return (1);
+	return (0);
+}
+
 char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
 {
 	size_t	j;
@@ -76,9 +82,7 @@ char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
 
 	j = 0;
 	value = NULL;
-	if (lxm[*i] == '$' && iter_dollar(lxm))
-		value = ft_strdup("$");
-	else if (lxm[*i] == '$' && lxm[*i + 1])
+	if (lxm[*i] == '$' && lxm[*i + 1])
 	{
 		j = *i;
 		*i = *i + 1;
@@ -92,78 +96,81 @@ char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
 	return (value);
 }
 
-// char	*populate_str(char const *s, unsigned int start, size_t len)
-// {
-// 	unsigned int	i;
-// 	char			*newstr;
-
-// 	if (s == NULL)
-// 		return (NULL);
-// 	newstr = (char *)malloc(sizeof(char) * (len + 1));
-// 	if (newstr == NULL)
-// 		return (NULL);
-// 	i = 0;
-// 	while (i < len && s[start + i])
-// 	{
-// 		newstr[i] = s[i + start];
-// 		i++;
-// 	}
-// 	newstr[i] = '\0';
-// 	return (newstr);
-// }
-
-char	*populate_str(char *s, size_t start, size_t end)
+char *token_single_only(char *lxm, size_t *i, t_parser *p)
 {
-	unsigned int	i;
-	char			*newstr;
-	unsigned int	s_len;
+	size_t	start;
+	size_t	end;
+	size_t	len;
+	char	*value;
 
-	if (s == NULL)
-		return (NULL);
-	s_len = end - start;
-	newstr = (char *)malloc(sizeof(char) * (s_len + 1));
-	if (newstr == NULL)
-		return (NULL);
-	i = 0;
-	while (i < s_len && s[start + i])
+	len = 0;
+	value = NULL;
+	start = *i;
+	end = ++(*i);
+	while (lxm[end] && lxm[end] != '\'')
+		end++;
+	if (lxm[end] != '\'')
 	{
-		newstr[i] = s[i + start];
-		i++;
+		error_quotes('\'', p);
+		return (NULL);
 	}
-	newstr[i] = '\0';
-	return (newstr);
+	len = end - start + 1;
+	value = malloc(len + 1);
+	if (!value)
+		return (NULL);
+	ft_memcpy(value, lxm + start, len);
+	value[len] = '\0';
+	*i = end;
+	return (value);
 }
 
-char	*token_single_only(char *lxm, size_t *i, char *value, t_parser *p)
+char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 {
-	char		quote;
-	size_t		refer;
+	size_t	end;
+	char	ch[2];
+	char	*value;
+	char	*result;
 	
-	quote = 0;
-	refer = 0;
-	if (lxm[*i] == '\'')
+	// printf("*token_double_only* what is *i:%zu\n", *i);
+	result = ft_strdup("");
+	ch[0] = lxm[*i];
+	ch[1] = 0;
+	result = ft_strjoin_free(result, ft_strdup(ch));
+	end = ++(*i);
+	// printf("*token_double_only* what is end:%zu\n", end);
+	// printf("*token_double_only* what is *i after:%zu\n", *i);
+	value = NULL;
+	while (lxm[end] && lxm[end] != '"')
 	{
-		refer = *i;
-		printf("*token_single_only* refer:%zu\n", refer);
-		printf("*token_single_only* refer:%c\n", lxm[refer]);
-		quote = lxm[(*i)++];
-		printf("*token_single_only* quote:%c\n", quote);
+		// printf("*token_double_only* lxm[end] inside loop:%c\n", lxm[end]);
+		if (lxm[end] == '$')
+		{
+			value = extract_token_expand(lxm, &end, p);
+			// printf("*token_double_only* value from extract_token_expand:%s\n", value);
+			// printf("*token_double_only* lxm[end] inside loop:%c\n", lxm[end]);
+			result = ft_strjoin_free(result, value);
+		}
+		if (lxm[end] && lxm[end] != '$' && lxm[end] != '"')
+		{
+			ch[0] = lxm[end];
+			ch[1] = 0;
+			result = ft_strjoin_free(result, ft_strdup(ch));
+		}
+		// printf("*token_double_only* result inside loop:%s\n", result);
+		if (lxm[end] && lxm[end] != '"')
+			end++;
 	}
-	while (lxm[*i] && lxm[*i] != '\'')
+	// printf("*token_double_only* lxm[end] after the loop:%c\n", lxm[end]);
+	if (lxm[end] != '"' && lxm[end] != '$')
 	{
-		printf("*token_single_only* looping char:%c\n", lxm[*i]);
-		(*i)++;
+		error_quotes('"', p);
+		return (NULL);
 	}
-	if (lxm[*i] == '\'')
-		quote = 0;
-	printf("*token_single_only* current char:%c\n", lxm[*i]);
-	printf("*token_single_only* *i:%zu\n", *i);
-	printf("*token_single_only* refer:%zu\n", refer);
-	value = populate_str(lxm, refer, *i + 1);
-	if (quote != 0)
-		error_quotes(quote, p);
-	printf("*token_single_only* current str:%s\n", value);
-	return (value);
+	ch[1] = 0;
+	ch[0] = lxm[end];
+	result = ft_strjoin_free(result, ft_strdup(ch));
+	*i = end;
+	return (result);
 }
 
 char	*token_expandable_check(char *lxm, t_parser *p)
@@ -176,38 +183,51 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 	i = 0;
 	result = ft_strdup("");
 	printf("*token_is_expandable* string passed:%s\n", lxm);
+	if (iter_dollar(lxm) == 1)
+	{
+		result = ft_strjoin_free(result, ft_strdup("$"));
+		return (result);
+	}
 	while (i < ft_strlen(lxm))
 	{
-		value = NULL;
 		printf("*token_expandable_check* lxm[i]:%c\n", lxm[i]);
-		if (lxm[i] == '$')
+		printf("*token_expandable_check* i:%zu\n", i);
+		if (lxm[i] == '\'')
+		{
+			value = token_single_only(lxm, &i, p);
+			if (!value && p->err_flag == 1)
+			{
+				main_free(p->node, p->token, p->result, p->ptr);
+				exit (2);
+			}
+			result = ft_strjoin_free(result, value);
+			printf("*token_expandable_check* single quotes result:%s\n", result);
+		}
+		else if (lxm[i] == '"')
+		{
+			value = token_double_only(lxm, &i, p);
+			if (!value && p->err_flag == 1)
+			{
+				main_free(p->node, p->token, p->result, p->ptr);
+				exit (2);
+			}
+			result = ft_strjoin_free(result, value);
+			printf("*token_expandable_check* double quotes result:%s\n", result);
+		}
+		else if (lxm[i] == '$')
 		{
 			value = extract_token_expand(lxm, &i, p);
 			result = ft_strjoin_free(result, value);
 			printf("*token_expandable_check* result:%s\n", result);
-			// if (iter_dollar(result) == 1) //!deals with $ sign only
-			// 	break;
 			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
-			if (lxm[i] == '$' && lxm[i + 1] && lxm[i + 1] != '$')
-				continue;
+			continue;
 		}
-		else if (lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
+		else if (lxm[i] && lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
 		{
 			ch[0] = lxm[i];
 			ch[1] = 0;
 			result = ft_strjoin_free(result, ft_strdup(ch));
 		}
-		// if (lxm[i] == '"' && !quote)
-		// {
-		// 	j = i;
-		// 	quote = lxm[j++];
-		// 	while (lxm[j] && lxm[j] != *quote)
-		// 		j++;
-		// 	if (lxm[j] == *quote)
-		// 		quote = NULL;
-		// 	if (lxm[j] == '$')
-		// 		extract_token_string(lxm + i, quote, p);
-		// }
 		i++;
 	}
 	printf("*token_expandable_check* final result:%s\n", result);
