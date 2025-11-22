@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/21 17:50:36 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/22 13:33:16 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,25 +68,29 @@ char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
 
 	j = 0;
 	value = NULL;
-	if (lxm[*i] == '$' && lxm[*i + 1])
+	printf("in here in extract_token_expand\n");
+	if (lxm[*i] == '$' && lxm[*i + 1] != '\0' && lxm[*i + 1] != ' '
+		&& lxm[*i + 1] != '"' && lxm[*i + 1] != '\'' && lxm[*i + 1] != '$')
 	{
 		j = *i;
 		*i = *i + 1;
 		while (lxm[*i] && lxm[*i] != ' ' && lxm[*i] != '"' && lxm[*i] != '\''
 		&& lxm[*i] != '$')
 			(*i)++;
-		if (lxm[--(*i)] == '$' && (lxm[*i] == '"' || lxm[*i] == '\''
-			|| lxm[*i] == ' '))
-		{
-			value = ft_strdup("$");
-			p->dollar_flag = 1;
-			return (value);
-		}
 		printf("*extract_token_expand* j:%zu\n", j);
 		printf("*extract_token_expand* i:%zu\n", *i);
 		value = ft_expand(lxm, j, *i, p);
+		if (lxm[*i] == '$')
+			--(*i);
+		printf("*extract_token_expand* i:%zu\n", *i);	
 		printf("value[%s]\n", value);
 		printf("end----------------------------------\n");
+	}
+	else
+	{
+		printf("*extract_token_expand* i:%zu\n", *i);
+		value = ft_strdup("$");		
+		(*i)++;
 	}
 	return (value);
 }
@@ -120,27 +124,27 @@ char *token_single_only(char *lxm, size_t *i, t_parser *p)
 }
 
 
-int	only_dollar_quote(char *lxm, size_t start, t_parser *p)
-{
-	size_t	i;
-	int		dollar_sign;
+// int	only_dollar_quote(char *lxm, size_t start, t_parser *p)
+// {
+// 	size_t	i;
+// 	int		dollar_sign;
 
-	i = (start + 1);
-	printf("*only_dollar_quote* i:%zu\n", i);
-	printf("*only_dollar_quote* lxm[i]:%c\n", lxm[i]);
-	dollar_sign = 1;
-	while (lxm[i] && lxm[i] != '"')
-	{
-		if (lxm[i] != '$')
-		{
-			dollar_sign = 0;
-			return (0);
-		}
-		i++;
-	}
-	p->dollar_flag = 1;
-	return (1);
-}
+// 	i = (start + 1);
+// 	printf("*only_dollar_quote* i:%zu\n", i);
+// 	printf("*only_dollar_quote* lxm[i]:%c\n", lxm[i]);
+// 	dollar_sign = 1;
+// 	while (lxm[i] && lxm[i] != '"')
+// 	{
+// 		if (lxm[i] != '$')
+// 		{
+// 			dollar_sign = 0;
+// 			return (0);
+// 		}
+// 		i++;
+// 	}
+// 	p->dollar_flag = 1;
+// 	return (1);
+// }
 
 char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 {
@@ -153,12 +157,6 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 	result = ft_strdup("");
 	value = NULL;
 	printf("*token_double_only* what is *i:%zu\n", *i);
-	if (only_dollar_quote(lxm, *i, p) == 1)
-	{
-		value = ft_strdup("\"$\"");
-		result = ft_strjoin_free(result, value);
-		return (result);
-	}
 	printf("*token_double_only* what is *i after:%zu\n", *i);
 	ch[0] = lxm[*i];
 	ch[1] = 0;
@@ -171,6 +169,8 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 		printf("*token_double_only* lxm[end] inside loop:%c\n", lxm[end]);
 		if (lxm[end] == '$')
 		{
+			printf("i am in here the loop\n");
+			printf("*token_double_only* what is *i:%zu\n", *i);
 			value = extract_token_expand(lxm, &end, p);
 			if (p->dollar_flag == 1)
 			{
@@ -204,7 +204,7 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 	return (result);
 }
 
-//TODO test case as reference: echo "$$ $", ls $NONEXSITENT $ for bash behavior
+//TODO test case as reference: echo "'"$SHELL $PWD $HOME $PATH"'" (TH" SKIPPED '"') FIX!! token_expandable_check 
 
 char	*token_expandable_check(char *lxm, t_parser *p)
 {
@@ -260,7 +260,6 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 			result = ft_strjoin_free(result, value);
 			printf("*token_expandable_check* result:%s\n", result);
 			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
-			continue;
 		}
 		else if (lxm[i] && lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
 		{
