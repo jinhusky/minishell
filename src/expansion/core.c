@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/22 13:33:16 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/23 19:21:50 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,35 +63,29 @@ char	*ft_expand(char *lxm, size_t start, size_t end, t_parser *p)
 
 char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
 {
-	size_t	j;
+	size_t	start;
 	char	*value;
 
-	j = 0;
+	start = *i;
 	value = NULL;
 	printf("in here in extract_token_expand\n");
-	if (lxm[*i] == '$' && lxm[*i + 1] != '\0' && lxm[*i + 1] != ' '
-		&& lxm[*i + 1] != '"' && lxm[*i + 1] != '\'' && lxm[*i + 1] != '$')
+	if (ft_isalpha(lxm[start + 1]) || lxm[start + 1] == '_')
 	{
-		j = *i;
-		*i = *i + 1;
-		while (lxm[*i] && lxm[*i] != ' ' && lxm[*i] != '"' && lxm[*i] != '\''
-		&& lxm[*i] != '$')
+		(*i)++;
+		while (ft_isalpha(lxm[*i]) || lxm[*i] == '_')
 			(*i)++;
-		printf("*extract_token_expand* j:%zu\n", j);
+		printf("*extract_token_expand* start:%zu\n", start);
 		printf("*extract_token_expand* i:%zu\n", *i);
-		value = ft_expand(lxm, j, *i, p);
-		if (lxm[*i] == '$')
-			--(*i);
-		printf("*extract_token_expand* i:%zu\n", *i);	
+		value = ft_expand(lxm, start, *i, p);
+			(*i)--;
+		printf("*extract_token_expand* i:%zu\n", *i);
+		printf("*extract_token_expand* lxm[*i]:%c\n", lxm[*i]);
 		printf("value[%s]\n", value);
 		printf("end----------------------------------\n");
+		return (value);
 	}
-	else
-	{
-		printf("*extract_token_expand* i:%zu\n", *i);
-		value = ft_strdup("$");		
-		(*i)++;
-	}
+	printf("*extract_token_expand* i:%zu\n", *i);
+	value = ft_strdup("$");
 	return (value);
 }
 
@@ -172,7 +166,7 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 			printf("i am in here the loop\n");
 			printf("*token_double_only* what is *i:%zu\n", *i);
 			value = extract_token_expand(lxm, &end, p);
-			if (p->dollar_flag == 1)
+			if (!value && p->dollar_flag == 1)
 			{
 				result = ft_strjoin(result, value);
 				return (result);
@@ -181,7 +175,7 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 			printf("*token_double_only* lxm[end] inside loop:%c\n", lxm[end]);
 			result = ft_strjoin_free(result, value);
 		}
-		if (lxm[end] && lxm[end] != '$' && lxm[end] != '"')
+		else if (lxm[end] && lxm[end] != '$' && lxm[end] != '"')
 		{
 			ch[0] = lxm[end];
 			ch[1] = 0;
@@ -206,6 +200,23 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 
 //TODO test case as reference: echo "'"$SHELL $PWD $HOME $PATH"'" (TH" SKIPPED '"') FIX!! token_expandable_check 
 
+// char	*token_expandable_check(char *lxm, t_parser *p)
+// {
+// 	size_t	i;
+// 	char	ch[2];
+// 	char	*result;
+// 	char	*value;
+
+// 	i = 0;
+// 	result = ft_strdup("");
+// 	if (iter_dollar(lxm) == 1)
+// 	{
+// 		result = ft_strjoin_free(result, ft_strdup("$"));
+// 		return (result);
+// 	}
+	
+// }
+
 char	*token_expandable_check(char *lxm, t_parser *p)
 {
 	size_t	i;
@@ -225,7 +236,20 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 	{
 		printf("*token_expandable_check* lxm[i]:%c\n", lxm[i]);
 		printf("*token_expandable_check* i:%zu\n", i);
-		if (lxm[i] == '\'')
+		if (lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
+		{
+			ch[0] = lxm[i];
+			ch[1] = 0;
+			result = ft_strjoin_free(result, ft_strdup(ch));
+		}
+		if (lxm[i] == '$')
+		{
+			value = extract_token_expand(lxm, &i, p);
+			result = ft_strjoin_free(result, value);
+			printf("*token_expandable_check* result:%s\n", result);
+			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
+		}
+		else if (lxm[i] == '\'')
 		{
 			value = token_single_only(lxm, &i, p);
 			if (!value && p->err_flag == 1)
@@ -240,7 +264,7 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 		else if (lxm[i] == '"')
 		{
 			value = token_double_only(lxm, &i, p);
-			if (!value && p->err_flag == 1)
+			if (p->err_flag == 1)
 			{
 				main_free(p->node, p->token, p->result, p->ptr);
 				exit (2);
@@ -253,19 +277,6 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 			}
 			printf("*token_expandable_check* double quotes result:%s\n", result);
 			printf("*token_expandable_check* after double quotes i:%zu\n", i);
-		}
-		else if (lxm[i] == '$')
-		{
-			value = extract_token_expand(lxm, &i, p);
-			result = ft_strjoin_free(result, value);
-			printf("*token_expandable_check* result:%s\n", result);
-			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
-		}
-		else if (lxm[i] && lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
-		{
-			ch[0] = lxm[i];
-			ch[1] = 0;
-			result = ft_strjoin_free(result, ft_strdup(ch));
 		}
 		i++;
 	}
