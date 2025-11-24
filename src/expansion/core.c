@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/23 19:21:50 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/24 15:40:49 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,9 +284,8 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 	return (result);
 }
 
-void	expand_check_quotes(t_ast *child, t_parser *p)
+char	*stage_expand_check(t_ast *child, t_parser *p)
 {
-	int		i;
 	char	*str;
 	char	*result;
 	
@@ -294,37 +293,162 @@ void	expand_check_quotes(t_ast *child, t_parser *p)
 	printf("in here token_quotes\n");
 	if (child->type == AST_WORD)
 	{
-		i = 0;
 		str = child->token_ref->lexeme;
-		result = token_expandable_check(str + i, p);
+		result = token_expandable_check(str, p);
 		printf("*token_single_quotes* final result:%s\n", result);
-		free(result);
 	}
+	return (result);
 }
 
-void	command_instructor(t_ast *cmd, t_parser *p)
+char	**token_append(char **arr, char *sub, int *count)
 {
-	int	i;
+	char	**new;
+	int		i;
+
+	new = NULL;
+	i = 0;
+	new = malloc(sizeof(char *) * (*count + 2));
+	while (i < *count)
+	{
+		new[i] = arr[i];
+		i++;
+	}
+	new[i++] = sub;
+	new[i] = NULL;
+	free(arr);
+	(*count)++;
+	return (new);
+}
+
+char	*substring_split(char *result, int start, int end)
+{
+	char	*str;
+	int		i;
+	
+	str = NULL;
+	i = 0;
+	printf("*substring_split* end:%d\n", end);
+	str = malloc(sizeof(char) * (end - start) + 1);
+	if (!str)
+		return (NULL);
+	while (start < end)
+	{
+		str[i] = result[start];
+		start++;
+		i++;
+	}
+	str[i] = '\0';
+	printf("*substring_split* str:%s\n", str);
+	return (str);
+}
+
+char	**check_expand_space(char *result)
+{
+	int		in_single;
+	int		in_double;
+	int		i;
+	int		start;
+	char	**tokens;
+	char	*sub;
+	int		tcount;
+
+	in_single = 0;
+	in_double = 0;
+	i = 0;
+	start = 0;
+	tokens = NULL;
+	sub = NULL;
+	tcount = 0;
+	while (result[i])
+	{
+		if (result[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (result[i] == '"' && !in_single)
+			in_double = !in_double;
+		printf("*check_expand_space* in_single:%d\n", in_single);
+		printf("*check_expand_space* in_double:%d\n", in_double);
+		if (result[i] == ' ' && !in_single && !in_double)
+		{
+			printf("*check_expand_space* in_single inside the if statement:%d\n", in_single);
+			printf("*check_expand_space* in_double inside the if statement:%d\n", in_double);
+			if (i > start)
+			{
+				printf("*check_expand_space*(1) start:%d\n", start);
+				printf("*check_expand_space*(1) i:%d\n", i);
+				sub = substring_split(result, start, i);
+				printf("*check_expand_space*(1) sub:%s\n", sub);
+				tokens = token_append(tokens, sub, &tcount);
+				
+			}
+			while (result[i] == ' ')
+				i++;
+			start = i;
+			continue;
+		}
+		i++;
+	}
+	if (i > start)
+	{
+		sub = substring_split(result, start, i);
+		printf("*check_expand_space* sub:%s\n", sub);
+		tokens = token_append(tokens, sub, &tcount);
+		printf("*check_expand_space* tcount:%d\n", tcount);
+	}
+	if (tokens)
+	{
+		tokens[tcount] = NULL;
+		for (int j = 0; tokens[j]; j++)
+			printf("*check_expand_space* tokens[%d]:%s\n", j, tokens[j]);
+		
+	}
+	return (tokens);
+}
+
+void	simple_command_instructor(t_ast *cmd, t_parser *p)
+{
+	int		i;
+	char	*result;
+	char	**tokens;
 
 	i = 0;
+	result = NULL;
+	tokens = NULL;
 	while (i < cmd->childcount)
 	{
 		if (cmd->children[i]->type == AST_WORD)
 		{
-			expand_check_quotes(cmd->children[i], p);
+			result = stage_expand_check(cmd->children[i], p);
+			if (result)
+			{
+				tokens = check_expand_space(result);
+				free(result);
+				for (int j = 0; tokens[j]; j++)
+					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
+				for (int k = 0; tokens[k]; k++)
+				{
+					printf("k:%d\n", k);
+					free(tokens[k]);
+				}
+				free(tokens);
+			}
 		}
 		else if (cmd->children[i]->type == AST_ARGUMENT)
 		{
-			expand_check_quotes(cmd->children[i]->children[0], p);
+			result = stage_expand_check(cmd->children[i]->children[0], p);
+			if (result)
+			{
+				tokens = check_expand_space(result);
+				free(result);
+				for (int j = 0; tokens[j]; j++)
+					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
+				for (int k = 0; tokens[k]; k++)
+				{
+					printf("k:%d\n", k);
+					free(tokens[k]);
+				}
+				free(tokens);
+			}
 		}
-		// else if(cmd->children[i]->type == AST_REDIR_IN
-		// 	|| cmd->children[i]->type == AST_REDIR_OUT
-		// 	|| cmd->children[i]->type == AST_HEREDOC
-		// 	|| cmd->children[i]->type == AST_APPEND)
-		// {
-		// 	redir_token_single_quotes(cmd->children[i]->children[0],
-		// 		cmd->children[i]->type);
-		// }
 		i++;
 	}
 }
@@ -340,7 +464,7 @@ void	expansion_engine(t_ast *root, t_parser *p)
 	{
 		{
 			ptr = root->children[i];
-			command_instructor(ptr, p);
+			simple_command_instructor(ptr, p);
 			i++;
 		}
 	}
