@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/24 15:40:49 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/24 21:35:01 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	iter_dollar(char *lxm)
 		return (1);
 	return (0);
 }
+
 
 char	*ft_expand(char *lxm, size_t start, size_t end, t_parser *p)
 {
@@ -217,6 +218,39 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 	
 // }
 
+void	append_with_mark(char *value, t_expand *origin, char mark)
+{
+	size_t	o_len;
+	size_t	len;
+	size_t	new_len;
+	size_t		i;
+
+	o_len = origin->count;
+	len = ft_strlen(value);
+	new_len = o_len + len;
+	i = 0;
+	origin->s_array = realloc(origin->s_array, new_len + 1);
+	ft_memcpy(origin->s_array, value, len);
+	origin->s_array[new_len] = '\0';
+	origin->mark = realloc(origin->mark, new_len);
+	while (i < len)
+	{
+		origin->mark[o_len + i] = mark;
+		i++;
+	}
+	origin->count = new_len;
+}
+
+void	mark_char_literal(char *value, t_parser *p)
+{
+	append_with_mark(value, p->origin, SRC_LITERAL);
+}
+
+void	mark_char_expand(char *value, t_parser *p)
+{
+	append_with_mark(value, p->origin, SRC_EXPAND);
+}
+
 char	*token_expandable_check(char *lxm, t_parser *p)
 {
 	size_t	i;
@@ -229,6 +263,7 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 	printf("*token_is_expandable* string passed:%s\n", lxm);
 	if (iter_dollar(lxm) == 1)
 	{
+		p->dollar_flag = 1;
 		result = ft_strjoin_free(result, ft_strdup("$"));
 		return (result);
 	}
@@ -241,10 +276,24 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 			ch[0] = lxm[i];
 			ch[1] = 0;
 			result = ft_strjoin_free(result, ft_strdup(ch));
+			mark_char_literal(ft_strdup(ch), p);
+			for (int o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+				o++;		
+			}
 		}
 		if (lxm[i] == '$')
 		{
 			value = extract_token_expand(lxm, &i, p);
+			mark_char_expand(value, p);
+			for (int o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+				o++;		
+			}
 			result = ft_strjoin_free(result, value);
 			printf("*token_expandable_check* result:%s\n", result);
 			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
@@ -257,7 +306,13 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 				main_free(p->node, p->token, p->result, p->ptr);
 				exit (2);
 			}
-			
+			mark_char_literal(value, p);
+			for (int o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+				o++;		
+			}
 			result = ft_strjoin_free(result, value);
 			printf("*token_expandable_check* single quotes result:%s\n", result);
 		}
@@ -268,6 +323,13 @@ char	*token_expandable_check(char *lxm, t_parser *p)
 			{
 				main_free(p->node, p->token, p->result, p->ptr);
 				exit (2);
+			}
+			mark_char_literal(value, p);
+			for (int o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+				o++;		
 			}
 			result = ft_strjoin_free(result, value);
 			if (p->dollar_flag == 1)
@@ -296,6 +358,12 @@ char	*stage_expand_check(t_ast *child, t_parser *p)
 		str = child->token_ref->lexeme;
 		result = token_expandable_check(str, p);
 		printf("*token_single_quotes* final result:%s\n", result);
+		for (int o = 0; o < p->origin->count; o++)
+		{
+			printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+			printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+			o++;		
+		}
 	}
 	return (result);
 }

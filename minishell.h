@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/23 19:21:57 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/24 20:45:58 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ typedef enum e_node
 	AST_WORD,
 }	t_node;
 
+typedef enum e_expd_e
+{
+	SRC_LITERAL,
+	SRC_EXPAND,
+}	t_expd_e;
+
 typedef struct s_token
 {
 	t_token_type	token;
@@ -58,6 +64,13 @@ typedef struct s_ast
 	int				heredoc_fd[2];
 }	t_ast;
 
+typedef struct s_expand
+{
+	t_expd_e	*mark;
+	char		*s_array;
+	int			count;
+}	t_expand;
+
 //KAI'S PART
 typedef struct s_envp
 {
@@ -73,20 +86,21 @@ typedef struct shell
 
 typedef struct s_parser
 {
-	char	*result;
-	t_token	*token;
-	t_ast	*node;
-	t_token	*cursor;
-	t_ast	*cur_cmd;
-	int		err_flag;
-	char	*trim;
-	int		exit_flag;
-	int		malloc_flag;
-	int		heredoc_flag;
-	int		dollar_flag;
-	t_shell	envp_ls;
-	t_envp	*ptr;
-	char	*value;
+	char		*result;
+	t_token		*token;
+	t_ast		*node;
+	t_token		*cursor;
+	t_ast		*cur_cmd;
+	int			err_flag;
+	char		*trim;
+	int			exit_flag;
+	int			malloc_flag;
+	int			heredoc_flag;
+	int			dollar_flag;
+	t_shell		envp_ls;
+	t_envp		*ptr;
+	char		*value;
+	t_expand	*origin;
 }	t_parser;
 
 
