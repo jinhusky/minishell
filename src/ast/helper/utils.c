@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/24 20:45:45 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/25 07:09:55 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,5 @@ void	init_program(t_token **tkn, t_ast **nd, t_parser *p)
 	p->err_flag = 0;
 	p->ptr = NULL;
 	p->dollar_flag = 0;
-	p->origin->s_array = NULL;
-	p->origin->mark = NULL;
-	p->origin->count = 0;
+	p->origin = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/24 20:45:58 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/25 20:23:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_expand
 {
 	t_expd_e	*mark;
 	char		*s_array;
-	int			count;
+	size_t		count;
 }	t_expand;
 
 //KAI'S PART
@@ -143,7 +143,9 @@ void		parse_components(t_ast *prt, t_ast *child, t_parser *p);
 bool		valid_component(t_parser *p);
 t_ast		*parse_argument(t_ast *chd_ptr, t_parser *p);
 void		parse_word(t_ast *branch, t_parser *p);
+void		init_quotes(char *lexeme, char **src, char **dst);
 void		strip_quotes(char *lexeme, t_parser *p);
+void		expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_parser *p);
 void		ft_ast_visualize(t_ast *root);
 void		ast_loop(t_ast *root, t_parser *p);

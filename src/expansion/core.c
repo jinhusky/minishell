@@ -6,11 +6,20 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/24 21:35:01 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/25 20:35:34 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+t_expand	*init_origin(t_expand *origin)
+{
+	origin = malloc(sizeof(t_expand));
+	origin->s_array = NULL;
+	origin->mark = NULL;
+	origin->count = 0;
+	return (origin);
+}
 
 int	iter_dollar(char *lxm)
 {
@@ -218,7 +227,7 @@ char	*token_double_only(char *lxm, size_t *i, t_parser *p)
 	
 // }
 
-void	append_with_mark(char *value, t_expand *origin, char mark)
+void	append_with_mark(char *value, t_expand *origin, int mark)
 {
 	size_t	o_len;
 	size_t	len;
@@ -230,9 +239,12 @@ void	append_with_mark(char *value, t_expand *origin, char mark)
 	new_len = o_len + len;
 	i = 0;
 	origin->s_array = realloc(origin->s_array, new_len + 1);
-	ft_memcpy(origin->s_array, value, len);
+	ft_memcpy(origin->s_array + o_len, value, len);
 	origin->s_array[new_len] = '\0';
-	origin->mark = realloc(origin->mark, new_len);
+	printf("*appen_with_mark* s_array:%s\n", origin->s_array);
+	origin->mark = realloc(origin->mark, new_len * sizeof(int));
+	if (!origin->mark)
+		printf("mark is empty\n");
 	while (i < len)
 	{
 		origin->mark[o_len + i] = mark;
@@ -249,123 +261,6 @@ void	mark_char_literal(char *value, t_parser *p)
 void	mark_char_expand(char *value, t_parser *p)
 {
 	append_with_mark(value, p->origin, SRC_EXPAND);
-}
-
-char	*token_expandable_check(char *lxm, t_parser *p)
-{
-	size_t	i;
-	char	ch[2];
-	char	*result;
-	char	*value;
-	
-	i = 0;
-	result = ft_strdup("");
-	printf("*token_is_expandable* string passed:%s\n", lxm);
-	if (iter_dollar(lxm) == 1)
-	{
-		p->dollar_flag = 1;
-		result = ft_strjoin_free(result, ft_strdup("$"));
-		return (result);
-	}
-	while (i < ft_strlen(lxm))
-	{
-		printf("*token_expandable_check* lxm[i]:%c\n", lxm[i]);
-		printf("*token_expandable_check* i:%zu\n", i);
-		if (lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
-		{
-			ch[0] = lxm[i];
-			ch[1] = 0;
-			result = ft_strjoin_free(result, ft_strdup(ch));
-			mark_char_literal(ft_strdup(ch), p);
-			for (int o = 0; o < p->origin->count; o++)
-			{
-				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
-				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
-				o++;		
-			}
-		}
-		if (lxm[i] == '$')
-		{
-			value = extract_token_expand(lxm, &i, p);
-			mark_char_expand(value, p);
-			for (int o = 0; o < p->origin->count; o++)
-			{
-				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
-				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
-				o++;		
-			}
-			result = ft_strjoin_free(result, value);
-			printf("*token_expandable_check* result:%s\n", result);
-			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
-		}
-		else if (lxm[i] == '\'')
-		{
-			value = token_single_only(lxm, &i, p);
-			if (!value && p->err_flag == 1)
-			{
-				main_free(p->node, p->token, p->result, p->ptr);
-				exit (2);
-			}
-			mark_char_literal(value, p);
-			for (int o = 0; o < p->origin->count; o++)
-			{
-				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
-				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
-				o++;		
-			}
-			result = ft_strjoin_free(result, value);
-			printf("*token_expandable_check* single quotes result:%s\n", result);
-		}
-		else if (lxm[i] == '"')
-		{
-			value = token_double_only(lxm, &i, p);
-			if (p->err_flag == 1)
-			{
-				main_free(p->node, p->token, p->result, p->ptr);
-				exit (2);
-			}
-			mark_char_literal(value, p);
-			for (int o = 0; o < p->origin->count; o++)
-			{
-				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
-				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
-				o++;		
-			}
-			result = ft_strjoin_free(result, value);
-			if (p->dollar_flag == 1)
-			{
-				p->dollar_flag = 0;
-				return (result);
-			}
-			printf("*token_expandable_check* double quotes result:%s\n", result);
-			printf("*token_expandable_check* after double quotes i:%zu\n", i);
-		}
-		i++;
-	}
-	printf("*token_expandable_check* final result:%s\n", result);
-	return (result);
-}
-
-char	*stage_expand_check(t_ast *child, t_parser *p)
-{
-	char	*str;
-	char	*result;
-	
-	result = NULL;
-	printf("in here token_quotes\n");
-	if (child->type == AST_WORD)
-	{
-		str = child->token_ref->lexeme;
-		result = token_expandable_check(str, p);
-		printf("*token_single_quotes* final result:%s\n", result);
-		for (int o = 0; o < p->origin->count; o++)
-		{
-			printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
-			printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
-			o++;		
-		}
-	}
-	return (result);
 }
 
 char	**token_append(char **arr, char *sub, int *count)
@@ -410,7 +305,7 @@ char	*substring_split(char *result, int start, int end)
 	return (str);
 }
 
-char	**check_expand_space(char *result)
+char	**check_expand_space(char *result, t_expand *origin)
 {
 	int		in_single;
 	int		in_double;
@@ -429,12 +324,12 @@ char	**check_expand_space(char *result)
 	tcount = 0;
 	while (result[i])
 	{
-		if (result[i] == '\'' && !in_double)
+		if (result[i] == '\'' && !in_double && origin->mark[i] == SRC_LITERAL)
 			in_single = !in_single;
-		else if (result[i] == '"' && !in_single)
+		else if (result[i] == '"' && !in_single && origin->mark[i] == SRC_LITERAL)
 			in_double = !in_double;
-		printf("*check_expand_space* in_single:%d\n", in_single);
-		printf("*check_expand_space* in_double:%d\n", in_double);
+		// printf("*check_expand_space* in_single:%d\n", in_single);
+		// printf("*check_expand_space* in_double:%d\n", in_double);
 		if (result[i] == ' ' && !in_single && !in_double)
 		{
 			printf("*check_expand_space* in_single inside the if statement:%d\n", in_single);
@@ -472,23 +367,340 @@ char	**check_expand_space(char *result)
 	return (tokens);
 }
 
+char	*token_expandable_check(char *lxm, char *result, t_parser *p)
+{
+	size_t	i;
+	char	ch[2];
+	char	*lit;
+	char	*value;
+	
+	i = 0;
+	result = ft_strdup("");
+	printf("*token_is_expandable* string passed:%s\n", lxm);
+	if (iter_dollar(lxm) == 1)
+	{
+		p->dollar_flag = 1;
+		result = ft_strjoin_free(result, ft_strdup("$"));
+		return (result);
+	}
+	while (i < ft_strlen(lxm))
+	{
+		printf("*token_expandable_check* lxm[i]:%c\n", lxm[i]);
+		printf("*token_expandable_check* i:%zu\n", i);
+		if (lxm[i] != '$' && lxm[i] != '\'' && lxm[i] != '"')
+		{
+			ch[0] = lxm[i];
+			ch[1] = 0;
+			result = ft_strjoin_free(result, ft_strdup(ch));
+			lit = ft_strdup(ch);
+			mark_char_literal(lit, p);
+			free(lit);
+			for (size_t o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+			}
+		}
+		if (lxm[i] == '$')
+		{
+			value = extract_token_expand(lxm, &i, p);
+			mark_char_expand(value, p);
+			for (size_t o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+			}
+			result = ft_strjoin_free(result, value);
+			printf("*token_expandable_check* result:%s\n", result);
+			printf("*token_expandable_check* iterator passed back from extract_token_expand:%zu\n", i);
+		}
+		else if (lxm[i] == '\'')
+		{
+			value = token_single_only(lxm, &i, p);
+			if (!value && p->err_flag == 1)
+			{
+				main_free(p->node, p->token, p->result, p->ptr);
+				exit (2);
+			}
+			mark_char_literal(value, p);
+			for (size_t o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+			}
+			result = ft_strjoin_free(result, value);
+			printf("*token_expandable_check* single quotes result:%s\n", result);
+		}
+		else if (lxm[i] == '"')
+		{
+			value = token_double_only(lxm, &i, p);
+			if (p->err_flag == 1)
+			{
+				main_free(p->node, p->token, p->result, p->ptr);
+				exit (2);
+			}
+			mark_char_literal(value, p);
+			for (size_t o = 0; o < p->origin->count; o++)
+			{
+				printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+				printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
+			}
+			result = ft_strjoin_free(result, value);
+			if (p->dollar_flag == 1)
+			{
+				p->dollar_flag = 0;
+				return (result);
+			}
+			printf("*token_expandable_check* double quotes result:%s\n", result);
+			printf("*token_expandable_check* after double quotes i:%zu\n", i);
+		}
+		i++;
+	}
+	printf("*token_expandable_check* final result:%s\n", result);
+	return (result);
+}
+
+char	*stage_expand_check(t_ast *child, t_parser *p)
+{
+	char	*str;
+	char	*result;
+	
+	result = NULL;
+	printf("in here token_quotes\n");
+	if (child->type == AST_WORD)
+	{
+		str = child->token_ref->lexeme;
+		result = token_expandable_check(str, result, p);
+		printf("*token_single_quotes* final result:%s\n", result);
+		for (size_t o = 0; o < p->origin->count; o++)
+		{
+			printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);
+			printf("*token_expandable_check* current mark:%d\n", p->origin->mark[o]);
+		}
+	}
+	return (result);
+}
+
+t_expand	**append_expand_token(t_expand **tkns, int *count, t_expand *orgn)
+{
+	tkns = realloc(tkns, sizeof(t_expand *) * (*count + 2));
+	if (!tkns)
+		return NULL;
+	tkns[*count] = orgn;
+	(*count)++;
+	tkns[*count] = NULL;
+	return (tkns);
+}
+
+t_expand	*token_mark_copy(t_expand *origin, char *result, size_t start, size_t end)
+{
+	size_t		len;
+	t_expand	*new;
+	size_t		i;
+
+	len = end - start;
+	new = malloc(sizeof(t_expand));
+	i = 0;
+	if (!new)
+		return (NULL);
+	new->s_array = NULL;
+	new->s_array = malloc(sizeof(char) * (len + 1));
+	if (!new->s_array)
+		return (NULL);
+	ft_memcpy(new->s_array, result, len);
+	new->s_array[len] = '\0';
+	new->mark = NULL;
+	new->mark = malloc(sizeof(int) * len);
+	if (!new->mark)
+		return (NULL);
+	ft_memcpy(new->mark, origin->mark + start, sizeof(int) * len);
+	new->count = len;
+	free(result);
+	return (new);
+}
+
+t_expand	**copy_array_split(char *result, t_parser *p)
+{
+	int			in_single;
+	int			in_double;
+	int			i;
+	int			start;
+	t_expand	**tokens;
+	char		*sub;
+	int			tcount;
+
+	in_single = 0;
+	in_double = 0;
+	i = 0;
+	start = 0;
+	tokens = NULL;
+	sub = NULL;
+	tcount = 0;
+	while (result[i])
+	{
+		if (result[i] == '\'' && !in_double && p->origin->mark[i] == SRC_LITERAL)
+			in_single = !in_single;
+		else if (result[i] == '"' && !in_single && p->origin->mark[i] == SRC_LITERAL)
+			in_double = !in_double;
+		// printf("*check_expand_space* in_single:%d\n", in_single);
+		// printf("*check_expand_space* in_double:%d\n", in_double);
+		if (result[i] == ' ' && !in_single && !in_double)
+		{
+			printf("*check_expand_space* in_single inside the if statement:%d\n", in_single);
+			printf("*check_expand_space* in_double inside the if statement:%d\n", in_double);
+			if (i > start)
+			{
+				printf("*check_expand_space*(1) start:%d\n", start);
+				printf("*check_expand_space*(1) i:%d\n", i);
+				sub = substring_split(result, start, i);
+				printf("*check_expand_space*(1) sub:%s\n", sub);
+				t_expand * new = token_mark_copy(p->origin, sub, start, i);
+				tokens = append_expand_token(tokens, &tcount, new);
+				
+			}
+			while (result[i] == ' ')
+				i++;
+			start = i;
+			continue;
+		}
+		i++;
+	}
+	if (i > start)
+	{
+		sub = substring_split(result, start, i);
+		printf("*check_expand_space* sub:%s\n", sub);
+		t_expand * new = token_mark_copy(p->origin, sub, start, i);
+		tokens = append_expand_token(tokens, &tcount, new);
+		printf("*check_expand_space* tcount:%d\n", tcount);
+	}
+	if (tokens)
+		tokens[tcount] = NULL;
+	for (int j = 0; j < tcount; j++)
+	{
+		printf("*copy_array_split* tokens[%d]:%s\n", j, tokens[j]->s_array);
+		printf("*copy_array_split* count[%d]:%zu\n", j, tokens[j]->count);
+		for (size_t r = 0; r < tokens[j]->count; r++)
+			printf("*copy_array_split* mark[%d]:%d\n", j, tokens[j]->mark[r]);
+	}
+	return (tokens);
+}
+
+void	free_copies(t_expand **copies)
+{
+	int	i = 0;
+	while(copies[i])
+	{
+		free(copies[i]->s_array);
+		free(copies[i]->mark);
+		free(copies[i]);
+		i++;
+	}
+	free(copies);
+}
+
+// void	expd_strp_qts(char *lxm, size_t srt, t_expd_e mk, t_parser *p)
+// {
+// 	char	quote;
+// 	char	*src;
+// 	char	*dst;
+
+// 	init_quotes(lxm, &src, &dst);
+// 	quote = 0;
+// 	while (src[srt])
+// 	{
+// 		if ((src[srt] == '\'' || src[srt] == '"') && mk == SRC_LITERAL)
+// 		{
+// 			if (quote == 0)
+// 				quote = src[srt];
+// 			else if (quote == src[srt])
+// 				quote = 0;
+// 			else
+// 				dst[srt++] = src[srt];
+// 		}
+// 		else
+// 			dst[srt++] = src[srt];
+// 		srt++;
+// 	}
+// 	dst[srt] = '\0';
+// 	if (quote != 0)
+// 		error_quotes(quote, p);
+// 	return ;
+// }
+
+void	init_expd_quotes(size_t *si, size_t *di, char *quote)
+{
+	*si = 0;
+	*di = 0;
+	*quote = 0;
+}
+
+void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
+{
+	size_t	si;
+	size_t	di;
+	char	quote;
+	char	c;
+
+	init_expd_quotes(&si, &di, &quote);
+	while ((c = s[si]) != '\0')
+	{
+		if ((c == '\'' || c == '"') && mark[si] == SRC_LITERAL)
+		{
+			if (quote == 0)
+				quote = c;
+			else if (quote == c)
+				quote = 0;
+			else
+				s[di++] = c;
+		}
+		else
+			s[di++] = c;
+		si++;
+	}
+	s[di] = '\0';
+	if (quote != 0)
+		error_quotes(quote, p);
+}
+
+
+char	**token_quote_removal(char **tkns, t_expand **cps, t_parser *p)
+{
+	size_t	i;
+	char	*ptr;
+
+	i = 0;
+	ptr = NULL;
+	while (tkns[i])
+	{
+		ptr = tkns[i];
+		expd_strip_quotes(ptr, cps[i]->mark, p);
+		i++;
+	}
+	return (tkns);
+}
+
 void	simple_command_instructor(t_ast *cmd, t_parser *p)
 {
-	int		i;
-	char	*result;
-	char	**tokens;
+	int			i;
+	char		*result;
+	char		**tokens;
+	t_expand	**copies;
 
 	i = 0;
 	result = NULL;
 	tokens = NULL;
+	copies = NULL;
 	while (i < cmd->childcount)
 	{
+		p->origin = init_origin(p->origin);
 		if (cmd->children[i]->type == AST_WORD)
 		{
 			result = stage_expand_check(cmd->children[i], p);
 			if (result)
 			{
-				tokens = check_expand_space(result);
+				tokens = check_expand_space(result, p->origin);
+				copies = copy_array_split(p->origin->s_array, p);
+				tokens = token_quote_removal(tokens, copies, p);
 				free(result);
 				for (int j = 0; tokens[j]; j++)
 					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
@@ -497,6 +709,10 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 					printf("k:%d\n", k);
 					free(tokens[k]);
 				}
+				free_copies(copies);
+				free(p->origin->s_array);
+				free(p->origin->mark);
+				free(p->origin);
 				free(tokens);
 			}
 		}
@@ -505,7 +721,9 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 			result = stage_expand_check(cmd->children[i]->children[0], p);
 			if (result)
 			{
-				tokens = check_expand_space(result);
+				tokens = check_expand_space(result, p->origin);
+				copies = copy_array_split(p->origin->s_array, p);
+				tokens = token_quote_removal(tokens, copies, p);
 				free(result);
 				for (int j = 0; tokens[j]; j++)
 					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
@@ -514,6 +732,10 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 					printf("k:%d\n", k);
 					free(tokens[k]);
 				}
+				free_copies(copies);
+				free(p->origin->s_array);
+				free(p->origin->mark);
+				free(p->origin);
 				free(tokens);
 			}
 		}
