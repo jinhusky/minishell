@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/25 20:35:34 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/26 11:22:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,11 +496,9 @@ t_expand	*token_mark_copy(t_expand *origin, char *result, size_t start, size_t e
 {
 	size_t		len;
 	t_expand	*new;
-	size_t		i;
 
 	len = end - start;
 	new = malloc(sizeof(t_expand));
-	i = 0;
 	if (!new)
 		return (NULL);
 	new->s_array = NULL;
@@ -661,7 +659,6 @@ void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
 	if (quote != 0)
 		error_quotes(quote, p);
 }
-
 
 char	**token_quote_removal(char **tkns, t_expand **cps, t_parser *p)
 {
