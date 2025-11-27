@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/25 20:23:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/27 09:11:11 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ typedef struct s_ast
 	struct s_ast	**children;
 	int				childcount;
 	t_token			*token_ref;
+	int				argc;
+	char			**argv;
 	int				heredoc_fd[2];
 }	t_ast;
 
@@ -152,4 +154,5 @@ void		ast_loop(t_ast *root, t_parser *p);
 void		expansion_engine(t_ast *root, t_parser *p);
 void		set_envp(char **envp, t_shell *env);
 void		free_envp(t_envp *ptr);
+void		free_argv(char **argv);
 #endif

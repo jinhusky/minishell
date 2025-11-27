@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/25 07:09:55 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/27 09:04:55 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	free_treenode(t_ast *root)
 		i++;
 	}
 	free(root->children);
+	if (root->argv)
+		free_argv(root->argv);
 	free(root);
 }
 

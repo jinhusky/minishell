@@ -6,11 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/26 11:22:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/27 20:41:59 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+//TODO incorporate $? to get the current exit code, use t_paser struct as a global struct to store exit codes, norminette core.c
 
 t_expand	*init_origin(t_expand *origin)
 {
@@ -238,11 +240,13 @@ void	append_with_mark(char *value, t_expand *origin, int mark)
 	len = ft_strlen(value);
 	new_len = o_len + len;
 	i = 0;
-	origin->s_array = realloc(origin->s_array, new_len + 1);
+	origin->s_array = ft_realloc(origin->s_array, o_len * sizeof(char *),
+		(new_len  + 1) * sizeof(char *));
 	ft_memcpy(origin->s_array + o_len, value, len);
 	origin->s_array[new_len] = '\0';
 	printf("*appen_with_mark* s_array:%s\n", origin->s_array);
-	origin->mark = realloc(origin->mark, new_len * sizeof(int));
+	origin->mark = ft_realloc(origin->mark, o_len * sizeof(int),
+		(new_len + 1) * sizeof(int));
 	if (!origin->mark)
 		printf("mark is empty\n");
 	while (i < len)
@@ -377,12 +381,14 @@ char	*token_expandable_check(char *lxm, char *result, t_parser *p)
 	i = 0;
 	result = ft_strdup("");
 	printf("*token_is_expandable* string passed:%s\n", lxm);
-	if (iter_dollar(lxm) == 1)
-	{
-		p->dollar_flag = 1;
-		result = ft_strjoin_free(result, ft_strdup("$"));
-		return (result);
-	}
+	// if (iter_dollar(lxm) == 1)
+	// {
+	// 	p->dollar_flag = 1;
+	// 	result = ft_strjoin_free(result, ft_strdup("$"));
+	// 	for (int i = 0; result[i]; i++)
+	// 		printf("iter_dollar %c",result[i]);
+	// 	return (result);
+	// }
 	while (i < ft_strlen(lxm))
 	{
 		printf("*token_expandable_check* lxm[i]:%c\n", lxm[i]);
@@ -483,7 +489,8 @@ char	*stage_expand_check(t_ast *child, t_parser *p)
 
 t_expand	**append_expand_token(t_expand **tkns, int *count, t_expand *orgn)
 {
-	tkns = realloc(tkns, sizeof(t_expand *) * (*count + 2));
+	tkns = ft_realloc(tkns, (*count) * sizeof(t_expand *),
+		(*count + 2) * sizeof(t_expand *));
 	if (!tkns)
 		return NULL;
 	tkns[*count] = orgn;
@@ -517,7 +524,7 @@ t_expand	*token_mark_copy(t_expand *origin, char *result, size_t start, size_t e
 	return (new);
 }
 
-t_expand	**copy_array_split(char *result, t_parser *p)
+t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p)
 {
 	int			in_single;
 	int			in_double;
@@ -552,7 +559,7 @@ t_expand	**copy_array_split(char *result, t_parser *p)
 				printf("*check_expand_space*(1) i:%d\n", i);
 				sub = substring_split(result, start, i);
 				printf("*check_expand_space*(1) sub:%s\n", sub);
-				t_expand * new = token_mark_copy(p->origin, sub, start, i);
+				t_expand *new = token_mark_copy(p->origin, sub, start, i);
 				tokens = append_expand_token(tokens, &tcount, new);
 				
 			}
@@ -580,7 +587,8 @@ t_expand	**copy_array_split(char *result, t_parser *p)
 		for (size_t r = 0; r < tokens[j]->count; r++)
 			printf("*copy_array_split* mark[%d]:%d\n", j, tokens[j]->mark[r]);
 	}
-	return (tokens);
+	cpy = tokens;
+	return (cpy);
 }
 
 void	free_copies(t_expand **copies)
@@ -676,6 +684,43 @@ char	**token_quote_removal(char **tkns, t_expand **cps, t_parser *p)
 	return (tkns);
 }
 
+void	free_argv(char **argv)
+{
+	int	i;
+
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+}
+
+char	**populate_argv(int *argc, char **argv, char **tokens, t_parser *p)
+{
+	int		i;
+	int		tokens_len;
+	
+	i = -1;
+	tokens_len = 0;
+	while (tokens[tokens_len])
+		tokens_len++;
+	argv = ft_realloc(argv, (*argc) * sizeof(char *),
+		(*argc + tokens_len + 1) * sizeof(char *));
+	if (!argv)
+	{
+		p->malloc_flag = 1;
+		return (NULL);
+	}
+	while (tokens[++i])
+		argv[*argc + i] = ft_strdup(tokens[i]);
+	*argc = (*argc + tokens_len);
+	argv[*argc] = NULL;
+	free_argv(tokens);
+	return (argv);
+}
+
 void	simple_command_instructor(t_ast *cmd, t_parser *p)
 {
 	int			i;
@@ -686,54 +731,61 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 	i = 0;
 	result = NULL;
 	tokens = NULL;
-	copies = NULL;
 	while (i < cmd->childcount)
 	{
-		p->origin = init_origin(p->origin);
+		copies = NULL;
 		if (cmd->children[i]->type == AST_WORD)
 		{
+			p->origin = init_origin(p->origin);
 			result = stage_expand_check(cmd->children[i], p);
 			if (result)
 			{
 				tokens = check_expand_space(result, p->origin);
-				copies = copy_array_split(p->origin->s_array, p);
+				copies = copy_array_split(p->origin->s_array, copies, p);
 				tokens = token_quote_removal(tokens, copies, p);
-				free(result);
 				for (int j = 0; tokens[j]; j++)
 					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
 				for (int k = 0; tokens[k]; k++)
-				{
 					printf("k:%d\n", k);
-					free(tokens[k]);
-				}
+				cmd->argv = populate_argv(&cmd->argc, cmd->argv, tokens, p);
+				for (int j = 0; cmd->argv[j]; j++)
+					printf("*simple_command_instructor* argv[%d]:%s\n", j, cmd->argv[j]);
+				for (int k = 0; cmd->argv[k]; k++)
+					printf("k:%d\n", k);
+				// if (p->malloc_flag == 1 && cmd->argv == NULL)
+					//free everthing and exit;
+				free(result);
 				free_copies(copies);
 				free(p->origin->s_array);
 				free(p->origin->mark);
 				free(p->origin);
-				free(tokens);
 			}
 		}
 		else if (cmd->children[i]->type == AST_ARGUMENT)
 		{
+			p->origin = init_origin(p->origin);
 			result = stage_expand_check(cmd->children[i]->children[0], p);
 			if (result)
 			{
 				tokens = check_expand_space(result, p->origin);
-				copies = copy_array_split(p->origin->s_array, p);
+				copies = copy_array_split(p->origin->s_array, copies, p);
+				if (!copies)
+					printf("copies is empty\n");
 				tokens = token_quote_removal(tokens, copies, p);
-				free(result);
 				for (int j = 0; tokens[j]; j++)
 					printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
 				for (int k = 0; tokens[k]; k++)
-				{
 					printf("k:%d\n", k);
-					free(tokens[k]);
-				}
+				cmd->argv = populate_argv(&cmd->argc, cmd->argv, tokens, p);
+				for (int j = 0; cmd->argv[j]; j++)
+					printf("*simple_command_instructor* argv[%d]:%s\n", j, cmd->argv[j]);
+				for (int k = 0; cmd->argv[k]; k++)
+					printf("k:%d\n", k);
+				free(result);
 				free_copies(copies);
 				free(p->origin->s_array);
 				free(p->origin->mark);
 				free(p->origin);
-				free(tokens);
 			}
 		}
 		i++;

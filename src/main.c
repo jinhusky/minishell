@@ -40,7 +40,7 @@ int	main(int argc, char *argv[], char **envp)
 		if (!p.result)
 			continue ;
 		p.node = parsing(p.node, p.token, &p);
-		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr); //!test case: exita exit as well
+		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
 		if (p.node)
@@ -48,6 +48,7 @@ int	main(int argc, char *argv[], char **envp)
 			ft_ast_visualize(p.node);
 			ast_loop(p.node, &p);
 			expansion_engine(p.node, &p);
+			ft_ast_visualize(p.node);
 		}
 		main_free(p.node, p.token, p.result, p.ptr);
 	}

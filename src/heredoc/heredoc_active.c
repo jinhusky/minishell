@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/18 10:16:48 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/27 15:52:22 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ char	*read_content(char *delimiter)
 		}
 		line_len = ft_strlen(lines);
 		// printf("*before memcopy* result: %s$\n", result);
-		result = realloc(result, total_len + line_len + 2);
+		result = ft_realloc(result, line_len * sizeof(char),
+			(total_len + line_len + 2) * sizeof(char));
 		ft_memcpy(result + total_len, lines, line_len);
 		total_len = total_len + line_len;
 		result[total_len++] = '\n';

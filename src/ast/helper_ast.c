@@ -37,14 +37,16 @@ t_ast	*create_treenode(t_ast *treenode, t_parser *p)
 	treenode->children = NULL;
 	treenode->childcount = 0;
 	treenode->token_ref = NULL;
+	treenode->argc = 0;
+	treenode->argv = NULL;
 	treenode->type = 0;
 	return (treenode);
 }
 
 void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_parser *p)
 {
-	new_chld = realloc(brch->children, sizeof(t_ast *)
-			* (brch->childcount + 1));
+	new_chld = ft_realloc(brch->children, brch->childcount * sizeof(t_ast *),
+			(brch->childcount + 1) * sizeof(t_ast *));
 	if (!new_chld)
 	{
 		free_treenode(leaf);
