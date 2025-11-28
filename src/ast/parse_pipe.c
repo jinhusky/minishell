@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/27 07:53:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/28 08:10:16 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token)
 {
 	node = malloc(sizeof(t_ast));
 	if (!node)
-		ast_exit(token, node, p->result);
+		ast_exit(token, node, p);
 	node->type = 0;
 	node->children = NULL;
 	node->childcount = 0;

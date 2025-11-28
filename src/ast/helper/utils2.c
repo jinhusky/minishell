@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/17 15:31:37 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/28 13:59:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,36 +27,37 @@ void	free_envp(t_envp *ptr)
 	}
 }
 
-void	main_free(t_ast *node, t_token *token, char *result, t_envp *ptr)
+void	main_free(t_ast *node, t_token *token, char *result, t_parser *p)
 {
 	if (node)
 		free_treenode(node);
 	if (token)
 		free_tokens(token);
-	if (ptr)
-		free_envp(ptr);
+	if (p->ptr)
+		free_envp(p->ptr);
 	if (result)
 		free(result);
 }
 
-void	ast_exit(t_token *token, t_ast *node, char *result)
+void	ast_exit(t_token *token, t_ast *node, t_parser *p)
 {
 	ft_putstr_fd("malloc failed\n", 2);
 	if (node)
 		free_treenode(node);
 	if (token)
 		free_tokens(token);
-	if (result)
-		free(result);
-	exit (EXIT_FAILURE);
+	if (p->result)
+		free(p->result);
+	return ;
 }
 
-void	token_exit(t_token *token, char *result)
+void	token_exit(t_token *token, char *result, t_parser *p)
 {
 	ft_putstr_fd("*tokens* malloc failed\n", 2);
 	if (token)
 		free_tokens(token);
 	if (result)
 		free(result);
-	exit (EXIT_FAILURE);
+	p->malloc_flag = 1;
+	return ;
 }

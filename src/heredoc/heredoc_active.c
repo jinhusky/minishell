@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/27 15:52:22 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/28 09:01:13 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	find_heredoc(t_ast *child, t_parser *p)
 	int		i;
 	char	*line;
 	t_ast	*heredoc;
-	// char tmp[256] = " ";
 
 	i = 0;
 	line = NULL;
@@ -75,18 +74,16 @@ void	find_heredoc(t_ast *child, t_parser *p)
 			heredoc = child->children[i];
 			pipe(heredoc->heredoc_fd);
 			strip_quotes(heredoc->children[0]->token_ref->lexeme, p);
+			if (p->err_flag == 1)
+				break ;
 			line = read_content(heredoc->children[0]->token_ref->lexeme);
-			// printf("%s", line);
 			if (!line)
 				write(heredoc->heredoc_fd[1], "", 1);
 			else
 				write(heredoc->heredoc_fd[1], line, ft_strlen(line));
 			close(heredoc->heredoc_fd[1]);
-			// read(heredoc->heredoc_fd[0], tmp, 256);
-			// printf("tmp:%s$", tmp);
 			free(line);
 		}
-		// printf("---NEXT-ITERATION---\n\n");
 		i++;
 	}
 }
@@ -103,6 +100,8 @@ void	ast_loop(t_ast *root, t_parser *p)
 		{
 			cur_cmd = root->children[i];
 			find_heredoc(cur_cmd, p);
+			if (p->err_flag == 1)
+				break ;
 			i++;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/27 09:11:11 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/28 16:20:42 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +98,11 @@ typedef struct s_parser
 	int			exit_flag;
 	int			malloc_flag;
 	int			heredoc_flag;
-	int			dollar_flag;
 	t_shell		envp_ls;
 	t_envp		*ptr;
 	char		*value;
 	t_expand	*origin;
+	int			exit_code[1];
 }	t_parser;
 
 
@@ -113,17 +113,17 @@ void		free_append_word(t_token *head, t_token *temp);
 t_token		*create_node(t_token *head, char *start, size_t end);
 t_token		*append_node(t_token *head, char *start, size_t end);
 t_token		*append_word_node(t_token *hd, char *srt, size_t n_srt, size_t end);
-t_token		*token_word(t_token *tokens, char *result, int start, int i);
-t_token		*token_pipe(t_token *tokens, char *result);
-t_token		*token_single_operator(t_token *tokens, char *result);
-t_token		*token_double_operator(t_token *tokens, char *result);
-t_token		*tokenizer(char *result, t_token *tokens);
-void		main_free(t_ast *node, t_token *token, char *result, t_envp *ptr);
-void		ast_exit(t_token *token, t_ast *node, char *result);
-void		token_exit(t_token *token, char *result);
+t_token		*token_word(t_token *tokens, t_parser *p, int start, int i);
+t_token		*token_pipe(t_token *tokens, char *result, t_parser *p);
+t_token		*token_single_operator(t_token *tokens, char *result, t_parser *p);
+t_token		*token_double_operator(t_token *tokens, char *result, t_parser *p);
+t_token		*tokenizer(t_token *tokens, t_parser *p);
+void		main_free(t_ast *node, t_token *token, char *result, t_parser *p);
+void		ast_exit(t_token *token, t_ast *node, t_parser *p);
+void		token_exit(t_token *token, char *result, t_parser *p);
 void		free_tokens(t_token *tokens);
 char		*trim_prompt(char *trim);
-void		invalid_token(t_token *token, char *result);
+void		invalid_token(t_token *token, char *result, t_parser *p);
 void		empty_line(t_parser *p);
 int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);
 void		error_redir(t_token *token);
@@ -155,4 +155,13 @@ void		expansion_engine(t_ast *root, t_parser *p);
 void		set_envp(char **envp, t_shell *env);
 void		free_envp(t_envp *ptr);
 void		free_argv(char **argv);
+void		free_copies(t_expand **copies);
+void		simple_command_instructor(t_ast *cmd, t_parser *p);
+t_expand	*init_origin(t_expand *origin);
+char		*stage_expand_check(t_ast *child, t_parser *p);
+char		**check_expand_space(char *result, t_expand *origin, t_parser *p);
+t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p);
+char		**token_quote_removal(char **tkns, t_expand **cps, t_parser *p);
+char		**populate_argv(int *argc, char **argv, char **tokens, t_parser *p);
+
 #endif

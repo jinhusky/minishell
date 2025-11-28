@@ -64,9 +64,6 @@ void	parse_word(t_ast *branch, t_parser *p)
 	branch->type = AST_WORD;
 	if (p->cursor)
 	{
-		//TODO: Heredoc behaviour, double quotes and single quotes expands regardless, test heredoc behaviour 
-		//TODOD: if (inside the string has open and close double quotes as well as a '$' then call function to expand)
-		// strip_quotes(p->cursor->lexeme, p);
 		if (p->err_flag == 1)
 			return ;
 		branch->token_ref = p->cursor;

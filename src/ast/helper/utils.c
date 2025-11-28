@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/27 09:04:55 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/28 14:20:30 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,16 @@ void	free_treenode(t_ast *root)
 	free(root);
 }
 
-void	invalid_token(t_token *token, char *result)
+void	invalid_token(t_token *token, char *result, t_parser *p)
 {
-	if (!token)
-		free(result);
+	if (!token || p->malloc_flag == 1)
+	{
+		if (result)
+			free(result);
+		if (token)
+			free(token);
+	}
+	return ;
 }
 
 void	empty_line(t_parser *p)
@@ -58,6 +64,6 @@ void	init_program(t_token **tkn, t_ast **nd, t_parser *p)
 	p->exit_flag = 0;
 	p->err_flag = 0;
 	p->ptr = NULL;
-	p->dollar_flag = 0;
 	p->origin = NULL;
+	p->malloc_flag = 0;
 }
