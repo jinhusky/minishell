@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/28 16:20:42 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 11:23:48 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,12 @@ typedef struct s_parser
 	char		*value;
 	t_expand	*origin;
 	int			exit_code[1];
+	int			tcount;
+	int			in_double;
+	int			in_single;
 }	t_parser;
 
-
+//PARSING and READLINE//
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
 void		quote_check(char *result, int *i, char quote);
 t_token		*init_node(t_token *token);
@@ -147,21 +150,41 @@ t_ast		*parse_argument(t_ast *chd_ptr, t_parser *p);
 void		parse_word(t_ast *branch, t_parser *p);
 void		init_quotes(char *lexeme, char **src, char **dst);
 void		strip_quotes(char *lexeme, t_parser *p);
-void		expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_parser *p);
 void		ft_ast_visualize(t_ast *root);
+
+//HEREDOC//
 void		ast_loop(t_ast *root, t_parser *p);
+
+//EXPANSION//
 void		expansion_engine(t_ast *root, t_parser *p);
 void		set_envp(char **envp, t_shell *env);
 void		free_envp(t_envp *ptr);
-void		free_argv(char **argv);
 void		free_copies(t_expand **copies);
 void		simple_command_instructor(t_ast *cmd, t_parser *p);
 t_expand	*init_origin(t_expand *origin);
-char		*stage_expand_check(t_ast *child, t_parser *p);
-char		**check_expand_space(char *result, t_expand *origin, t_parser *p);
-t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p);
 char		**token_quote_removal(char **tkns, t_expand **cps, t_parser *p);
 char		**populate_argv(int *argc, char **argv, char **tokens, t_parser *p);
+void		init_expd_quotes(size_t *si, size_t *di, char *quote);
+void		expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p);
+char		**token_quote_removal(char **tkns, t_expand **cps, t_parser *p);
+void		free_argv(char **argv);
+char		**populate_argv(int *argc, char **argv, char **tokens, t_parser *p);
+char		*substring_split(char *result, int start, int end);
+t_expand	*token_mark_copy(t_expand *origin, char *result, size_t start, size_t end);
+t_expand	**append_expand_token(t_expand **tkns, int *count, t_expand *orgn);
+t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p);
+char		*token_expandable_check(char *lxm, char *result, t_parser *p);
+char		*stage_expand_check(t_ast *child, t_parser *p);
+char		**token_append(char **arr, char *sub, int *count);
+char		*substring_split(char *result, int start, int end);
+char		**check_expand_space(char *result, t_expand *origin, t_parser *p);
+void		append_with_mark(char *value, t_expand *origin, int mark);
+void		mark_char_literal(char *value, t_parser *p);
+void		mark_char_expand(char *value, t_parser *p);
+char		*token_double_only(char *lxm, size_t *i, t_parser *p);
+char		*token_single_only(char *lxm, size_t *i, t_parser *p);
+char		*extract_token_expand(char *lxm, size_t *i, t_parser *p);
+char		*ft_expand(char *lxm, size_t start, size_t end, t_parser *p);
 
 #endif
