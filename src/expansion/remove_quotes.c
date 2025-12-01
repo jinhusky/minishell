@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:20:54 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 10:45:40 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 17:15:38 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
 	init_expd_quotes(&si, &di, &quote);
 	while ((c = s[si]) != '\0')
 	{
-		printf("what is character:%c\n", c);
-		printf("what is mark:%d\n", mark[si]);
+		// printf("what is character:%c\n", c);
+		// printf("what is mark:%d\n", mark[si]);
 		if ((c == '\'' || c == '"') && mark[si] == SRC_LITERAL)
 		{
 			if (quote == 0)

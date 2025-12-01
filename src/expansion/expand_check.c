@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:02:13 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:02:29 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 17:14:30 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,12 @@ char	*token_expandable_check(char *lxm, char *result, t_parser *p)
 			// 	printf("*token_expandable_check* current char's mark:%d\n", p->origin->mark[o]);
 			// }
 			result = ft_strjoin_free(result, value);
-			printf("*token_expandable_check* double quotes result:%s\n", result);
-			printf("*token_expandable_check* after double quotes i:%zu\n", i);
+			// printf("*token_expandable_check* double quotes result:%s\n", result);
+			// printf("*token_expandable_check* after double quotes i:%zu\n", i);
 		}
 		i++;
 	}
-	printf("*token_expandable_check* final result:%s\n", result);
+	// printf("*token_expandable_check* final result:%s\n", result);
 	return (result);
 }
 
@@ -116,14 +116,14 @@ char	*stage_expand_check(t_ast *child, t_parser *p)
 	char	*result;
 	
 	result = NULL;
-	printf("in here token_quotes\n");
+	// printf("in here token_quotes\n");
 	if (child->type == AST_WORD)
 	{
 		str = child->token_ref->lexeme;
 		result = token_expandable_check(str, result, p);
 		if (p->err_flag == 1 || p->malloc_flag == 1)
 			return (result);
-		printf("*token_single_quotes* final result:%s\n", result);
+		// printf("*token_single_quotes* final result:%s\n", result);
 		// for (size_t o = 0; o < p->origin->count; o++)
 		// {
 		// 	printf("*token_expandable_check* current char:%c\n", p->origin->s_array[o]);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_check_helper.c                              :+:      :+:    :+:   */
+/*   expand_split_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:05:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:05:51 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 20:12:59 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,19 @@ char	**token_append(char **arr, char *sub, int *count)
 	return (new);
 }
 
-char	*substring_split(char *result, int start, int end)
+char	*substring_split(char *result, int start, int end, t_parser *p)
 {
 	char	*str;
 	int		i;
 	
 	str = NULL;
 	i = 0;
-	// printf("*substring_split* end:%d\n", end);
 	str = malloc(sizeof(char) * (end - start) + 1);
 	if (!str)
+	{
+		p->malloc_flag = 1;
 		return (NULL);
+	}
 	while (start < end)
 	{
 		str[i] = result[start];
@@ -55,6 +57,5 @@ char	*substring_split(char *result, int start, int end)
 		i++;
 	}
 	str[i] = '\0';
-	// printf("*substring_split* str:%s\n", str);
 	return (str);
 }

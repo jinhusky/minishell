@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 14:35:46 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 21:49:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,7 @@ typedef struct s_parser
 	char		*value;
 	t_expand	*origin;
 	int			exit_code[1];
-	int			tcount;
-	int			in_double;
-	int			in_single;
+	t_expand	*new;
 }	t_parser;
 
 //PARSING and READLINE//
@@ -170,14 +168,14 @@ void		expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p);
 char		**token_quote_removal(char **tkns, t_expand **cps, t_parser *p);
 void		free_argv(char **argv);
 char		**populate_argv(int *argc, char **argv, char **tokens, t_parser *p);
-char		*substring_split(char *result, int start, int end);
-t_expand	*token_mark_copy(t_expand *origin, char *result, size_t start, size_t end);
-t_expand	**append_expand_token(t_expand **tkns, int *count, t_expand *orgn);
+char		*substring_split(char *result, int start, int end, t_parser *p);
+t_expand	*node_copy_builder(char *result, int i, int start, t_parser *p);
+t_expand	*token_mark_copy(t_parser *p, char *result, size_t start, size_t len);
+t_expand	**append_expand_token(t_expand **tkns, int *count, t_parser *p);
 t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p);
 char		*token_expandable_check(char *lxm, char *result, t_parser *p);
 char		*stage_expand_check(t_ast *child, t_parser *p);
 char		**token_append(char **arr, char *sub, int *count);
-char		*substring_split(char *result, int start, int end);
 char		**check_expand_space(char *result, t_expand *origin, t_parser *p);
 void		append_with_mark(char *value, t_expand *origin, int mark);
 void		mark_char_literal(char *value, t_parser *p);
