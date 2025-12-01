@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:23:48 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 14:35:46 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ typedef enum e_node
 
 typedef enum e_expd_e
 {
-	SRC_LITERAL,
-	SRC_EXPAND,
+	SRC_LITERAL, //!quotes that input by user, meaning retains
+	SRC_EXPAND, //!quotes expanded by env value, meaningless
 }	t_expd_e;
 
 typedef struct s_token
