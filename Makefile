@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/12/01 11:24:27 by jhor             ###   ########.fr        #
+#    Updated: 2025/12/02 10:29:19 by jhor             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ src/expansion/remove_quotes.c src/expansion/cmd_argv.c src/expansion/copy_split.
 src/expansion/expand_check.c src/expansion/expand_split.c \
 src/expansion/expand_split_helper.c src/expansion/assign_mark.c \
 src/expansion/token_double.c src/expansion/token_single.c \
-src/expansion/extract_expand.c \
+src/expansion/extract_expand.c src/expansion/copy_builder.c\
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:05:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 20:12:59 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 15:07:46 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	**token_append(char **arr, char *sub, int *count)
+char	**token_append(char **arr, char *sub, int *count, t_parser *p)
 {
 	char	**new;
 	int		i;
@@ -23,6 +23,7 @@ char	**token_append(char **arr, char *sub, int *count)
 	if (!new)
 	{
 		free(arr);
+		p->malloc_flag = 1;
 		return (NULL);
 	}
 	while (i < *count)

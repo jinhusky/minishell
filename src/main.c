@@ -13,6 +13,7 @@
 #include "../minishell.h"
 
 //!p->exit_code logic is not correct, how to make it so the next prompt has the exit code and not have leaks (could use stack memory)
+//!maybe refactor the set_envp call
 int	main(int argc, char *argv[], char **envp)
 {
 	t_parser	p;
@@ -20,9 +21,12 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argc;
 	(void) argv;
 	p.exit_code[0] = 0;
+	p.envp_ls.head = NULL;
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
+		if (p.envp_ls.head)
+			free(p.ptr);
 		set_envp(envp, &p.envp_ls);
 		p.ptr = p.envp_ls.head;
 		p.result = readline("minishell$ ");

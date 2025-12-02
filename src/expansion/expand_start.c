@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   core.c                                             :+:      :+:    :+:   */
+/*   expand_start.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:19:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 15:17:07 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -813,8 +813,9 @@ t_expand	*init_origin(t_expand *origin)
 
 void	expansion_engine(t_ast *root, t_parser *p)
 {
-	int		i;
-	t_ast	*ptr;
+	int			i;
+	t_ast		*ptr;
+	t_splt_ary	split;
 
 	i = 0;
 	if (root)
@@ -822,7 +823,7 @@ void	expansion_engine(t_ast *root, t_parser *p)
 	{
 		{
 			ptr = root->children[i];
-			simple_command_instructor(ptr, p);
+			simple_command_instructor(ptr, &split, p);
 			if (p->err_flag == 1 || p->malloc_flag == 1)
 				return ;
 			i++;

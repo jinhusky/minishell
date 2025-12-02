@@ -6,11 +6,18 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:17:08 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:17:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 16:59:04 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+void	init_token_single(size_t *len, char **value, size_t *start, size_t *i)
+{
+	*len = 0;
+	*value = NULL;
+	*start = *i;
+}
 
 char *token_single_only(char *lxm, size_t *i, t_parser *p)
 {
@@ -19,16 +26,13 @@ char *token_single_only(char *lxm, size_t *i, t_parser *p)
 	size_t	len;
 	char	*value;
 
-	len = 0;
-	value = NULL;
-	start = *i;
+	init_token_single(&len, &value, &start, i);
 	end = ++(*i);
 	while (lxm[end] && lxm[end] != '\'')
 		end++;
 	if (lxm[end] != '\'')
 	{
 		error_quotes('\'', p);
-		p->err_flag = 1;
 		return (NULL);
 	}
 	len = end - start + 1;

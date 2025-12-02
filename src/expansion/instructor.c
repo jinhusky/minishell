@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:52:19 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 17:15:32 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 15:16:08 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	simple_command_instructor(t_ast *cmd, t_parser *p)
+void	simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_parser *p)
 {
 	int			i;
 	char		*result;
@@ -38,24 +38,10 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 			}
 			else 
 			{
-				tokens = check_expand_space(result, p->origin, p);
-				copies = copy_array_split(p->origin->s_array, copies, p);
+				tokens = check_expand_space(result, sp, p);
+				copies = copy_array_split(p->origin->s_array, sp, copies, p);
 				tokens = token_quote_removal(tokens, copies, p);
-				// if (tokens)
-				// {
-				// 	for (int j = 0; tokens[j]; j++)
-				// 		printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
-				// 	for (int k = 0; tokens[k]; k++)
-				// 		printf("k:%d\n", k);
-				// }
 				cmd->argv = populate_argv(&cmd->argc, cmd->argv, tokens, p);
-				// if (cmd->argv)
-				// {
-				// 	for (int j = 0; cmd->argv[j]; j++)
-				// 		printf("*simple_command_instructor* argv[%d]:%s\n", j, cmd->argv[j]);
-				// 	for (int k = 0; cmd->argv[k]; k++)
-				// 		printf("k:%d\n", k);
-				// }
 				free(result);
 				if (tokens && p->malloc_flag == 1)
 					free_argv(tokens);
@@ -84,24 +70,10 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 			}
 			else
 			{
-				tokens = check_expand_space(result, p->origin, p);
-				copies = copy_array_split(p->origin->s_array, copies, p);
+				tokens = check_expand_space(result, sp, p);
+				copies = copy_array_split(p->origin->s_array, sp, copies, p);
 				tokens = token_quote_removal(tokens, copies, p);
-				// if (tokens)
-				// {
-				// 	for (int j = 0; tokens[j]; j++)
-				// 		printf("*simple_command_instructor* tokens[%d]:%s\n", j, tokens[j]);
-				// 	for (int k = 0; tokens[k]; k++)
-				// 		printf("k:%d\n", k);
-				// }
 				cmd->argv = populate_argv(&cmd->argc, cmd->argv, tokens, p);
-				// if (cmd->argv)
-				// {
-				// 	for (int j = 0; cmd->argv[j]; j++)
-				// 		printf("*simple_command_instructor* argv[%d]:%s\n", j, cmd->argv[j]);
-				// 	for (int k = 0; cmd->argv[k]; k++)
-				// 		printf("k:%d\n", k);
-				// }
 				free(result);
 				if (tokens && p->malloc_flag == 1)
 					free_argv(tokens);
@@ -114,12 +86,7 @@ void	simple_command_instructor(t_ast *cmd, t_parser *p)
 				if (p->origin)
 					free(p->origin);
 				if (p->err_flag == 1 || p->malloc_flag == 1)
-				{
-					// printf("err_flag:%d\n", p->err_flag);
-					// printf("malloc_flag:%d\n", p->malloc_flag);
-					// printf("here\n");
 					return ;
-				}
 			}
 		}
 		i++;

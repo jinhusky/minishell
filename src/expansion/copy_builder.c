@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 20:21:04 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 21:46:43 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 14:05:39 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,9 @@ t_expand	*node_copy_builder(char *result, int i, int start, t_parser *p)
 	new = token_mark_copy(p, sub, start, (i - start));
 	if (!new || !new->s_array || !new->mark)
 	{
-		free_copies(new);
+		free_copy(new);
 		p->malloc_flag = 1;
 		return (NULL);
 	}
 	return (new);
 }
-

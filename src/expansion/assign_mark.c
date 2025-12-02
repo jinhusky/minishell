@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:13:22 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 11:13:32 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 15:13:47 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	append_with_mark(char *value, t_expand *origin, int mark)
 		(new_len  + 1) * sizeof(char *));
 	ft_memcpy(origin->s_array + o_len, value, len);
 	origin->s_array[new_len] = '\0';
-	// printf("*appen_with_mark* s_array:%s\n", origin->s_array);
 	origin->mark = ft_realloc(origin->mark, o_len * sizeof(int),
 		(new_len + 1) * sizeof(int));
 	while (i < len)

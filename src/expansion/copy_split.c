@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:38:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/01 21:52:24 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/02 19:14:09 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ void	free_copies(t_expand **copies)
 	free(copies);
 }
 
-t_expand	**append_expand_token(t_expand **tkns, int *count, t_parser *orgn)
+t_expand	**append_expand_token(t_expand **tkns, int *cnt, t_expand *new, t_parser *orgn)
 {
-	tkns = ft_realloc(tkns, (*count) * sizeof(t_expand *),
-		(*count + 2) * sizeof(t_expand *));
+	tkns = ft_realloc(tkns, (*cnt) * sizeof(t_expand *),
+		(*cnt + 2) * sizeof(t_expand *));
 	if (!tkns)
 	{
 		if (tkns)
@@ -36,9 +36,9 @@ t_expand	**append_expand_token(t_expand **tkns, int *count, t_parser *orgn)
 		orgn->malloc_flag = 1;
 		return NULL;
 	}
-	tkns[*count] = orgn->origin;
-	(*count)++;
-	tkns[*count] = NULL;
+	tkns[*cnt] = new;
+	(*cnt)++;
+	tkns[*cnt] = NULL;
 	return (tkns);
 }
 
@@ -65,77 +65,87 @@ t_expand	*token_mark_copy(t_parser *p, char *result, size_t start, size_t len)
 	return (new);
 }
 
-t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p)
+void	init_split(t_splt_ary *split)
 {
-	int			in_single;
-	int			in_double;
-	int			i;
-	int			start;
-	int			tcount;
+	split->in_sg = 0;
+	split->in_db = 0;
+	split->i = 0;
+	split->start = 0;
+	split->tcount = 0;
+}
 
-	in_single = 0;
-	in_double = 0;
-	i = 0;
-	start = 0;
-	tcount = 0;
-	if (p->malloc_flag == 1)
-		return (cpy);
-	while (result[i])
+void	quote_indicator(char *result, t_splt_ary *sp, t_parser *p)
+{
+	if (result[sp->i] == '\'' && !sp->in_db && p->origin->mark[sp->i] == SRC_LITERAL)
+		sp->in_sg = !sp->in_sg;
+	else if (result[sp->i] == '"' && !sp->in_sg && p->origin->mark[sp->i] == SRC_LITERAL)
+		sp->in_db = !sp->in_db;
+}
+
+t_expand	**copy_split_engine(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+{
+	t_expand	*new;
+
+	new = NULL;
+	while (result[sp->i])
 	{
-		if (result[i] == '\'' && !in_double && p->origin->mark[i] == SRC_LITERAL)
-			in_single = !in_single;
-		else if (result[i] == '"' && !in_single && p->origin->mark[i] == SRC_LITERAL)
-			in_double = !in_double;
-		if (result[i] == ' ' && !in_single && !in_double)
+		quote_indicator(result, sp, p);
+		if (result[sp->i] == ' ' && !sp->in_sg && !sp->in_db)
 		{
-			if (i > start)
+			if (sp->i > sp->start)
 			{
-				p->new = node_copy_builder(result, i, start, p); //!continue on the while loop
+				new = node_copy_builder(result, sp->i, sp->start, p); //!continue on the while loop
 				if (p->malloc_flag == 1)
 					break ;
-				cpy = append_expand_token(cpy, &tcount, p);
+				cpy = append_expand_token(cpy, &sp->tcount, new, p);
 				if (p->malloc_flag == 1)
 					break ;
 			}
-			while (result[i] == ' ')
-				i++;
-			start = i;
+			while (result[sp->i] == ' ')
+				sp->i++;
+			sp->start = sp->i;
 			continue;
 		}
-		i++;
+		sp->i++;
 	}
-	if (i > start)
+	return (cpy);
+}
+
+t_expand	**last_copy_split(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+{
+	t_expand	*new;
+
+	new = NULL;
+	if (sp->i > sp->start)
 	{
-		sub = substring_split(result, start, i);
-		if (!sub)
+		new = node_copy_builder(result, sp->i, sp->start, p);
+		if (p->malloc_flag == 1)
 		{
-			p->malloc_flag = 1;
 			free_copies(cpy);
 			return (cpy);
 		}
-		// printf("*check_expand_space* sub:%s\n", sub);
-		t_expand * new = token_mark_copy(p->origin, sub, start, i);
-		if (!new || !new->s_array || !new->mark)
-		{
-			p->malloc_flag = 1;
-			free_copies(cpy);
+		cpy = append_expand_token(cpy, &sp->tcount, new, p);
+		if (p->malloc_flag == 1)
 			return (cpy);
-		}
-		cpy = append_expand_token(cpy, &tcount, new);
-		if (!cpy)
-		{
-			p->malloc_flag = 1;
-			free_copies(cpy);
-			return (cpy);
-		}
-		// printf("*check_expand_space* tcount:%d\n", tcount);
 	}
-	if (cpy && p->malloc_flag != 1)
-		cpy[tcount] = NULL;
-	else if (p->malloc_flag == 1)
-	{
-		free_copies(cpy);
-		return (NULL);
-	}
+	return (cpy);
+}
+
+t_expand	**copy_array_split(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+{
+	t_expand	*new;
+
+	init_split(sp);
+	new = NULL;
+	if (p->malloc_flag == 1)
+		return (cpy);
+	cpy = copy_split_engine(result, sp, cpy, p);
+	if (p->malloc_flag == 1)
+		return (cpy);
+	cpy = last_copy_split(result, sp, cpy, p);
+	if (p->malloc_flag == 1)
+		return (cpy);
+	if (cpy)
+		cpy[sp->tcount] = NULL;
 	return (cpy);
 }
