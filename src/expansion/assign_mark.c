@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:13:22 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 15:13:47 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 12:27:56 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	append_with_mark(char *value, t_expand *origin, int mark)
 	size_t	o_len;
 	size_t	len;
 	size_t	new_len;
-	size_t		i;
+	size_t	i;
 
 	o_len = origin->count;
 	len = ft_strlen(value);

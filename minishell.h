@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 14:51:00 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 12:33:48 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,14 @@ typedef struct s_parser
 	t_expand	*new;
 }	t_parser;
 
-//PARSING and READLINE//
+//READLINE//
 void		init_program(t_token **tkn, t_ast **nd, t_parser *p);
+void		main_free(t_ast *node, t_token *token, char *result, t_parser *p);
+char		*trim_prompt(char *trim);
+void		empty_line(t_parser *p);
+int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);
+
+//PARSING//
 void		quote_check(char *result, int *i, char quote);
 t_token		*init_node(t_token *token);
 void		free_append_word(t_token *head, t_token *temp);
@@ -129,14 +135,10 @@ t_token		*token_pipe(t_token *tokens, char *result, t_parser *p);
 t_token		*token_single_operator(t_token *tokens, char *result, t_parser *p);
 t_token		*token_double_operator(t_token *tokens, char *result, t_parser *p);
 t_token		*tokenizer(t_token *tokens, t_parser *p);
-void		main_free(t_ast *node, t_token *token, char *result, t_parser *p);
 void		ast_exit(t_token *token, t_ast *node, t_parser *p);
 void		token_exit(t_token *token, char *result, t_parser *p);
 void		free_tokens(t_token *tokens);
-char		*trim_prompt(char *trim);
 void		invalid_token(t_token *token, char *result, t_parser *p);
-void		empty_line(t_parser *p);
-int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);
 void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
 void		error_quotes(char quote, t_parser *p);
@@ -196,5 +198,6 @@ char		*extract_token_expand(char *lxm, size_t *i, t_parser *p);
 char		*ft_expand(char *lxm, size_t start, size_t end, t_parser *p);
 void		init_split(t_splt_ary *split);
 void		quote_indicator(char *result, t_splt_ary *sp, t_parser *p);
+char		*char_join_str_mark(char *lxm, char *result, size_t *i, t_parser *p);
 
 #endif

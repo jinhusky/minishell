@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:02:13 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 19:14:27 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 12:27:17 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ char	*token_double_op(char *lxm, char *result, size_t *i, t_parser *p)
 		free(result);
 		return (NULL);
 	}
-	mark_char_literal(value, p);
 	result = ft_strjoin_free(result, value);
 	return (result);
 }
@@ -108,13 +107,13 @@ char	*expandable_loop_condition(char *lxm, char *result, size_t *i, t_parser *p)
 	{
 		result = token_single_op(lxm, result, i, p);
 		if (p->err_flag == 1 || p->malloc_flag == 1)
-			return (NULL);
+			return (result);
 	}
 	else if (lxm[*i] == '"')
 	{
 		result = token_double_op(lxm, result, i, p);
 		if (p->err_flag == 1 || p->malloc_flag == 1)
-			return (NULL);
+			return (result);
 	}
 	return (result);
 }
@@ -135,11 +134,14 @@ char	*token_expandable_check(char *lxm, char *result, t_parser *p)
 			if (!result)
 				return (NULL);
 		}
-		result = expandable_loop_condition(lxm, result, &i, p);
-		if (!result && p->malloc_flag == 1)
-			return (NULL);
-		else if (p->err_flag == 1)
-			return (NULL);
+		else
+		{
+			result = expandable_loop_condition(lxm, result, &i, p);
+			if (!result && p->malloc_flag == 1)
+				return (NULL);
+			else if (p->err_flag == 1)
+				return (NULL);
+		}
 		i++;
 	}
 	return (result);

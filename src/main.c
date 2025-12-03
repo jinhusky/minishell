@@ -14,6 +14,7 @@
 
 //!p->exit_code logic is not correct, how to make it so the next prompt has the exit code and not have leaks (could use stack memory)
 //!maybe refactor the set_envp call
+//!work on the next few functions norminette (sc_instructor & token_double_only), organize minishell.h into parsing.h and expansion.h
 int	main(int argc, char *argv[], char **envp)
 {
 	t_parser	p;

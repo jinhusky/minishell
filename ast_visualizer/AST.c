@@ -43,9 +43,9 @@ void	print_argv(int argc, char **argv)
 	while (argv[i])
 	{
 		if (i == (argc - 1))
-			printf("\"%s\"", argv[i]);
+			printf("%s", argv[i]);
 		else
-			printf("\"%s\", ", argv[i]);
+			printf("%s, ", argv[i]);
 		i++;
 	}
 	printf("]\n");
