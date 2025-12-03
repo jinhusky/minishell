@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:27:27 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/28 11:52:40 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 
-t_token	*token_word(t_token *tokens, t_parser *p, int start, int i)
+t_token	*token_word(t_token *tokens, t_globe *p, int start, int i)
 {
 	if (tokens == NULL)
 		tokens = create_node(tokens, p->result, i);
@@ -23,7 +23,7 @@ t_token	*token_word(t_token *tokens, t_parser *p, int start, int i)
 	return (tokens);
 }
 
-t_token	*token_pipe(t_token *tokens, char *result, t_parser *p)
+t_token	*token_pipe(t_token *tokens, char *result, t_globe *p)
 {
 	if (tokens == NULL)
 		tokens = create_node(tokens, result, 1);
@@ -34,7 +34,7 @@ t_token	*token_pipe(t_token *tokens, char *result, t_parser *p)
 	return (tokens);
 }
 
-t_token	*token_single_operator(t_token *tokens, char *result, t_parser *p)
+t_token	*token_single_operator(t_token *tokens, char *result, t_globe *p)
 {
 	if (tokens == NULL && *result == '<')
 		tokens = create_node(tokens, result, 1);
@@ -49,7 +49,7 @@ t_token	*token_single_operator(t_token *tokens, char *result, t_parser *p)
 	return (tokens);
 }
 
-t_token	*token_double_operator(t_token *tokens, char *result, t_parser *p)
+t_token	*token_double_operator(t_token *tokens, char *result, t_globe *p)
 {
 	int	i;
 

@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:08:51 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 15:07:37 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	**split_expand_tokens(char *result, t_splt_ary *sp, char **tokens, t_parser *p)
+char	**split_expand_tokens(char *result, t_splt_ary *sp, char **tokens, t_globe *p)
 {
 	char	*sub;
 
@@ -41,7 +41,7 @@ char	**split_expand_tokens(char *result, t_splt_ary *sp, char **tokens, t_parser
 	return (tokens);
 }
 
-char	**check_expand_space(char *result, t_splt_ary *sp, t_parser *p)
+char	**check_expand_space(char *result, t_splt_ary *sp, t_globe *p)
 {
 	char	**tokens;
 	char	*sub;

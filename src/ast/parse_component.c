@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-bool	valid_component(t_parser *p)
+bool	valid_component(t_globe *p)
 {
 	return (p->cursor->token == WORD
 		|| p->cursor->token == REDIR_IN
@@ -21,7 +21,7 @@ bool	valid_component(t_parser *p)
 		|| p->cursor->token == APPEND);
 }
 
-void	token_not_word(t_token *cur_rdr, t_ast *prt, t_ast *child, t_parser *p)
+void	token_not_word(t_token *cur_rdr, t_ast *prt, t_ast *child, t_globe *p)
 {
 	cur_rdr = p->cursor;
 	p = get_token(p);
@@ -36,7 +36,7 @@ void	token_not_word(t_token *cur_rdr, t_ast *prt, t_ast *child, t_parser *p)
 	}
 }
 
-void	parse_components(t_ast *prt, t_ast *child, t_parser *p)
+void	parse_components(t_ast *prt, t_ast *child, t_globe *p)
 {
 	t_token	*cur_redir;
 

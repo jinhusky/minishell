@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:09:17 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 15:17:07 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_expand	*init_origin(t_expand *origin)
 // }
 
 
-// char	*ft_expand(char *lxm, size_t start, size_t end, t_parser *p)
+// char	*ft_expand(char *lxm, size_t start, size_t end, t_globe *p)
 // {
 // 	char	*value;
 // 	t_envp	*tmp;
@@ -75,7 +75,7 @@ t_expand	*init_origin(t_expand *origin)
 // 		return (value);
 // }
 
-// char	*extract_token_expand(char *lxm, size_t *i, t_parser *p)
+// char	*extract_token_expand(char *lxm, size_t *i, t_globe *p)
 // {
 // 	size_t	start;
 // 	char	*value;
@@ -111,7 +111,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (value);
 // }
 
-// char *token_single_only(char *lxm, size_t *i, t_parser *p)
+// char *token_single_only(char *lxm, size_t *i, t_globe *p)
 // {
 // 	size_t	start;
 // 	size_t	end;
@@ -144,7 +144,7 @@ t_expand	*init_origin(t_expand *origin)
 // }
 
 
-// int	only_dollar_quote(char *lxm, size_t start, t_parser *p)
+// int	only_dollar_quote(char *lxm, size_t start, t_globe *p)
 // {
 // 	size_t	i;
 // 	int		dollar_sign;
@@ -166,7 +166,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (1);
 // }
 
-// char	*token_double_only(char *lxm, size_t *i, t_parser *p)
+// char	*token_double_only(char *lxm, size_t *i, t_globe *p)
 // {
 // 	// printf("in here token_double_only\n");
 // 	size_t	end;
@@ -225,7 +225,7 @@ t_expand	*init_origin(t_expand *origin)
 
 //TODO test case as reference: echo "'"$SHELL $PWD $HOME $PATH"'" (TH" SKIPPED '"') FIX!! token_expandable_check 
 
-// char	*token_expandable_check(char *lxm, t_parser *p)
+// char	*token_expandable_check(char *lxm, t_globe *p)
 // {
 // 	size_t	i;
 // 	char	ch[2];
@@ -268,12 +268,12 @@ t_expand	*init_origin(t_expand *origin)
 // 	origin->count = new_len;
 // }
 
-// void	mark_char_literal(char *value, t_parser *p)
+// void	mark_char_literal(char *value, t_globe *p)
 // {
 // 	append_with_mark(value, p->origin, SRC_LITERAL);
 // }
 
-// void	mark_char_expand(char *value, t_parser *p)
+// void	mark_char_expand(char *value, t_globe *p)
 // {
 // 	append_with_mark(value, p->origin, SRC_EXPAND);
 // }
@@ -325,7 +325,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (str);
 // }
 
-// char	**check_expand_space(char *result, t_expand *origin, t_parser *p)
+// char	**check_expand_space(char *result, t_expand *origin, t_globe *p)
 // {
 // 	int		in_single;
 // 	int		in_double;
@@ -406,7 +406,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (tokens);
 // }
 
-// char	*token_expandable_check(char *lxm, char *result, t_parser *p)
+// char	*token_expandable_check(char *lxm, char *result, t_globe *p)
 // {
 // 	size_t	i;
 // 	char	ch[2];
@@ -504,7 +504,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (result);
 // }
 
-// char	*stage_expand_check(t_ast *child, t_parser *p)
+// char	*stage_expand_check(t_ast *child, t_globe *p)
 // {
 // 	char	*str;
 // 	char	*result;
@@ -577,7 +577,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (new);
 // }
 
-// t_expand	**copy_array_split(char *result, t_expand **cpy, t_parser *p)
+// t_expand	**copy_array_split(char *result, t_expand **cpy, t_globe *p)
 // {
 // 	int			in_single;
 // 	int			in_double;
@@ -683,7 +683,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (cpy);
 // }
 
-// void	expd_strp_qts(char *lxm, size_t srt, t_expd_e mk, t_parser *p)
+// void	expd_strp_qts(char *lxm, size_t srt, t_expd_e mk, t_globe *p)
 // {
 // 	char	quote;
 // 	char	*src;
@@ -719,7 +719,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	*quote = 0;
 // }
 
-// void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
+// void	expd_strip_quotes(char *s, t_expd_e *mark, t_globe *p)
 // {
 // 	size_t	si;
 // 	size_t	di;
@@ -747,7 +747,7 @@ t_expand	*init_origin(t_expand *origin)
 // 		error_quotes(quote, p);
 // }
 
-// char	**token_quote_removal(char **tkns, t_expand **cps, t_parser *p)
+// char	**token_quote_removal(char **tkns, t_expand **cps, t_globe *p)
 // {
 // 	size_t	i;
 // 	char	*ptr;
@@ -782,7 +782,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	free(argv);
 // }
 
-// char	**populate_argv(int *argc, char **argv, char **tokens, t_parser *p)
+// char	**populate_argv(int *argc, char **argv, char **tokens, t_globe *p)
 // {
 // 	int		i;
 // 	int		tokens_len;
@@ -811,7 +811,7 @@ t_expand	*init_origin(t_expand *origin)
 // 	return (argv);
 // }
 
-void	expansion_engine(t_ast *root, t_parser *p)
+void	expansion_engine(t_ast *root, t_globe *p)
 {
 	int			i;
 	t_ast		*ptr;

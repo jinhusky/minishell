@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/28 13:59:51 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_envp(t_envp *ptr)
 	}
 }
 
-void	main_free(t_ast *node, t_token *token, char *result, t_parser *p)
+void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
 {
 	if (node)
 		free_treenode(node);
@@ -39,7 +39,7 @@ void	main_free(t_ast *node, t_token *token, char *result, t_parser *p)
 		free(result);
 }
 
-void	ast_exit(t_token *token, t_ast *node, t_parser *p)
+void	ast_exit(t_token *token, t_ast *node, t_globe *p)
 {
 	ft_putstr_fd("malloc failed\n", 2);
 	if (node)
@@ -51,7 +51,7 @@ void	ast_exit(t_token *token, t_ast *node, t_parser *p)
 	return ;
 }
 
-void	token_exit(t_token *token, char *result, t_parser *p)
+void	token_exit(t_token *token, char *result, t_globe *p)
 {
 	ft_putstr_fd("*tokens* malloc failed\n", 2);
 	if (token)

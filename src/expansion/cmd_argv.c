@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:28:13 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/30 14:30:08 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_argv(char **argv)
 	free(argv);
 }
 
-char	**populate_argv(int *argc, char **argv, char **tokens, t_parser *p)
+char	**populate_argv(int *argc, char **argv, char **tokens, t_globe *p)
 {
 	int		i;
 	int		tokens_len;

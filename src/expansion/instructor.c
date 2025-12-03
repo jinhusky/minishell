@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:52:19 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 11:43:55 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	free_origin(t_expand *origin)
 		free(origin);
 }
 
-void	free_all(char *result, char **tokens, t_expand **copies, t_parser *p)
+void	free_all(char *result, char **tokens, t_expand **copies, t_globe *p)
 {
 	free(result);
 	if (tokens && p->malloc_flag == 1)
@@ -39,7 +39,7 @@ void	free_all(char *result, char **tokens, t_expand **copies, t_parser *p)
 	free_origin(p->origin);
 }
 
-void	ast_word_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_parser *p)
+void	ast_word_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
 {
 	char		*result;
 	char		**tokens;
@@ -65,7 +65,7 @@ void	ast_word_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_parser *p)
 	}
 }
 
-void	ast_arg_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_parser *p)
+void	ast_arg_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
 {
 	char		*result;
 	char		**tokens;
@@ -91,7 +91,7 @@ void	ast_arg_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_parser *p)
 	}
 }
 
-void	simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_parser *p)
+void	simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_globe *p)
 {
 	int	i;
 

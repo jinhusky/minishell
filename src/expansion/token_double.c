@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:15:09 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 12:27:43 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:57:57 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	check_missing_quotes(char lxm, t_parser *p)
+void	check_missing_quotes(char lxm, t_globe *p)
 {
 	if (lxm != '"' && lxm != '$')
 	{
@@ -21,7 +21,7 @@ void	check_missing_quotes(char lxm, t_parser *p)
 	}
 }
 
-char	*expand_token_double(char *lxm, char *result, size_t *end, t_parser *p)
+char	*expand_token_double(char *lxm, char *result, size_t *end, t_globe *p)
 {
 	char	*value;
 
@@ -34,7 +34,7 @@ char	*expand_token_double(char *lxm, char *result, size_t *end, t_parser *p)
 	return (result);
 }
 
-char	*init_result(char *result, t_parser *p)
+char	*init_result(char *result, t_globe *p)
 {
 	result = ft_strdup("");
 	if (!result)
@@ -45,7 +45,7 @@ char	*init_result(char *result, t_parser *p)
 	return (result);
 }
 
-char	*token_double_statements(char *lxm, size_t *end, char *result, t_parser *p)
+char	*token_double_statements(char *lxm, size_t *end, char *result, t_globe *p)
 {
 	if (lxm[*end] == '$')
 	{
@@ -58,7 +58,7 @@ char	*token_double_statements(char *lxm, size_t *end, char *result, t_parser *p)
 	return (result);
 }
 
-char	*token_double_only(char *lxm, size_t *i, t_parser *p)
+char	*token_double_only(char *lxm, size_t *i, t_globe *p)
 {
 	size_t	end;
 	char	*result;

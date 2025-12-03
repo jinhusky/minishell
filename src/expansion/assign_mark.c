@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:13:22 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 12:27:56 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ void	append_with_mark(char *value, t_expand *origin, int mark)
 	origin->count = new_len;
 }
 
-void	mark_char_literal(char *value, t_parser *p)
+void	mark_char_literal(char *value, t_globe *p)
 {
 	append_with_mark(value, p->origin, SRC_LITERAL);
 }
 
-void	mark_char_expand(char *value, t_parser *p)
+void	mark_char_expand(char *value, t_globe *p)
 {
 	append_with_mark(value, p->origin, SRC_EXPAND);
 }

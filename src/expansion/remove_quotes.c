@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:20:54 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 15:17:23 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_expd_quotes(size_t *si, size_t *di, char *quote)
 	*quote = 0;
 }
 
-void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
+void	expd_strip_quotes(char *s, t_expd_e *mark, t_globe *p)
 {
 	size_t	si;
 	size_t	di;
@@ -47,7 +47,7 @@ void	expd_strip_quotes(char *s, t_expd_e *mark, t_parser *p)
 		error_quotes(quote, p);
 }
 
-char	**token_quote_removal(char **tkns, t_expand **cps, t_parser *p)
+char	**token_quote_removal(char **tkns, t_expand **cps, t_globe *p)
 {
 	size_t	i;
 	char	*ptr;

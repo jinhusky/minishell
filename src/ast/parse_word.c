@@ -20,7 +20,7 @@ void	init_quotes(char *lexeme, char **src, char **dst)
 	*dst = lexeme;
 }
 
-void	error_quotes(char quote, t_parser *p)
+void	error_quotes(char quote, t_globe *p)
 {
 	ft_putstr_fd("bash: unexpected EOF ", 2);
 	ft_putstr_fd("while looking for matching `", 2);
@@ -30,7 +30,7 @@ void	error_quotes(char quote, t_parser *p)
 	p->err_flag = 1;
 }
 
-void	strip_quotes(char *lexeme, t_parser *p)
+void	strip_quotes(char *lexeme, t_globe *p)
 {
 	char	quote;
 	char	*src;
@@ -59,7 +59,7 @@ void	strip_quotes(char *lexeme, t_parser *p)
 	return ;
 }
 
-void	parse_word(t_ast *branch, t_parser *p)
+void	parse_word(t_ast *branch, t_globe *p)
 {
 	branch->type = AST_WORD;
 	if (p->cursor)

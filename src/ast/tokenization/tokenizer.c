@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/28 13:49:59 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 
-t_token	*tokenize_operator(char *result, t_token *tokens, int *i, t_parser *p)
+t_token	*tokenize_operator(char *result, t_token *tokens, int *i, t_globe *p)
 {
 	if (result[*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
 	{
@@ -60,7 +60,7 @@ void	assign_enum(t_token *token)
 	}
 }
 
-t_token	*tokenizer(t_token *tokens, t_parser *p)
+t_token	*tokenizer(t_token *tokens, t_globe *p)
 {
 	int		i;
 	int		start;

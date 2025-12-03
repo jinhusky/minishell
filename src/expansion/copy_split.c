@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:38:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 19:14:09 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_copies(t_expand **copies)
 	free(copies);
 }
 
-t_expand	**append_expand_token(t_expand **tkns, int *cnt, t_expand *new, t_parser *orgn)
+t_expand	**append_expand_token(t_expand **tkns, int *cnt, t_expand *new, t_globe *orgn)
 {
 	tkns = ft_realloc(tkns, (*cnt) * sizeof(t_expand *),
 		(*cnt + 2) * sizeof(t_expand *));
@@ -42,7 +42,7 @@ t_expand	**append_expand_token(t_expand **tkns, int *cnt, t_expand *new, t_parse
 	return (tkns);
 }
 
-t_expand	*token_mark_copy(t_parser *p, char *result, size_t start, size_t len)
+t_expand	*token_mark_copy(t_globe *p, char *result, size_t start, size_t len)
 {
 	t_expand	*new;
 
@@ -74,7 +74,7 @@ void	init_split(t_splt_ary *split)
 	split->tcount = 0;
 }
 
-void	quote_indicator(char *result, t_splt_ary *sp, t_parser *p)
+void	quote_indicator(char *result, t_splt_ary *sp, t_globe *p)
 {
 	if (result[sp->i] == '\'' && !sp->in_db && p->origin->mark[sp->i] == SRC_LITERAL)
 		sp->in_sg = !sp->in_sg;
@@ -82,7 +82,7 @@ void	quote_indicator(char *result, t_splt_ary *sp, t_parser *p)
 		sp->in_db = !sp->in_db;
 }
 
-t_expand	**copy_split_engine(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+t_expand	**copy_split_engine(char *result, t_splt_ary *sp, t_expand **cpy, t_globe *p)
 {
 	t_expand	*new;
 
@@ -111,7 +111,7 @@ t_expand	**copy_split_engine(char *result, t_splt_ary *sp, t_expand **cpy, t_par
 	return (cpy);
 }
 
-t_expand	**last_copy_split(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+t_expand	**last_copy_split(char *result, t_splt_ary *sp, t_expand **cpy, t_globe *p)
 {
 	t_expand	*new;
 
@@ -131,7 +131,7 @@ t_expand	**last_copy_split(char *result, t_splt_ary *sp, t_expand **cpy, t_parse
 	return (cpy);
 }
 
-t_expand	**copy_array_split(char *result, t_splt_ary *sp, t_expand **cpy, t_parser *p)
+t_expand	**copy_array_split(char *result, t_splt_ary *sp, t_expand **cpy, t_globe *p)
 {
 	t_expand	*new;
 

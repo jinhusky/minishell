@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:17:08 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 16:59:04 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_token_single(size_t *len, char **value, size_t *start, size_t *i)
 	*start = *i;
 }
 
-char *token_single_only(char *lxm, size_t *i, t_parser *p)
+char *token_single_only(char *lxm, size_t *i, t_globe *p)
 {
 	size_t	start;
 	size_t	end;

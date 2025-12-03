@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:02:13 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 12:27:17 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:57:45 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	*char_join_str_mark(char *lxm, char *result, size_t *i, t_parser *p)
+char	*char_join_str_mark(char *lxm, char *result, size_t *i, t_globe *p)
 {
 	char	ch[2];
 	char	*lit;
@@ -32,7 +32,7 @@ char	*char_join_str_mark(char *lxm, char *result, size_t *i, t_parser *p)
 	return (result);
 }
 
-char	*find_expand_token(char *lxm, char *result, size_t *i, t_parser *p)
+char	*find_expand_token(char *lxm, char *result, size_t *i, t_globe *p)
 {
 	char	*value;
 
@@ -48,7 +48,7 @@ char	*find_expand_token(char *lxm, char *result, size_t *i, t_parser *p)
 	return (result);
 }
 
-char	*token_single_op(char *lxm, char *result, size_t *i, t_parser *p)
+char	*token_single_op(char *lxm, char *result, size_t *i, t_globe *p)
 {
 	char	*value;
 	
@@ -72,7 +72,7 @@ char	*token_single_op(char *lxm, char *result, size_t *i, t_parser *p)
 	return (result);
 }
 
-char	*token_double_op(char *lxm, char *result, size_t *i, t_parser *p)
+char	*token_double_op(char *lxm, char *result, size_t *i, t_globe *p)
 {
 	char	*value;
 	
@@ -95,7 +95,7 @@ char	*token_double_op(char *lxm, char *result, size_t *i, t_parser *p)
 	return (result);
 }
 
-char	*expandable_loop_condition(char *lxm, char *result, size_t *i, t_parser *p)
+char	*expandable_loop_condition(char *lxm, char *result, size_t *i, t_globe *p)
 {
 	if (lxm[*i] == '$')
 	{
@@ -118,7 +118,7 @@ char	*expandable_loop_condition(char *lxm, char *result, size_t *i, t_parser *p)
 	return (result);
 }
 
-char	*token_expandable_check(char *lxm, char *result, t_parser *p)
+char	*token_expandable_check(char *lxm, char *result, t_globe *p)
 {
 	size_t	i;
 	
@@ -147,7 +147,7 @@ char	*token_expandable_check(char *lxm, char *result, t_parser *p)
 	return (result);
 }
 
-char	*stage_expand_check(t_ast *child, t_parser *p)
+char	*stage_expand_check(t_ast *child, t_globe *p)
 {
 	char	*str;
 	char	*result;

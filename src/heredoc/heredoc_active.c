@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 09:53:42 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*read_content(char *delimiter)
 	return (result);
 }
 
-void	find_heredoc(t_ast *child, t_parser *p)
+void	find_heredoc(t_ast *child, t_globe *p)
 {
 	int		i;
 	char	*line;
@@ -86,7 +86,7 @@ void	find_heredoc(t_ast *child, t_parser *p)
 	}
 }
 
-void	ast_loop(t_ast *root, t_parser *p)
+void	ast_loop(t_ast *root, t_globe *p)
 {
 	int		i = 0;
 	t_ast	*cur_cmd;

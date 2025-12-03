@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:05:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/02 15:07:46 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	**token_append(char **arr, char *sub, int *count, t_parser *p)
+char	**token_append(char **arr, char *sub, int *count, t_globe *p)
 {
 	char	**new;
 	int		i;
@@ -38,7 +38,7 @@ char	**token_append(char **arr, char *sub, int *count, t_parser *p)
 	return (new);
 }
 
-char	*substring_split(char *result, int start, int end, t_parser *p)
+char	*substring_split(char *result, int start, int end, t_globe *p)
 {
 	char	*str;
 	int		i;
