@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/13 16:42:12 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,33 +36,31 @@ char	*read_content(char *delimiter)
 	while (1)
 	{
 		lines = readline("> ");
-		// printf("readline: %s$\n", lines);
 		if (!lines)
 			break;
-		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0)
+		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0
+			&& ft_strlen(lines) == ft_strlen(delimiter))
 		{
 			free(lines);
 			break;
 		}
 		line_len = ft_strlen(lines);
-		// printf("*before memcopy* result: %s$\n", result);
-		result = realloc(result, total_len + line_len + 2);
+		result = ft_realloc(result, total_len * sizeof(char),
+			(total_len + line_len + 2) * sizeof(char));
 		ft_memcpy(result + total_len, lines, line_len);
 		total_len = total_len + line_len;
 		result[total_len++] = '\n';
 		result[total_len] = '\0';
-		// printf("*after memcopy* result: %s$\n", result);
 		free(lines);
 	}
 	return (result);
 }
 
-void	find_heredoc(t_ast *child, t_parser *p)
+void	find_heredoc(t_ast *child, t_globe *p)
 {
 	int		i;
 	char	*line;
 	t_ast	*heredoc;
-	// char tmp[256] = " ";
 
 	i = 0;
 	line = NULL;
@@ -74,23 +72,21 @@ void	find_heredoc(t_ast *child, t_parser *p)
 			heredoc = child->children[i];
 			pipe(heredoc->heredoc_fd);
 			strip_quotes(heredoc->children[0]->token_ref->lexeme, p);
+			if (p->err_flag == 1)
+				break ;
 			line = read_content(heredoc->children[0]->token_ref->lexeme);
-			// printf("%s", line);
 			if (!line)
 				write(heredoc->heredoc_fd[1], "", 1);
 			else
 				write(heredoc->heredoc_fd[1], line, ft_strlen(line));
 			close(heredoc->heredoc_fd[1]);
-			// read(heredoc->heredoc_fd[0], tmp, 256);
-			// printf("tmp:%s$", tmp);
 			free(line);
 		}
-		// printf("---NEXT-ITERATION---\n\n");
 		i++;
 	}
 }
 
-void	ast_loop(t_ast *root, t_parser *p)
+void	ast_loop(t_ast *root, t_globe *p)
 {
 	int		i = 0;
 	t_ast	*cur_cmd;
@@ -102,6 +98,8 @@ void	ast_loop(t_ast *root, t_parser *p)
 		{
 			cur_cmd = root->children[i];
 			find_heredoc(cur_cmd, p);
+			if (p->err_flag == 1)
+				break ;
 			i++;
 		}
 	}

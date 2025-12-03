@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-bool	valid_redirection(t_parser *p)
+bool	valid_redirection(t_globe *p)
 {
 	return (p->cursor->token == REDIR_IN
 		|| p->cursor->token == REDIR_OUT
@@ -39,7 +39,7 @@ bool	all_redirs(t_ast *branch)
 	return (true);
 }
 
-void	assign_type(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
+void	assign_type(t_ast *chd_ptr, t_globe *p, t_token *cur_redir)
 {
 	if (token_peek(p)->token == WORD && cur_redir->token == REDIR_IN)
 		chd_ptr->type = AST_REDIR_IN;
@@ -54,7 +54,7 @@ void	assign_type(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 		chd_ptr->type = AST_APPEND;
 }
 
-t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
+t_ast	*parse_redirection(t_ast *chd_ptr, t_globe *p, t_token *cur_redir)
 {
 	t_ast	*wrd_ptr;
 
@@ -82,7 +82,7 @@ t_ast	*parse_redirection(t_ast *chd_ptr, t_parser *p, t_token *cur_redir)
 	return (chd_ptr);
 }
 
-void	parse_maybe_redirs(t_ast *prt, t_parser *p)
+void	parse_maybe_redirs(t_ast *prt, t_globe *p)
 {
 	t_ast	*redir_chd;
 	t_token	*cur_redir;

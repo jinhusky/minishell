@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 16:28:24 by jhor              #+#    #+#             */
-/*   Updated: 2025/07/23 18:26:12 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/27 16:48:03 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stddef.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <limits.h>
@@ -31,6 +32,13 @@ typedef struct s_nodes
 	int				data;
 	struct s_nodes	*next_link;
 }	t_nodes;
+
+typedef struct s_meta
+{
+	void			*ptr;
+	size_t			size;
+	struct s_meta	*next;
+}	t_meta;
 
 int				ft_atoi(const char *str);
 long			ft_atol(const char *str);
@@ -57,6 +65,7 @@ char			*ft_strdup(const char *s);
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
 char			*ft_strjoin(char *s1, char const *s2);
 char			*ft_strjoinv(int nbr, ...);
+char			*ft_strjoin_free(char *s1, char *s2);
 size_t			ft_strlcat(char *dest, const char *src, size_t size);
 size_t			ft_strlcpy(char *dest, const char *src, size_t size);
 size_t			ft_strlen(const char *str);
@@ -67,6 +76,7 @@ char			*ft_strnstr(const char *str, const char *substr, size_t n);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strtrim(char const *s1, char const *set);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
+void *			ft_realloc(void *ptr, size_t old_size, size_t new_size);
 int				ft_tolower(int c);
 int				ft_toupper(int c);
 void			ft_lstiter(t_nodes *lst, void (*f)(void *));

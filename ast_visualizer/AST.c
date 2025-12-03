@@ -36,6 +36,21 @@ void	ft_print_children(t_ast *cur_cmd)
 	printf("\n");
 }
 
+void	print_argv(int argc, char **argv)
+{
+	int i = 0;
+	printf("Argv:[");
+	while (argv[i])
+	{
+		if (i == (argc - 1))
+			printf("%s", argv[i]);
+		else
+			printf("%s, ", argv[i]);
+		i++;
+	}
+	printf("]\n");
+}
+
 void	ft_ast_visualize(t_ast *root)
 {
 	int i = 0;
@@ -49,6 +64,8 @@ void	ft_ast_visualize(t_ast *root)
 		{
 			printf("|\n");
 			printf("Type:[%d](AST_COMMAND)\n", root->children[i]->type);
+			if (root->children[i]->argv)
+				print_argv(root->children[i]->argc, root->children[i]->argv);
 			cur_cmd = root->children[i];
 			ft_print_children(cur_cmd);
 			i++;

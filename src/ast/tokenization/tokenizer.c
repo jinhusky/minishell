@@ -6,35 +6,35 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 20:55:34 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../minishell.h"
 
-t_token	*tokenize_operator(char *result, t_token *tokens, int *i)
+t_token	*tokenize_operator(char *result, t_token *tokens, int *i, t_globe *p)
 {
 	if (result[*i] != '|' && (result[*i] == '>' || result[*i] == '<'))
 	{
 		if (result[*i + 1] && result[*i + 1] == result[*i])
 		{
-			tokens = token_double_operator(tokens, result + *i);
+			tokens = token_double_operator(tokens, result + *i, p);
 			*i += 2;
 		}
 		else if (result[*i + 1] && result[*i + 1] != result[*i])
 		{
-			tokens = token_single_operator(tokens, result + *i);
+			tokens = token_single_operator(tokens, result + *i, p);
 			(*i)++;
 		}
 		else if (result[*i + 1] == '\0')
 		{
-			tokens = token_single_operator(tokens, result + *i);
+			tokens = token_single_operator(tokens, result + *i, p);
 			(*i)++;
 		}
 	}
 	else if (result[*i] == '|')
 	{
-		tokens = token_pipe(tokens, result + *i);
+		tokens = token_pipe(tokens, result + *i, p);
 		(*i)++;
 	}
 	return (tokens);
@@ -60,7 +60,7 @@ void	assign_enum(t_token *token)
 	}
 }
 
-t_token	*tokenizer(char *result, t_token *tokens)
+t_token	*tokenizer(t_token *tokens, t_globe *p)
 {
 	int		i;
 	int		start;
@@ -69,20 +69,20 @@ t_token	*tokenizer(char *result, t_token *tokens)
 	i = 0;
 	start = 0;
 	quote = '\0';
-	while (result[i])
+	while (p->result[i])
 	{
-		if (result[i] == ' ' || result[i] == '\t')
+		if (p->result[i] == ' ' || p->result[i] == '\t')
 		{
-			while (result[i] == ' ' || result[i] == '\t')
+			while (p->result[i] == ' ' || p->result[i] == '\t')
 				i++;
 		}
-		else if (result[i] == '|' || result[i] == '<' || result[i] == '>')
-			tokens = tokenize_operator(result, tokens, &i);
-		else if (result[i] && result[i] != ' ')
+		else if (p->result[i] == '|' || p->result[i] == '<' || p->result[i] == '>')
+			tokens = tokenize_operator(p->result, tokens, &i, p);
+		else if (p->result[i] && p->result[i] != ' ')
 		{
 			start = i;
-			quote_check(result, &i, quote);
-			tokens = token_word(tokens, result, start, i);
+			quote_check(p->result, &i, quote);
+			tokens = token_word(tokens, p, start, i);
 		}
 	}
 	assign_enum(tokens);

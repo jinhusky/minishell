@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-void	first_word(t_ast *branch, t_ast *command, t_parser *p)
+void	first_word(t_ast *branch, t_ast *command, t_globe *p)
 {
 	command = create_treenode(command, p);
 	if (p->malloc_flag == 1)
@@ -24,7 +24,7 @@ void	first_word(t_ast *branch, t_ast *command, t_parser *p)
 	p = get_token(p);
 }
 
-void	parse_simple_command(t_ast *branch, t_parser *p)
+void	parse_simple_command(t_ast *branch, t_globe *p)
 {
 	t_ast	*command;
 

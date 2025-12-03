@@ -12,21 +12,21 @@
 
 #include "../../minishell.h"
 
-t_parser	*get_token(t_parser *p)
+t_globe	*get_token(t_globe *p)
 {
 	if (p->cursor != NULL)
 		p->cursor = p->cursor->next;
 	return (p);
 }
 
-t_token	*token_peek(t_parser *p)
+t_token	*token_peek(t_globe *p)
 {
 	return (p->cursor);
 }
 
-//TODO: pass result and token into t_parser for easier reference to free
+//TODO: pass result and token into t_globe for easier reference to free
 
-t_ast	*create_treenode(t_ast *treenode, t_parser *p)
+t_ast	*create_treenode(t_ast *treenode, t_globe *p)
 {
 	treenode = malloc(sizeof(t_ast));
 	if (!treenode)
@@ -37,14 +37,16 @@ t_ast	*create_treenode(t_ast *treenode, t_parser *p)
 	treenode->children = NULL;
 	treenode->childcount = 0;
 	treenode->token_ref = NULL;
+	treenode->argc = 0;
+	treenode->argv = NULL;
 	treenode->type = 0;
 	return (treenode);
 }
 
-void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_parser *p)
+void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_globe *p)
 {
-	new_chld = realloc(brch->children, sizeof(t_ast *)
-			* (brch->childcount + 1));
+	new_chld = ft_realloc(brch->children, brch->childcount * sizeof(t_ast *),
+			(brch->childcount + 1) * sizeof(t_ast *));
 	if (!new_chld)
 	{
 		free_treenode(leaf);
@@ -56,7 +58,7 @@ void	realloc_child(t_ast **new_chld, t_ast *brch, t_ast *leaf, t_parser *p)
 	brch->childcount++;
 }
 
-void	attach_treenode(t_ast *branch, t_ast *leaf, t_parser *p)
+void	attach_treenode(t_ast *branch, t_ast *leaf, t_globe *p)
 {
 	t_ast	**new_children;
 

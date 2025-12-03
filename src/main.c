@@ -12,44 +12,53 @@
 
 #include "../minishell.h"
 
+//!maybe refactor the set_envp call
 int	main(int argc, char *argv[], char **envp)
 {
-	t_token		*token;
-	t_ast		*node;
-	t_parser	p;
-    
-    (void) argc;
-    (void) argv;
+	t_globe	p;
+
+	(void) argc;
+	(void) argv;
+	p.exit_code[0] = 0;
+	p.envp_ls.head = NULL;
 	while (1)
 	{
-        t_shell envp_ls;
-        set_envp(envp, &envp_ls);
-	    t_envp *ptr = envp_ls.head;
-	    while (ptr)
-	    {
-		    ft_printf("%s\n", ptr->key);
-		    ptr = ptr->next;
-	    }
-		init_program(&token, &node, &p);
+		init_program(&p.token, &p.node, &p);
+		if (p.envp_ls.head)
+			free(p.ptr);
+		set_envp(envp, &p.envp_ls);
+		p.ptr = p.envp_ls.head;
 		p.result = readline("minishell$ ");
 		empty_line(&p);
 		if (p.err_flag == 1)
 			continue ;
 		add_history(p.result);
-		token = tokenizer(p.result, token);
-		invalid_token(token, p.result);
-		if (!p.result)
+		p.token = tokenizer(p.token, &p);
+		invalid_token(p.token, p.result, &p);
+		if (p.malloc_flag == 1)
 			continue ;
-		node = parsing(node, token, &p);
-		p.exit_flag = readline_exit(node, token, p.result);
+		p.node = parsing(p.node, p.token, &p);
+		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
 		if (p.exit_flag == 1)
 			exit (EXIT_SUCCESS);
-		if (node)
+		if (p.node)
 		{
-			// ft_ast_visualize(node);
-			ast_loop(node, &p);
+			ft_ast_visualize(p.node);
+			ast_loop(p.node, &p);
+			if (p.err_flag == 1)
+			{
+				main_free(p.node, p.token, p.result, &p);
+				continue ;
+			}
+			expansion_engine(p.node, &p);
+			if (p.err_flag == 1 || p.malloc_flag == 1)
+			{
+				main_free(p.node, p.token, p.result, &p);
+				continue ;
+			}
+			ft_ast_visualize(p.node);
 		}
-		main_free(node, token, p.result);
+		main_free(p.node, p.token, p.result, &p);
 	}
 	rl_clear_history();
 	return (0);

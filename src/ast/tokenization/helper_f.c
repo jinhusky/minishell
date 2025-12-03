@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:38:06 by jhor              #+#    #+#             */
-/*   Updated: 2025/10/23 20:55:05 by jhor             ###   ########.fr       */
+/*   Updated: 2025/11/24 15:22:40 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,16 @@ void	quote_check(char *result, int *i, char quote)
 	}
 }
 
-int	readline_exit(t_ast *node, t_token *token, char *result)
+int	readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr)
 {
-	if (ft_strncmp(result, "exit", 4) == 0)
+	if (ft_strncmp(rslt, "exit", 4) == 0
+		&& ft_strlen(rslt) == ft_strlen("exit"))
 	{
 		rl_clear_history();
 		free_treenode(node);
 		free_tokens(token);
-		free(result);
+		free_envp(ptr);
+		free(rslt);
 		return (1);
 	}
 	return (0);

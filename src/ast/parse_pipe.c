@@ -6,28 +6,30 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:13:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/13 15:40:23 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-t_ast	*init_ast(t_ast *node, t_parser *p, t_token *token)
+t_ast	*init_ast(t_ast *node, t_globe *p, t_token *token)
 {
 	node = malloc(sizeof(t_ast));
 	if (!node)
-		ast_exit(token, node, p->result);
+		ast_exit(token, node, p);
 	node->type = 0;
 	node->children = NULL;
 	node->childcount = 0;
 	node->token_ref = NULL;
+	node->argc = 0;
+	node->argv = NULL;
 	p->cursor = token;
 	p->malloc_flag = 0;
 	p->err_flag = 0;
 	return (node);
 }
 
-void	first_pipe(t_ast *root, t_ast *branch, t_parser *p)
+void	first_pipe(t_ast *root, t_ast *branch, t_globe *p)
 {
 	branch = create_treenode(branch, p);
 	if (p->malloc_flag == 1)
@@ -44,7 +46,7 @@ void	first_pipe(t_ast *root, t_ast *branch, t_parser *p)
 	}
 }
 
-void	pipe_checks(t_ast *root, t_ast *branch, t_parser *p)
+void	pipe_checks(t_ast *root, t_ast *branch, t_globe *p)
 {
 	if (!root->children[0]->children)
 	{
@@ -65,7 +67,7 @@ void	pipe_checks(t_ast *root, t_ast *branch, t_parser *p)
 	attach_treenode(root, p->cur_cmd, p);
 }
 
-void	parse_pipeline(t_ast *root, t_parser *p)
+void	parse_pipeline(t_ast *root, t_globe *p)
 {
 	t_ast	*branch;
 

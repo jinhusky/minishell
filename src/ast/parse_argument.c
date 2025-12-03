@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-t_ast	*parse_argument(t_ast *chd_ptr, t_parser *p)
+t_ast	*parse_argument(t_ast *chd_ptr, t_globe *p)
 {
 	t_ast	*word_ptr;
 
