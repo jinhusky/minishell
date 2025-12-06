@@ -6,32 +6,12 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 02:42:34 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/20 16:45:19 by kationg          ###   ########.fr       */
+/*   Updated: 2025/12/03 12:47:29 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-void	prep_here_doc(t_ast *node)
-{
-	char	*deli;
-	char	*line;
-	if (node->type == AST_HEREDOC)
-	{
-		deli = node->children[0]->token_ref->lexeme;
-		pipe(node->heredoc_fd);
-		line = readline("heredoc> ");
-		while (ft_strncmp(line, deli, ft_strlen(line)) != 0 && line)
-		{
-			write(node->heredoc_fd[1], line, ft_strlen(line));
-			write(node->heredoc_fd[1], "\n", 1);
-			free(line);
-			line = readline("heredoc> ");
-			
-		}
-	}
-	
-}
+#include <unistd.h>
 
 void	redirection(t_ast *node)
 {
@@ -55,23 +35,31 @@ void	redirection(t_ast *node)
 		dup2(new_fd, STDOUT_FILENO);
 		close(new_fd);
 	}
-	
+	else if (node->type == AST_HEREDOC)
+	{
+		dup2(node->heredoc_fd[0], STDIN_FILENO);
+		close(node->heredoc_fd[0]);
+	}
 }
 
-void walk_ast(t_ast *node)
+void	find_pipe_num(t_ast *node, int *pipe_count)
 {
-    int i;
-
-    if (!node)
-        return;
-	prep_here_doc(node);
-    redirection(node);
-
-    i = 0;
-    while (i < node->childcount)
-    {
-        walk_ast(node->children[i]);
-        i++;
-    }
+	if (node->type == AST_COMMAND)
+	{
+		(*pipe_count)++;
+	}
 }
 
+void walk_ast(t_ast *node, void (*op)(t_ast *))
+{
+	int	i;
+	if (!node)
+		return;
+	op(node);
+	i = 0;
+	while (i < node->childcount)
+	{
+		walk_ast(node->children[i], *op);
+		i++;
+	}
+}

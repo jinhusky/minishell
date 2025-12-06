@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/19 11:20:09 by kationg          ###   ########.fr       */
+/*   Updated: 2025/12/01 20:24:31 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	main(int argc, char *argv[], char **envp)
 		if (node)
 		{
 			ft_ast_visualize(node);
-            simple_execution(node, &shell);
 			ast_loop(node, &p);
+			execute_pipeline(node, &shell);
 		}
 		main_free(node, token, p.result);
 	}

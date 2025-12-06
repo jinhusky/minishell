@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/13 16:42:12 by jhor             ###   ########.fr       */
+/*   Updated: 2025/12/01 20:23:10 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ char	*read_content(char *delimiter)
 	init_read_content(&lines, &result, &total_len, &line_len);
 	while (1)
 	{
-		lines = readline("> ");
+		lines = readline("heredoc> ");
 		// printf("readline: %s$\n", lines);
 		if (!lines)
 			break;
-		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0)
+		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0 && strlen(delimiter) == strlen(lines))
 		{
 			free(lines);
 			break;

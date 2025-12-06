@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:34:18 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/17 16:44:14 by kationg          ###   ########.fr       */
+/*   Updated: 2025/12/01 09:36:48 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,5 @@ char	*ft_strjoin(char *s1, char const *s2)
 		newstr[i++] = s2[j++];
 	}
 	newstr[i] = '\0';
-	//for minishell (free)
-	free(s1);
 	return (newstr);
 }
-
-// int main()
-// {
-// 	char str[] = "Hello ";
-// 	char str1[] = "World";
-
-// 	printf("%s\n", ft_strjoin(str, str1));
-// }

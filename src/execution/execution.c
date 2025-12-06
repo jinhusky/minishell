@@ -1,56 +1,60 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   simple_execution.c                                 :+:      :+:    :+:   */
+/*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:03:35 by kationg           #+#    #+#             */
-/*   Updated: 2025/11/19 13:47:35 by kationg          ###   ########.fr       */
+/*   Updated: 2025/12/06 22:13:20 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char **build_argv(t_ast *root)
+static int	count_argc(t_ast *cmd)
 {
-	int	i;
-	int	j;
-
-	char *arg;
+	int		count;
+	int		i;
+	t_ast	*ptr;
+	
+	count = 0;
 	i = 0;
-	char **argv;
-	t_ast *ptr;
-	ptr = NULL;
-	argv = ft_calloc(root->children[i]->childcount + 1, sizeof(char *));
-	while (i < root->childcount && root->children[i])
+	//can try which ptr != NULL against childcount
+	while (i < cmd->childcount)
 	{
-		ptr = root->children[i];
-		if (root->children[i]->type == AST_COMMAND)
-		{
-			j = 0;
-			while (j < ptr->childcount && ptr->children[j])
-			{
-				if (ptr->children[j]->type == AST_WORD)
-				{
-					arg = ptr->children[j]->token_ref->lexeme;
-					argv[j] = ft_strdup(arg);
-				}
-				else if (ptr->children[j]->type == AST_ARGUMENT)
-				{
-					arg = ptr->children[j]->children[0]->token_ref->lexeme;
-					argv[j] = ft_strdup(arg);
-				}
-				j++;
-			}
-			
-		}
+		ptr = cmd->children[i];
+		if (ptr->type == AST_WORD || ptr->type == AST_ARGUMENT)
+			count++;
+		i++;
+
+	}
+	return (count);
+}
+
+char **build_argv_array(t_ast *cmd)
+{
+	int		i;
+	t_ast	*child;
+	char	**argv;
+	
+	if (!cmd || cmd->type != AST_COMMAND)
+		return (NULL);
+	argv = ft_calloc(count_argc(cmd) + 1, sizeof(char *));
+	i = 0;
+	while (i < node->childcount && node->children[i])
+	{
+		if (node->children[i]->type == AST_WORD)
+			str = node->children[i]->token_ref->lexeme;
+		else if (node->children[i]->type == AST_ARGUMENT)
+			str = node->children[i]->children[0]->token_ref->lexeme;
+		argv[i] = ft_strdup(str);
 		i++;
 	}
 	return (argv);
 }
 
-char **build_envp(t_shell shell)
+char **build_envp_array(t_shell shell)
 {
 	t_envp	*ptr;
 	int	i;
@@ -68,9 +72,8 @@ char **build_envp(t_shell shell)
 		i++;
 	}
 	return res;
-
-
 }
+
 void execute(char **envp_exec, char **argv, t_shell *shell)
 {
 	char	*path_env;
@@ -80,9 +83,7 @@ void execute(char **envp_exec, char **argv, t_shell *shell)
 
 	i = 0;
 	if (ft_strchr(argv[0], '/'))
-	{
 		execve(argv[0], argv, envp_exec);
-	}
 	else
 	{
 		path_env = envp_value("PATH", NULL, *shell);
@@ -93,7 +94,6 @@ void execute(char **envp_exec, char **argv, t_shell *shell)
 			fullpath = ft_strjoin(fullpath, argv[0]);
 			if (access(fullpath, F_OK) == 0)
 			{
-				printf("%s\n", fullpath);
 				if (execve(fullpath, argv, envp_exec) == -1)
 					perror("Command not found");
 				break;
@@ -102,19 +102,17 @@ void execute(char **envp_exec, char **argv, t_shell *shell)
 		}
 	}
 }
-void simple_execution(t_ast *root, t_shell *shell)
+
+void execute_pipeline(t_ast *root, t_shell *shell)
 {
-	(void) root;
-	char **envp_exec = build_envp(*shell);
-	char **argv = build_argv(root);
-	for (int i = 0; argv[i]; i++)
-	{
-		printf("%s\n", argv[i]);
-	}
+	char **envp_exec = build_envp_array(*shell);
+	char **argv = build_argv_array(root);
+	
+	
 	int pid = fork();
 	if (pid == 0)
 	{
-		walk_ast(root);
+		walk_ast_child(root);
 		execute(envp_exec, argv, shell);		
 	}
 	else 
