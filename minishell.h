@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:44:44 by jhor             ###   ########.fr       */
+/*   Updated: 2026/01/14 07:11:27 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "includes/parsing.h"
 # include "includes/builtin.h"
 # include "includes/expansion.h"
+# include "includes/execution.h"
 # include "Libft/libft.h"
 
 typedef struct s_envp
@@ -47,6 +48,7 @@ typedef struct s_globe
 	int			exit_flag;
 	int			malloc_flag;
 	int			heredoc_flag;
+    int         p_exec_flag;
 	t_shell		envp_ls;
 	t_envp		*ptr;
 	t_expand	*origin;
