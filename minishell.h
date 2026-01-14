@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/14 07:11:27 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/14 08:09:29 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_envp
 typedef struct s_shell
 {
 	t_envp *head;
+	int		size;
 }	t_shell;
 
 typedef struct s_globe

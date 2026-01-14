@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/14 06:02:50 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/14 07:55:42 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,24 @@ int	main(int argc, char *argv[], char **envp)
 				continue ;
 			}
 			expansion_engine(p.node, &p);
-            /*
+            
 			t_ast *ptr;
             for (int i = 0; i < p.node->childcount; i++)
 			{
 				ptr = p.node->children[i];
 				for (int j = 0; ptr->argv[j]; j++)
 				{
-					printf("%s\n", ptr->argv[j]);
+					printf("%s ", ptr->argv[j]);
 				}
+				printf("\n");
 			}
-            */
+            
 			if (p.err_flag == 1 || p.malloc_flag == 1)
 			{
 				main_free(p.node, p.token, p.result, &p);
 				continue ;
 			}
-			ft_ast_visualize(p.node);
+			//ft_ast_visualize(p.node);
 		}
 		main_free(p.node, p.token, p.result, &p);
 	}
