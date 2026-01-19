@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution.h                                        :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 05:14:42 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/16 11:36:54 by kationg          ###   ########.fr       */
+/*   Created: 2025/09/29 12:35:12 by kationg           #+#    #+#             */
+/*   Updated: 2026/01/19 09:25:31 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTION_H
-# define EXECUTION_H
+#include "../../minishell.h"
 
-# include "../minishell.h"
-
-void	execute(t_ast *root, t_globe *p);
-int	apply_redirections(t_ast *cmd);
-char **build_envp_array(t_shell envp_ls);
-int is_builtin(char *cmd);
-char	*envp_value(char *k, char *v, t_shell *envp);
-void set_envp(char **envp, t_shell *shell);
-
-
-
-
-
-#endif
-
+void	export(char **args, t_shell *envp_lst)
+{
+	//if there is no assignment (=) then we should not handle
+	if (!ft_strchr(args[1], '='))
+		return;
+	//we only handle create new env var or edit env var value
+	char	**split = ft_split(args[1], '=');
+	envp_value(split[0], split[1], envp_lst, args[1]);
+}

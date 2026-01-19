@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/14 07:55:42 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/19 08:35:14 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@ int	main(int argc, char *argv[], char **envp)
 
 	(void) argc;
 	(void) argv;
-	p.exit_code[0] = 0;
-	p.envp_ls.head = NULL;
+	p.exit_code = 0;
+	p.envp_ls->head = NULL;
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
-		if (p.envp_ls.head)
+		if (p.envp_ls->head)
 			free(p.ptr);
-		set_envp(envp, &p.envp_ls);
-		p.ptr = p.envp_ls.head;
+		set_envp_ls(envp, p.envp_ls);
+		p.ptr = p.envp_ls->head;
 		p.result = readline("minishell$ ");
 		empty_line(&p);
 		if (p.err_flag == 1)
@@ -51,7 +51,7 @@ int	main(int argc, char *argv[], char **envp)
 				continue ;
 			}
 			expansion_engine(p.node, &p);
-            
+            /*
 			t_ast *ptr;
             for (int i = 0; i < p.node->childcount; i++)
 			{
@@ -62,7 +62,8 @@ int	main(int argc, char *argv[], char **envp)
 				}
 				printf("\n");
 			}
-            
+            */ 
+			execute(p.node, &p);
 			if (p.err_flag == 1 || p.malloc_flag == 1)
 			{
 				main_free(p.node, p.token, p.result, &p);
