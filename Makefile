@@ -6,7 +6,7 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2026/01/16 11:24:38 by kationg          ###   ########.fr        #
+#    Updated: 2026/01/20 09:52:37 by kationg          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,9 @@ src/expansion/expand_check.c src/expansion/expand_split.c \
 src/expansion/expand_split_helper.c src/expansion/assign_mark.c \
 src/expansion/token_double.c src/expansion/token_single.c \
 src/expansion/extract_expand.c src/expansion/copy_builder.c src/execution/set_envp.c \
-src/execution/build_pipeline.c
+src/execution/build_pipeline.c \
+src/built_in/ft_echo.c src/built_in/ft_cd.c src/built_in/ft_pwd.c \
+src/built_in/ft_unset.c src/built_in/ft_env.c \
 
 OBJ = $(SRC:.c=.o)
 

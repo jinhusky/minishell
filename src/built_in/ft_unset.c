@@ -6,12 +6,11 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:58:02 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/19 09:42:04 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/20 09:51:43 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <cstdlib>
 
 void	rm_env_var(t_globe *p, char *key)
 {
@@ -28,6 +27,8 @@ void	rm_env_var(t_globe *p, char *key)
 				prev->next = curr->next;
 			else
 				p->envp_ls->head = curr->next;
+			free(curr->key);
+			free(curr->value);
 			free(curr);
 			return ;
 		}
@@ -43,14 +44,14 @@ int	ft_unset(char **argv, t_globe *p)
 	i = 1;
 	if (!argv[1])
 	{
-		p->exit_code = EXIT_SUCCESS;
-		return (p->exit_code);
+		p->exit_code[0] = EXIT_SUCCESS;
+		return (p->exit_code[0]);
 	}
 	while (argv[i])
 	{
 		rm_env_var(p, argv[i]);
 		i++;
 	}
-	return (p->exit_code);
+	return (p->exit_code[0]);
 }
 

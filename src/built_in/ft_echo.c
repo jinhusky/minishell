@@ -36,7 +36,7 @@ int ft_echo(char **argv, t_globe *p)
     bool    n_flag;
 
     n_flag = false;
-    i = 0;
+    i = 1;
     while (argv[i] && is_n(argv[i]))
     {
         i++;

@@ -33,8 +33,14 @@ void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
 		free_treenode(node);
 	if (token)
 		free_tokens(token);
-	if (p->ptr)
-		free_envp(p->ptr);
+	if (p && p->envp_ls && p->envp_ls->head)
+	{
+		free_envp(p->envp_ls->head);
+		p->envp_ls->head = NULL;
+		p->envp_ls->size = 0;
+	}
+	if (p)
+		p->ptr = NULL;
 	if (result)
 		free(result);
 }

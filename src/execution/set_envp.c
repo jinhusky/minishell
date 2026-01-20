@@ -12,20 +12,54 @@
 
 #include "../../minishell.h"
 
+static int	key_equals(const char *a, const char *b)
+{
+	size_t	la;
+	size_t	lb;
 
+	if (!a || !b)
+		return (0);
+	la = ft_strlen(a);
+	lb = ft_strlen(b);
+	if (la != lb)
+		return (0);
+	return (ft_strncmp(a, b, la) == 0);
+}
+
+void	free_envp_ls(t_shell *shell)
+{
+	t_envp	*ptr;
+	t_envp	*tmp;
+
+	if (!shell)
+		return ;
+	ptr = shell->head;
+	while (ptr)
+	{
+		tmp = ptr;
+		ptr = ptr->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
+	}
+	shell->head = NULL;
+	shell->size = 0;
+}
 
 char	*envp_value(char *k, char *v, t_shell *envp)
 {
 	t_envp	*ptr;
 
 	ptr = envp->head;
-	while(ptr)
+	while (ptr)
 	{
-		if (ft_strncmp(ptr->key, k, ft_strlen(k)) == 0)
+		if (key_equals(ptr->key, k))
 		{
-			//remember to free later after done using;
 			if (v)
-				ptr->value = (ft_strdup(v));
+			{
+				free(ptr->value);
+				ptr->value = ft_strdup(v);
+			}
 			return (ptr->value);
 		}
 		ptr = ptr->next;
@@ -33,58 +67,43 @@ char	*envp_value(char *k, char *v, t_shell *envp)
 	return NULL;
 }
 
-void set_envp_ls(char **envp, t_shell *shell)
+void	set_envp(char **envp, t_shell *shell)
 {
-	int i;
+	int		i;
+	char		*delim;
+	t_envp		*node;
+	t_envp		*prev;
 
-	char	*delim;
-	t_envp	*node;
-	t_envp	*prev;
-
+	if (!shell)
+		return ;
+	free_envp_ls(shell);
 	i = 0;
 	prev = NULL;
 	while (envp[i])
 	{
-		
-		node = malloc(sizeof(t_envp));
+		node = (t_envp *)malloc(sizeof(t_envp));
+		if (!node)
+			return ;
 		if (i == 0)
 			shell->head = node;
 		if (prev)
 			prev->next = node;
 		delim = ft_strchr(envp[i], '=');
+		if (!delim)
+		{
+			node->key = ft_strdup(envp[i]);
+			node->value = ft_strdup("");
+		}
+		else
+		{
 		node->key = ft_substr(envp[i], 0, delim - envp[i]);
 		node->value = ft_substr(envp[i],  delim - envp[i] + 1, ft_strlen(delim + 1));
+		}
+		node->next = NULL;
 		prev = node;
 		i++;
 	}
-    shell->size = i;
-	prev->next = NULL;
-}
-
-void	unset(char **cmd, t_shell *shell)
-{
-	
-	t_envp	*ptr;
-	t_envp	*prev;
-
-	ptr = shell->head;
-	prev = NULL;
-	cmd++;
-	int	i;
-	while (ptr)
-	{
-		i = 0;
-		while (cmd[i])
-		{
-			
-			if (strncmp(cmd[i], ptr->key, ft_strlen(ptr->key)) == 0)
-				prev->next = ptr->next;
-			i++;
-		}
-		prev = ptr;
-		ptr = ptr->next;
-	}
-
+	shell->size = i;
 }
 
 /*

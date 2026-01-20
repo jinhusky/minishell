@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/19 08:35:14 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/20 09:23:16 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,17 @@ int	main(int argc, char *argv[], char **envp)
 
 	(void) argc;
 	(void) argv;
-	p.exit_code = 0;
+	ft_bzero(&p, sizeof(t_globe));
+	p.exit_code[0] = 0;
+	p.envp_ls = (t_shell *)malloc(sizeof(t_shell));
+	if (!p.envp_ls)
+		return (1);
 	p.envp_ls->head = NULL;
+	p.envp_ls->size = 0;
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
-		if (p.envp_ls->head)
-			free(p.ptr);
-		set_envp_ls(envp, p.envp_ls);
+		set_envp(envp, p.envp_ls);
 		p.ptr = p.envp_ls->head;
 		p.result = readline("minishell$ ");
 		empty_line(&p);

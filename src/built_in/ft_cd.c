@@ -1,39 +1,46 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_cd.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/27 14:39:59 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/19 08:45:27 by kationg          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../minishell.h"
+#include <unistd.h>
+#include <errno.h>
 
-static int	ch_main_dir(t_globe *p)
+static void	update_pwd_vars(t_globe *p, const char *oldpwd)
 {
-	char	*oldpwd;
-	char	*home;
-	t_shell *envp;
+	char	*newpwd;
 
-	envp = p->envp_ls;
-	oldpwd = envp_value("OLDPW", NULL, envp);
-	//add or replace oldpwd
-	if (oldpwd != NULL)
-		envp_value("OLDPWD", envp_value("PWD", NULL, envp), envp);
-	home = envp_value("HOME", NULL, envp);
-}
-void	ft_cd(char **args, t_globe *p)
-{
-	int	i;
-
-	i = 0;
-	if (args[1] == NULL)
+	if (!p || !p->envp_ls)
+		return ;
+	if (oldpwd)
+		envp_value("OLDPWD", (char *)oldpwd, p->envp_ls);
+	newpwd = getcwd(NULL, 0);
+	if (newpwd)
 	{
-		p->exit_code = ch_main_dir(p);
-
+		envp_value("PWD", newpwd, p->envp_ls);
+		free(newpwd);
 	}
-	chdir(args[1]);
+}
+
+int	ft_cd(char **argv, t_globe *p)
+{
+	char	*target;
+	char	*oldpwd;
+
+	oldpwd = envp_value("PWD", NULL, p->envp_ls);
+	if (!argv || !argv[1])
+		target = envp_value("HOME", NULL, p->envp_ls);
+	else
+		target = argv[1];
+	if (!target)
+	{
+		ft_putstr_fd("cd: HOME not set\n", 2);
+		p->exit_code[0] = 1;
+		return (p->exit_code[0]);
+	}
+	if (chdir(target) != 0)
+	{
+		perror("cd");
+		p->exit_code[0] = 1;
+		return (p->exit_code[0]);
+	}
+	update_pwd_vars(p, oldpwd);
+	p->exit_code[0] = 0;
+	return (p->exit_code[0]);
 }

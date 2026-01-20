@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:10:32 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/19 04:58:08 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/19 17:13:32 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_ast
 	int				heredoc_fd[2];
 	int				pipe_fd[2];
 	int				saved_fd[2];
+	int				pid;
 }	t_ast;
 
 typedef struct s_globe t_globe;

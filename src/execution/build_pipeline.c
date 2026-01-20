@@ -6,12 +6,37 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/18 21:47:28 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/20 09:53:55 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 #include <linux/limits.h>
+#include <sys/wait.h>
+
+static void	free_strv(char **v)
+{
+	int	i;
+
+	if (!v)
+		return ;
+	i = 0;
+	while (v[i])
+	{
+		free(v[i]);
+		i++;
+	}
+	free(v);
+}
+
+static void	rebuild_envp_array(t_globe *p)
+{
+	if (!p || !p->envp_ls)
+		return ;
+	if (p->envp_array)
+		free_strv(p->envp_array);
+	p->envp_array = build_envp_array(*p->envp_ls);
+}
 
 bool is_builtin(char *cmd)
 {
@@ -77,18 +102,24 @@ int	apply_redirections(t_ast *cmd)
 		if (node->type == AST_REDIR_IN)
 		{
 			fd = open(node->children[0]->token_ref->lexeme, O_RDONLY);
+			if (fd < 0)
+				return (1);
 			dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
 		else if (node->type == AST_REDIR_OUT)
 		{
 			fd = open_out(node->children[0]->token_ref->lexeme, 0);
+			if (fd < 0)
+				return (1);
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
 		else if (node->type == AST_APPEND)
 		{
 			fd = open_out(node->children[0]->token_ref->lexeme, 1);
+			if (fd < 0)
+				return (1);
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
@@ -99,6 +130,32 @@ int	apply_redirections(t_ast *cmd)
 		}
 		i++;
 	}
+	return (0);
+}
+
+static int	run_builtin(t_globe *p, char **argv, int in_parent)
+{
+	(void)in_parent;
+	if (!argv || !argv[0])
+		return (0);
+	if (!ft_strncmp(argv[0], "echo", 4))
+		return (ft_echo(argv, p));
+	if (!ft_strncmp(argv[0], "cd", 2))
+		return (ft_cd(argv, p));
+	if (!ft_strncmp(argv[0], "pwd", 3))
+		return (ft_pwd(argv, p));
+    /*
+	if (!ft_strncmp(argv[0], "export", 6))
+		return (ft_export(argv, p));
+    */
+	if (!ft_strncmp(argv[0], "unset", 5))
+		return (ft_unset(argv, p));
+	if (!ft_strncmp(argv[0], "env", 3))
+		return (ft_env(argv, p));
+    /*
+	if (!ft_strncmp(argv[0], "exit", 4))
+		return (ft_exit(argv, p));
+        */
 	return (0);
 }
 
@@ -144,19 +201,15 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 	}
 	status = apply_redirections(cmd);
 	if (status != 0)
-	{
-		p->exit_code[0] = status;
-		return (status);
-	}
-	if (!cmd->argv || !cmd->argv[0])
+		status = 1;
+	else if (!cmd->argv || !cmd->argv[0])
 		status = 0;
-    /*
 	else
 		status = run_builtin(p, cmd->argv, 1);
-    
-
-    //restore fd_in and fd_out after executing in parent process
-*/
+	dup2(saved_in, STDIN_FILENO);
+	dup2(saved_out, STDOUT_FILENO);
+	close(saved_in);
+	close(saved_out);
 	p->exit_code[0] = status;
 	return (status);
 }
@@ -169,9 +222,8 @@ int	exec_external(t_globe *p, char **argv)
     int     i;
     char   *fullpath;
 
-    if (!argv || !argv[0])
-		//need to replace with exit code(error)
-        return 0;
+	if (!argv || !argv[0])
+		return 0;
 
     if (ft_strchr(argv[0], '/'))
         execve(argv[0], argv, p->envp_array);
@@ -181,12 +233,12 @@ int	exec_external(t_globe *p, char **argv)
     if (!path_env)
         execve(argv[0], argv, p->envp_array);
 
-    paths = ft_split(path_env, ':');
-    if (!paths)
-        execve(argv[0], argv, p->envp_array);
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		execve(argv[0], argv, p->envp_array);
 
     i = 0;
-    while (paths[i])
+	while (paths[i])
     {
         fullpath = ft_strdup(paths[i]);
         fullpath = ft_strjoin(fullpath, "/");
@@ -196,26 +248,33 @@ int	exec_external(t_globe *p, char **argv)
         {
             execve(fullpath, argv, p->envp_array);
             perror("execve");
-            _exit(127);
         }
-        free(fullpath);
+		free(fullpath);
         i++;
     }
+	free_strv(paths);
+	perror(argv[0]);
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
 {
 	int	status;
 
+	if (in_fd != STDIN_FILENO)
+		dup2(in_fd, STDIN_FILENO);
+	if (out_fd != STDOUT_FILENO)
+		dup2(out_fd, STDOUT_FILENO);
+	if (in_fd != STDIN_FILENO)
+		close(in_fd);
+	if (out_fd != STDOUT_FILENO)
+		close(out_fd);
 	status = apply_redirections(cmd);
 	if (status != 0)
 		exit(status);
 	if (!cmd->argv || !cmd->argv[0])
 		exit(0);
-    /*
 	if (is_builtin(cmd->argv[0]))
 		exit(run_builtin(p, cmd->argv, 0));
-    */
 	exec_external(p, cmd->argv);
 }
 
@@ -225,11 +284,14 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	int		i;
 	int		pipefd[2];
 	int		prev_read;
+	pid_t	pids[1024];
+	int		status;
 	pid_t	pid;
-	pid_t	last_pid;
 
-	count = root->childcount - 1;
-	last_pid = -1;
+	count = root->childcount;
+	if (count <= 0)
+		return (0);
+	prev_read = STDIN_FILENO;
 	i = 0;
 	while (i < count)
 	{
@@ -251,12 +313,12 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 			if (i < count - 1)
 			{
 				close(pipefd[0]);
-				child_execute_cmd(root, p, prev_read, pipefd[1]);
+				child_execute_cmd(root->children[i], p, prev_read, pipefd[1]);
 			}
 			else
-				child_execute_cmd(root, p, prev_read, STDOUT_FILENO);
+				child_execute_cmd(root->children[i], p, prev_read, STDOUT_FILENO);
 		}
-		last_pid = pid;
+		pids[i] = pid;
 		if (prev_read != STDIN_FILENO)
 			close(prev_read);
 		if (i < count - 1)
@@ -268,12 +330,18 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	}
 	if (prev_read != STDIN_FILENO)
 		close(prev_read);
-	return 0;
+	i = 0;
+	while (i < count)
+	{
+		waitpid(pids[i], &status, 0);
+		i++;
+	}
+	return (p->exit_code[0]);
 }
 
 void	execute(t_ast *root, t_globe *p)
 {
-	int     count;
+	int	count;
 	t_ast	*cmd;
 
 	if (!root)
@@ -283,6 +351,8 @@ void	execute(t_ast *root, t_globe *p)
 		return ;
 	if (count == 1)
 	{
+		cmd = root->children[0];
+		rebuild_envp_array(p);
 		if (cmd && cmd->argv && cmd->argv[0] && is_builtin(cmd->argv[0]))
 		{
 		    run_single_cmd_in_parent(cmd, p);
@@ -291,6 +361,7 @@ void	execute(t_ast *root, t_globe *p)
 		execute_pipeline(root, p);
 		return ;
 	}
+	rebuild_envp_array(p);
 	execute_pipeline(root, p);
 }
 

@@ -6,14 +6,12 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:25:51 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/19 09:15:08 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/20 09:49:29 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <cstdlib>
 #include <limits.h>
-#include <linux/limits.h>
 
 int	ft_pwd(char **argv, t_globe *p)
 {
@@ -26,14 +24,14 @@ int	ft_pwd(char **argv, t_globe *p)
 		pwd = getcwd(NULL, 0);
 		ft_printf("%s\n", pwd);
 		free(pwd);
-		p->exit_code = EXIT_SUCCESS;
+		p->exit_code[0] = EXIT_SUCCESS;
 	}
 	else 
 	{
 		ft_printf("pwd: %s: No such file or directory\n", argv[i]);
-		p->exit_code = EXIT_FAILURE;
+		p->exit_code[0] = EXIT_FAILURE;
 	}
-	return (p->exit_code);
+	return (p->exit_code[0]);
 }
 
 /*

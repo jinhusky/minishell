@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/19 06:50:59 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/20 09:22:32 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "includes/parsing.h"
 # include "includes/expansion.h"
 # include "includes/execution.h"
+# include "includes/builtin.h"
 # include "Libft/libft.h"
 
 typedef struct s_envp
@@ -52,7 +53,7 @@ typedef struct s_globe
 	t_shell		*envp_ls;
 	t_envp		*ptr;
 	t_expand	*origin;
-	int			exit_code;
+	int			exit_code[1];
 	t_splt_ary	sp;
 	char		**envp_array;
 }	t_globe;
