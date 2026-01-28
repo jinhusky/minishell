@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_active.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/01/28 17:01:26 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,19 @@ void	init_read_content(char **lns, char **rslt, int *ttl_len, int *line_len)
 	*line_len = 0;
 }
 
-char	*read_content(char *delimiter)
+char	*read_content(char *delimiter, t_globe *p)
 {
 	char	*lines;
 	char	*result;
 	int		total_len;
 	int		line_len;
-	
+
 	init_read_content(&lines, &result, &total_len, &line_len);
 	while (1)
 	{
 		lines = readline("> ");
-		if (!lines)
+		lines = heredoc_expand_check(lines, p);
+		if (!lines || p->malloc_flag || p->err_flag)
 			break;
 		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0
 			&& ft_strlen(lines) == ft_strlen(delimiter))
@@ -74,7 +75,9 @@ void	find_heredoc(t_ast *child, t_globe *p)
 			strip_quotes(heredoc->children[0]->token_ref->lexeme, p);
 			if (p->err_flag == 1)
 				break ;
-			line = read_content(heredoc->children[0]->token_ref->lexeme);
+			line = read_content(heredoc->children[0]->token_ref->lexeme, p);
+			if (p->malloc_flag || p->err_flag)
+				break ;
 			if (!line)
 				write(heredoc->heredoc_fd[1], "", 1);
 			else
@@ -90,7 +93,7 @@ void	ast_loop(t_ast *root, t_globe *p)
 {
 	int		i = 0;
 	t_ast	*cur_cmd;
-	
+
 	cur_cmd = NULL;
 	if (root->children)
 	{

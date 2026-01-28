@@ -1,4 +1,4 @@
-# **************************************************************************** #
+#**************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -6,12 +6,12 @@
 #    By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/03 18:00:38 by jhor              #+#    #+#              #
-#    Updated: 2025/12/02 10:29:19 by jhor             ###   ########.fr        #
+#    Updated: 2026/01/20 09:52:37 by kationg          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -g3 -Wall -Werror -Wextra
+CFLAGS = -g3
 LDFLAGS = -lreadline
 NAME = minishell
 RM = rm -f
@@ -27,13 +27,16 @@ src/ast/parse_pipe.c ast_visualizer/AST.c src/ast/helper_ast.c \
 src/ast/helper/utils.c  src/ast/helper/utils2.c src/ast/parse_word.c \
 src/ast/parse_redir.c src/ast/parse_argument.c src/ast/parse_component.c \
 src/ast/parse_simple_command.c \
-src/ast/parsing.c src/heredoc/heredoc_active.c \
-src/set_envp.c src/expansion/expand_start.c src/expansion/instructor.c \
+src/ast/parsing.c src/heredoc/heredoc_active.c src/heredoc/heredoc_expand.c\
+src/expansion/expand_start.c src/expansion/instructor.c \
 src/expansion/remove_quotes.c src/expansion/cmd_argv.c src/expansion/copy_split.c \
 src/expansion/expand_check.c src/expansion/expand_split.c \
 src/expansion/expand_split_helper.c src/expansion/assign_mark.c \
 src/expansion/token_double.c src/expansion/token_single.c \
-src/expansion/extract_expand.c src/expansion/copy_builder.c\
+src/expansion/extract_expand.c src/expansion/copy_builder.c src/execution/set_envp.c \
+src/execution/build_pipeline.c \
+src/built_in/ft_echo.c src/built_in/ft_cd.c src/built_in/ft_pwd.c \
+src/built_in/ft_unset.c src/built_in/ft_env.c \
 
 OBJ = $(SRC:.c=.o)
 

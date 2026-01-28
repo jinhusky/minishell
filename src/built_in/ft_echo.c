@@ -6,50 +6,50 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 13:00:42 by kationg           #+#    #+#             */
-/*   Updated: 2025/09/20 14:35:41 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/19 08:54:59 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../minishell.h"
 
-int is_n(char *argv)
+int is_n(char *arg)
 {
     int     i;
     bool    n_flag;
 
     i = 1;
     n_flag = false;
-    if (argv[0] == '-')
+    if (arg[0] == '-')
     {
-        while (argv[i] == 'n')
+        while (arg[i] == 'n')
             i++;
-        if (argv[i + 1] == 0)
+        if (arg[i + 1] == 0)
             n_flag = true;
     }
     return (n_flag);
 
 }
 
-int ft_echo(char *args[])
+int ft_echo(char **argv, t_globe *p)
 {
     int     i;
     bool    n_flag;
 
     n_flag = false;
-    i = 0;
-    while (args[i] && is_n(args[i]))
+    i = 1;
+    while (argv[i] && is_n(argv[i]))
     {
         i++;
         n_flag = true;
     }
-    if (!args[i] && !n_flag)
+    if (!argv[i] && !n_flag)
         ft_putstr_fd("\n", STDOUT_FILENO);
-    while (args[i])
+    while (argv[i])
     {
-        ft_putstr_fd(args[i], STDOUT_FILENO);
-        if (args[i + 1])
+        ft_putstr_fd(argv[i], STDOUT_FILENO);
+        if (argv[i + 1])
             ft_putstr_fd(" ", STDOUT_FILENO);
-        if (!args[i + 1] && !n_flag)
+        if (!argv[i + 1] && !n_flag)
             ft_putstr_fd("\n", STDOUT_FILENO);
         i++;
     }

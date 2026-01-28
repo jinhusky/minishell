@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:25:52 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:46:58 by jhor             ###   ########.fr       */
+/*   Updated: 2026/01/28 17:01:49 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,6 @@ char		*ft_expand(char *lxm, size_t start, size_t end, t_globe *p);
 void		init_split(t_splt_ary *split);
 void		quote_indicator(char *result, t_splt_ary *sp, t_globe *p);
 char		*char_join_str_mark(char *lxm, char *result, size_t *i, t_globe *p);
+char		*heredoc_expand_check(char *line, t_globe *p);
 
 #endif

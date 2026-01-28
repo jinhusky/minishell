@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:44:44 by jhor             ###   ########.fr       */
+/*   Updated: 2026/01/28 15:51:16 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include "includes/parsing.h"
-# include "includes/builtin.h"
 # include "includes/expansion.h"
+# include "includes/execution.h"
+# include "includes/builtin.h"
 # include "Libft/libft.h"
 
 typedef struct s_envp
@@ -33,6 +34,7 @@ typedef struct s_envp
 typedef struct s_shell
 {
 	t_envp *head;
+	int		size;
 }	t_shell;
 
 typedef struct s_globe
@@ -47,11 +49,14 @@ typedef struct s_globe
 	int			exit_flag;
 	int			malloc_flag;
 	int			heredoc_flag;
-	t_shell		envp_ls;
+    int         p_exec_flag;
+	int			heredoc_q_flag;
+	t_shell		*envp_ls;
 	t_envp		*ptr;
 	t_expand	*origin;
 	int			exit_code[1];
 	t_splt_ary	sp;
+	char		**envp_array;
 }	t_globe;
 
 void		init_program(t_token **tkn, t_ast **nd, t_globe *p);

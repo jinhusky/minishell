@@ -42,6 +42,7 @@ void	strip_quotes(char *lexeme, t_globe *p)
 	{
 		if (*src == '\'' || *src == '"')
 		{
+			p->heredoc_q_flag = 1;
 			if (quote == 0)
 				quote = *src;
 			else if (quote == *src)

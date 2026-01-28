@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/14 13:07:18 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/28 16:43:34 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,18 @@ int	main(int argc, char *argv[], char **envp)
 
 	(void) argc;
 	(void) argv;
+	ft_bzero(&p, sizeof(t_globe));
 	p.exit_code[0] = 0;
-	p.envp_ls.head = NULL;
+	p.envp_ls = (t_shell *)malloc(sizeof(t_shell));
+	if (!p.envp_ls)
+		return (1);
+	p.envp_ls->head = NULL;
+	p.envp_ls->size = 0;
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
-		if (p.envp_ls.head)
-			free(p.ptr);
-		set_envp(envp, &p.envp_ls);
-		p.ptr = p.envp_ls.head;
+		set_envp(envp, p.envp_ls);
+		p.ptr = p.envp_ls->head;
 		p.result = readline("minishell$ ");
 		empty_line(&p);
 		if (p.err_flag == 1)
@@ -43,20 +46,33 @@ int	main(int argc, char *argv[], char **envp)
 			exit (EXIT_SUCCESS);
 		if (p.node)
 		{
-			ft_ast_visualize(p.node);
+			//ft_ast_visualize(p.node);
 			ast_loop(p.node, &p);
-			if (p.err_flag == 1)
+			if (p.malloc_flag == 1 || p.err_flag == 1)
 			{
 				main_free(p.node, p.token, p.result, &p);
 				continue ;
 			}
 			expansion_engine(p.node, &p);
+            /*
+			t_ast *ptr;
+            for (int i = 0; i < p.node->childcount; i++)
+			{
+				ptr = p.node->children[i];
+				for (int j = 0; ptr->argv[j]; j++)
+				{
+					printf("%s ", ptr->argv[j]);
+				}
+				printf("\n");
+			}
+            */
+			execute(p.node, &p);
 			if (p.err_flag == 1 || p.malloc_flag == 1)
 			{
 				main_free(p.node, p.token, p.result, &p);
 				continue ;
 			}
-			ft_ast_visualize(p.node);
+			//ft_ast_visualize(p.node);
 		}
 		main_free(p.node, p.token, p.result, &p);
 	}

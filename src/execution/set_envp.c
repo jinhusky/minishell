@@ -6,55 +6,104 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2025/12/03 15:30:35 by jhor             ###   ########.fr       */
+/*   Updated: 2026/01/19 08:35:38 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/builtin.h"
+#include "../../minishell.h"
+
+static int	key_equals(const char *a, const char *b)
+{
+	size_t	la;
+	size_t	lb;
+
+	if (!a || !b)
+		return (0);
+	la = ft_strlen(a);
+	lb = ft_strlen(b);
+	if (la != lb)
+		return (0);
+	return (ft_strncmp(a, b, la) == 0);
+}
+
+void	free_envp_ls(t_shell *shell)
+{
+	t_envp	*ptr;
+	t_envp	*tmp;
+
+	if (!shell)
+		return ;
+	ptr = shell->head;
+	while (ptr)
+	{
+		tmp = ptr;
+		ptr = ptr->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
+	}
+	shell->head = NULL;
+	shell->size = 0;
+}
 
 char	*envp_value(char *k, char *v, t_shell *envp)
 {
 	t_envp	*ptr;
 
 	ptr = envp->head;
-	while(ptr)
+	while (ptr)
 	{
-		if (ft_strncmp(ptr->key, k, ft_strlen(k)) == 0)
+		if (key_equals(ptr->key, k))
 		{
 			if (v)
-				ptr->value = v;
+			{
+				free(ptr->value);
+				ptr->value = ft_strdup(v);
+			}
 			return (ptr->value);
 		}
 		ptr = ptr->next;
 	}
-	return (false);
+	return NULL;
 }
 
-void set_envp(char **envp, t_shell *shell)
+void	set_envp(char **envp, t_shell *shell)
 {
-	int i;
+	int		i;
+	char		*delim;
+	t_envp		*node;
+	t_envp		*prev;
 
-	char	*delim;
-	t_envp	*node;
-	t_envp	*prev;
-
+	if (!shell)
+		return ;
+	free_envp_ls(shell);
 	i = 0;
 	prev = NULL;
 	while (envp[i])
 	{
-		
-		node = malloc(sizeof(t_envp));
+		node = (t_envp *)malloc(sizeof(t_envp));
+		if (!node)
+			return ;
 		if (i == 0)
 			shell->head = node;
 		if (prev)
 			prev->next = node;
 		delim = ft_strchr(envp[i], '=');
+		if (!delim)
+		{
+			node->key = ft_strdup(envp[i]);
+			node->value = ft_strdup("");
+		}
+		else
+		{
 		node->key = ft_substr(envp[i], 0, delim - envp[i]);
 		node->value = ft_substr(envp[i],  delim - envp[i] + 1, ft_strlen(delim + 1));
+		}
+		node->next = NULL;
 		prev = node;
 		i++;
 	}
-	prev->next = NULL;
+	shell->size = i;
 }
 
 /*
