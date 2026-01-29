@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/20 09:53:55 by kationg          ###   ########.fr       */
+/*   Updated: 2026/01/29 20:56:12 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool is_builtin(char *cmd)
 
 char **build_envp_array(t_shell envp_ls)
 {
-	t_envp	*ptr;	
+	t_envp	*ptr;
 	char	**res;
 	int		i;
 	char	*tmp;
@@ -68,9 +68,8 @@ char **build_envp_array(t_shell envp_ls)
 	while (ptr)
 	{
 		tmp = ft_strdup(ptr->key);
-		tmp = ft_strjoin(tmp, "=");
-		tmp = ft_strjoin(tmp, ptr->value);
-
+		tmp = ft_strjoin_free(tmp, ft_strdup("="));
+		tmp = ft_strjoin_free(tmp, ft_strdup(ptr->value));
 		res[i] = tmp;
 		ptr = ptr->next;
 		i++;
@@ -228,7 +227,7 @@ int	exec_external(t_globe *p, char **argv)
     if (ft_strchr(argv[0], '/'))
         execve(argv[0], argv, p->envp_array);
 
-    
+
     path_env = envp_value("PATH", NULL, p->envp_ls);
     if (!path_env)
         execve(argv[0], argv, p->envp_array);
@@ -241,8 +240,8 @@ int	exec_external(t_globe *p, char **argv)
 	while (paths[i])
     {
         fullpath = ft_strdup(paths[i]);
-        fullpath = ft_strjoin(fullpath, "/");
-        fullpath = ft_strjoin(fullpath, argv[0]);
+        fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
+        fullpath = ft_strjoin_free(fullpath, ft_strdup(argv[0]));
 
         if (access(fullpath, X_OK) == 0)
         {
@@ -253,7 +252,7 @@ int	exec_external(t_globe *p, char **argv)
         i++;
     }
 	free_strv(paths);
-	perror(argv[0]);
+	perror(argv[0]); //!hard code to print out which type of error message
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
@@ -288,6 +287,11 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	int		status;
 	pid_t	pid;
 
+	status = 0;
+	//---Jerry---//
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	//---Jerry---//
 	count = root->childcount;
 	if (count <= 0)
 		return (0);
@@ -310,6 +314,10 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 		}
 		if (pid == 0)
 		{
+			//---Jerry---//
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+			//---Jerry---//
 			if (i < count - 1)
 			{
 				close(pipefd[0]);
@@ -336,6 +344,9 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 		waitpid(pids[i], &status, 0);
 		i++;
 	}
+	//---Jerry---//
+	set_exit_code(status, p); //This function gets the exit status of child or signal and return
+	//---Jerry---//
 	return (p->exit_code[0]);
 }
 

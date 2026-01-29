@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/28 17:01:26 by welow            ###   ########.fr       */
+/*   Updated: 2026/01/29 23:04:21 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,21 @@ char	*read_content(char *delimiter, t_globe *p)
 	while (1)
 	{
 		lines = readline("> ");
+		signal(SIGINT, heredoc_signal_handler);
+		signal(SIGQUIT, SIG_IGN);
+		if (signum == SIGINT)
+		{
+			p->exit_code[0] = 128 + signum;
+			break ;
+		}
 		lines = heredoc_expand_check(lines, p);
-		if (!lines || p->malloc_flag || p->err_flag)
-			break;
+		if (p->malloc_flag || p->err_flag)
+			break ;
+		if (!lines)
+		{
+			p->exit_code[0] = 0;
+			break ;
+		}
 		if (ft_strncmp(lines, delimiter, ft_strlen(delimiter)) == 0
 			&& ft_strlen(lines) == ft_strlen(delimiter))
 		{
@@ -70,6 +82,7 @@ void	find_heredoc(t_ast *child, t_globe *p)
 	{
 		if (child->children[i]->type == AST_HEREDOC)
 		{
+			p->inside_heredoc = 1;
 			heredoc = child->children[i];
 			pipe(heredoc->heredoc_fd);
 			strip_quotes(heredoc->children[0]->token_ref->lexeme, p);
@@ -84,6 +97,9 @@ void	find_heredoc(t_ast *child, t_globe *p)
 				write(heredoc->heredoc_fd[1], line, ft_strlen(line));
 			close(heredoc->heredoc_fd[1]);
 			free(line);
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+			p->inside_heredoc = 0;
 		}
 		i++;
 	}

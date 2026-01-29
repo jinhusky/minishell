@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/28 15:53:16 by welow            ###   ########.fr       */
+/*   Updated: 2026/01/29 21:56:52 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,5 @@ void	init_program(t_token **tkn, t_ast **nd, t_globe *p)
 	p->malloc_flag = 0;
 	p->heredoc_flag = 0;
 	p->p_exec_flag = 0;
+	p->inside_heredoc = 0;
 }

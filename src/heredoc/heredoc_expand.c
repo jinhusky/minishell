@@ -79,6 +79,8 @@ char	*line_expandable_check(char *line, t_globe *p)
 
 char	*heredoc_expand_check(char *line, t_globe *p)
 {
+	if (!line)
+		return (NULL);
 	if (p->heredoc_q_flag == 0)
 		line = line_expandable_check(line, p);
 	return (line);

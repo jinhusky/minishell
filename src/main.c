@@ -6,11 +6,13 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/28 16:43:34 by welow            ###   ########.fr       */
+/*   Updated: 2026/01/29 22:28:11 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+__sig_atomic_t signum;
 
 //!maybe refactor the set_envp call
 int	main(int argc, char *argv[], char **envp)
@@ -31,7 +33,17 @@ int	main(int argc, char *argv[], char **envp)
 		init_program(&p.token, &p.node, &p);
 		set_envp(envp, p.envp_ls);
 		p.ptr = p.envp_ls->head;
+		//---Jerry---//
+		if (p.inside_heredoc == 0)
+		{
+			signal(SIGINT, signal_handler);
+			signal(SIGQUIT, SIG_IGN);
+		}
+		//---Jerry---//
 		p.result = readline("minishell$ ");
+		//---Jerry---//
+		signal_get_code(signum, &p);
+		//---Jerry---//
 		empty_line(&p);
 		if (p.err_flag == 1)
 			continue ;
