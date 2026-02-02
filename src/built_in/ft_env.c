@@ -6,7 +6,7 @@
 /*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:23:28 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/20 09:49:51 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 08:54:37 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	ft_env(char **argv, t_globe *p)
 {
 	t_envp *ptr;
 
+	if (!p->envp_ls)
+		return (EXIT_FAILURE);
 	if (argv[1] == NULL)
 	{
 		ptr = p->envp_ls->head;

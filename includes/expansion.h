@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:25:52 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/28 17:01:49 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/02 09:14:19 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_expand
 }	t_expand;
 
 void		expansion_engine(t_ast *root, t_globe *p);
-void		set_envp(char **envp, t_shell *env);
 void		free_envp(t_envp *ptr);
 void		free_copies(t_expand **copies);
 void		simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_globe *p);

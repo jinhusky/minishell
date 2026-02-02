@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/19 08:35:38 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 09:13:17 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*envp_value(char *k, char *v, t_shell *envp)
 	return NULL;
 }
 
-void	set_envp(char **envp, t_shell *shell)
+void	set_envp_array(char **envp, t_shell *shell)
 {
 	int		i;
 	char		*delim;

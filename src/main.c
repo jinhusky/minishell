@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/29 22:28:11 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/02 09:14:58 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char *argv[], char **envp)
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
-		set_envp(envp, p.envp_ls);
+		set_envp_array(envp, p.envp_ls);
 		p.ptr = p.envp_ls->head;
 		//---Jerry---//
 		if (p.inside_heredoc == 0)
