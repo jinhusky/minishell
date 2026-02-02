@@ -36,7 +36,8 @@ src/expansion/token_double.c src/expansion/token_single.c \
 src/expansion/extract_expand.c src/expansion/copy_builder.c src/execution/set_envp.c \
 src/execution/build_pipeline.c src/execution/signal.c \
 src/built_in/ft_echo.c src/built_in/ft_cd.c src/built_in/ft_pwd.c \
-src/built_in/ft_unset.c src/built_in/ft_env.c \
+src/built_in/ft_unset.c src/built_in/ft_env.c src/built_in/ft_exit.c\
+src/built_in/ft_export.c
 
 OBJ = $(SRC:.c=.o)
 

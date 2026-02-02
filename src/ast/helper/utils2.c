@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/02 18:23:30 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,21 @@ void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
 		free_treenode(node);
 	if (token)
 		free_tokens(token);
-	if (p && p->envp_ls && p->envp_ls->head)
+	if (p && p->envp_ls)
 	{
-		free_envp(p->envp_ls->head);
-		p->envp_ls->head = NULL;
-		p->envp_ls->size = 0;
+		if (p->envp_ls->head)
+		{
+			free_envp(p->envp_ls->head);
+			p->envp_ls->head = NULL;
+			p->envp_ls->size = 0;
+		}
+		free(p->envp_ls);
+		p->envp_ls = NULL;
+	}
+	if (p && p->envp_array)
+	{
+		free_strv(p->envp_array);
+		p->envp_array = NULL;
 	}
 	if (p)
 		p->ptr = NULL;

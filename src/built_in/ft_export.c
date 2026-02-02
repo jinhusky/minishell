@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 08:25:55 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/02 09:42:38 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 11:14:10 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <cstdlib>
+//#include <cstdlib.h>
 
 //first char of a env var must be alpha or _
 static bool	valid_env_var(char *key)
@@ -31,7 +31,7 @@ static bool	valid_env_var(char *key)
 	return (true);
 }
 
-void	*set_env_var(char *arg, t_globe *p)
+void	set_env_var(char *arg, t_globe *p)
 {
 	char	*eq_pos;
 	t_envp	*tmp;
@@ -48,7 +48,7 @@ void	*set_env_var(char *arg, t_globe *p)
 		ptr = ptr->next;
 	}
 	ptr->next = tmp;
-
+	return ;
 }
 
 int	ft_export(char **argv, t_globe *p)
@@ -70,7 +70,7 @@ int	ft_export(char **argv, t_globe *p)
 		{
 			if ((value = envp_value(argv[i], NULL, p->envp_ls)))
 				envp_value(argv[i], value, p->envp_ls);
-			else 
+			else
 				set_env_var(argv[i], p);
 		}
 		i++;

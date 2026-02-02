@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 09:14:58 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 22:03:36 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,18 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argv;
 	ft_bzero(&p, sizeof(t_globe));
 	p.exit_code[0] = 0;
-	p.envp_ls = (t_shell *)malloc(sizeof(t_shell));
-	if (!p.envp_ls)
-		return (1);
-	p.envp_ls->head = NULL;
-	p.envp_ls->size = 0;
 	while (1)
 	{
+		ft_printf("i am in here the main loop\n");
 		init_program(&p.token, &p.node, &p);
-		set_envp_array(envp, p.envp_ls);
-		p.ptr = p.envp_ls->head;
+		set_envp_array(envp, &p.envp_ls, &p);
+		if (!p.envp_ls)
+			ft_printf("envp_ls is empty\n");
+		if (!p.ptr)
+			ft_printf("ptr(t_envp) is empty\n");
 		//---Jerry---//
-		if (p.inside_heredoc == 0)
-		{
-			signal(SIGINT, signal_handler);
-			signal(SIGQUIT, SIG_IGN);
-		}
+		signal(SIGINT, signal_handler);
+		signal(SIGQUIT, SIG_IGN);
 		//---Jerry---//
 		p.result = readline("minishell$ ");
 		//---Jerry---//
@@ -53,15 +49,16 @@ int	main(int argc, char *argv[], char **envp)
 		if (p.malloc_flag == 1)
 			continue ;
 		p.node = parsing(p.node, p.token, &p);
-		p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
-		if (p.exit_flag == 1)
-			exit (EXIT_SUCCESS);
+		//p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
+		//if (p.exit_flag == 1)
+		//	exit (EXIT_SUCCESS);
 		if (p.node)
 		{
 			//ft_ast_visualize(p.node);
 			ast_loop(p.node, &p);
 			if (p.malloc_flag == 1 || p.err_flag == 1)
 			{
+				ft_printf("i am in here\n");
 				main_free(p.node, p.token, p.result, &p);
 				continue ;
 			}
@@ -86,6 +83,7 @@ int	main(int argc, char *argv[], char **envp)
 			}
 			//ft_ast_visualize(p.node);
 		}
+		ft_printf("I am here to loop again\n");
 		main_free(p.node, p.token, p.result, &p);
 	}
 	rl_clear_history();

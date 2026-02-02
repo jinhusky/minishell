@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/29 20:56:12 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/02 22:42:47 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <linux/limits.h>
 #include <sys/wait.h>
 
-static void	free_strv(char **v)
+void	free_strv(char **v)
 {
 	int	i;
 
@@ -102,7 +102,7 @@ int	apply_redirections(t_ast *cmd)
 		{
 			fd = open(node->children[0]->token_ref->lexeme, O_RDONLY);
 			if (fd < 0)
-				return (1);
+				return (1); //apply exit code to open redirection fail
 			dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
@@ -143,18 +143,14 @@ static int	run_builtin(t_globe *p, char **argv, int in_parent)
 		return (ft_cd(argv, p));
 	if (!ft_strncmp(argv[0], "pwd", 3))
 		return (ft_pwd(argv, p));
-    /*
 	if (!ft_strncmp(argv[0], "export", 6))
 		return (ft_export(argv, p));
-    */
 	if (!ft_strncmp(argv[0], "unset", 5))
 		return (ft_unset(argv, p));
 	if (!ft_strncmp(argv[0], "env", 3))
 		return (ft_env(argv, p));
-    /*
 	if (!ft_strncmp(argv[0], "exit", 4))
-		return (ft_exit(argv, p));
-        */
+		ft_exit(argv, p);
 	return (0);
 }
 
@@ -205,7 +201,7 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 		status = 0;
 	else
 		status = run_builtin(p, cmd->argv, 1);
-	dup2(saved_in, STDIN_FILENO);
+	dup2(saved_in, STDIN_FILENO); //why need to restore fds when running single builtin cmds. Restore fds in parent to align in fds
 	dup2(saved_out, STDOUT_FILENO);
 	close(saved_in);
 	close(saved_out);
@@ -224,20 +220,19 @@ int	exec_external(t_globe *p, char **argv)
 	if (!argv || !argv[0])
 		return 0;
 
-    if (ft_strchr(argv[0], '/'))
+    if (ft_strchr(argv[0], '/')) //user/bin/ls
         execve(argv[0], argv, p->envp_array);
-
 
     path_env = envp_value("PATH", NULL, p->envp_ls);
     if (!path_env)
-        execve(argv[0], argv, p->envp_array);
+        execve(argv[0], argv, p->envp_array); //!handle exit when execve failed and free all the memory. Leak issues with child process in execution
 
 	paths = ft_split(path_env, ':');
 	if (!paths)
 		execve(argv[0], argv, p->envp_array);
 
     i = 0;
-	while (paths[i])
+	while (paths[i]) ///home/welow/.cargo/bin/cat
     {
         fullpath = ft_strdup(paths[i]);
         fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
@@ -252,7 +247,8 @@ int	exec_external(t_globe *p, char **argv)
         i++;
     }
 	free_strv(paths);
-	perror(argv[0]); //!hard code to print out which type of error message
+	perror(argv[0]);//!hard code to print out which type of error message
+	return (0);
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
@@ -260,7 +256,7 @@ static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
 	int	status;
 
 	if (in_fd != STDIN_FILENO)
-		dup2(in_fd, STDIN_FILENO);
+		dup2(in_fd, STDIN_FILENO); //pipe[0] --> STDIN
 	if (out_fd != STDOUT_FILENO)
 		dup2(out_fd, STDOUT_FILENO);
 	if (in_fd != STDIN_FILENO)
@@ -268,7 +264,7 @@ static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
 	if (out_fd != STDOUT_FILENO)
 		close(out_fd);
 	status = apply_redirections(cmd);
-	if (status != 0)
+	if (status != 0) //exit code then exit for redirection failure
 		exit(status);
 	if (!cmd->argv || !cmd->argv[0])
 		exit(0);
@@ -295,7 +291,7 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	count = root->childcount;
 	if (count <= 0)
 		return (0);
-	prev_read = STDIN_FILENO;
+	prev_read = STDIN_FILENO; //ask chatgpt
 	i = 0;
 	while (i < count)
 	{
@@ -323,7 +319,7 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 				close(pipefd[0]);
 				child_execute_cmd(root->children[i], p, prev_read, pipefd[1]);
 			}
-			else
+			else //single pipe
 				child_execute_cmd(root->children[i], p, prev_read, STDOUT_FILENO);
 		}
 		pids[i] = pid;
@@ -331,8 +327,8 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 			close(prev_read);
 		if (i < count - 1)
 		{
-			close(pipefd[1]);
-			prev_read = pipefd[0];
+			close(pipefd[1]); //write end of pipe
+			prev_read = pipefd[0]; //read end of pipe
 		}
 		i++;
 	}

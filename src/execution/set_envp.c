@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_envp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/02 09:13:17 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 22:07:57 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,16 +67,19 @@ char	*envp_value(char *k, char *v, t_shell *envp)
 	return NULL;
 }
 
-void	set_envp_array(char **envp, t_shell *shell)
+void	set_envp_array(char **envp, t_shell **shell, t_globe *p)
 {
 	int		i;
-	char		*delim;
-	t_envp		*node;
-	t_envp		*prev;
+	char	*delim;
+	t_envp	*node;
+	t_envp	*prev;
 
 	if (!shell)
 		return ;
-	free_envp_ls(shell);
+	free_envp_ls(*shell);
+	*shell = (t_shell *)malloc(sizeof(t_shell));
+	(*shell)->head = NULL;
+	(*shell)->size = 0;
 	i = 0;
 	prev = NULL;
 	while (envp[i])
@@ -85,7 +88,7 @@ void	set_envp_array(char **envp, t_shell *shell)
 		if (!node)
 			return ;
 		if (i == 0)
-			shell->head = node;
+			(*shell)->head = node;
 		if (prev)
 			prev->next = node;
 		delim = ft_strchr(envp[i], '=');
@@ -96,14 +99,22 @@ void	set_envp_array(char **envp, t_shell *shell)
 		}
 		else
 		{
-		node->key = ft_substr(envp[i], 0, delim - envp[i]);
-		node->value = ft_substr(envp[i],  delim - envp[i] + 1, ft_strlen(delim + 1));
+			node->key = ft_substr(envp[i], 0, delim - envp[i]);
+			node->value = ft_substr(envp[i],  delim - envp[i] + 1, ft_strlen(delim + 1));
 		}
 		node->next = NULL;
 		prev = node;
 		i++;
 	}
-	shell->size = i;
+	(*shell)->size = i;
+	p->envp_ls = *shell;
+	//t_envp *shell_p = p->envp_ls->head;
+	//while (shell_p)
+	//{
+	//	ft_printf("key:%s\n", shell_p->key);
+	//	ft_printf("value:%s\n", shell_p->value);
+	//	shell_p = shell_p->next;
+	//}
 }
 
 /*

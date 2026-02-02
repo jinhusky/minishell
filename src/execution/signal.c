@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 17:47:02 by welow             #+#    #+#             */
-/*   Updated: 2026/01/29 23:03:47 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/02 22:20:51 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,18 @@
 //!work on not mixing the heredoc signal with normal environment signal behavior
 void	signal_get_code(int signa, t_globe *p)
 {
-	if (p->inside_heredoc == 0)
+	if (signa == SIGINT)
+		p->exit_code[0] = 128 + signa;
+	if (!p->result)
 	{
-		if (signa == SIGINT)
-			p->exit_code[0] = 128 + signa;
-		if (!p->result)
-			exit(p->exit_code[0]);
-	}
-	else
-	{
-		if (signa == SIGINT)
-		{
-			p->exit_code[0] = 128 + signa;
-			write(1, "\n", 1);
-			rl_on_new_line();
-			rl_replace_line("", 0);
-			rl_redisplay();
-		}
+		main_free(p->node, p->token, p->result, p);
+		exit(p->exit_code[0]);
 	}
 }
 
 void	signal_handler(int signal)
 {
+	//printf("entered here\n");
 	signum = signal;
 	write(1, "\n", 1);
 	rl_on_new_line();
@@ -48,7 +38,10 @@ void	heredoc_signal_handler(int signal)
 {
 	signum = signal;
 	if (signum == SIGINT)
+	{
 		write(1, "\n", 1);
+		exit (128 + SIGINT);
+	}
 	else if (signum == SIGQUIT)
 	{
 
@@ -67,6 +60,22 @@ void	set_exit_code(int status, t_globe *p)
 		else if (signum == SIGINT)
 			printf("\n");
 		p->exit_code[0] = 128 + signum;
+		signum = 0;
+	}
+}
+
+void	set_hd_exit_code(int status, t_globe *p)
+{
+	if (WIFEXITED(status))
+		p->exit_code[0] = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		signum = WTERMSIG(status);
+		if (signum == SIGINT)
+		{
+			p->exit_code[0] = 128 + signum;
+			p->err_flag = 1;
+		}
 		signum = 0;
 	}
 }

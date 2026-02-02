@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:10:32 by jhor              #+#    #+#             */
-/*   Updated: 2026/01/19 17:13:32 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 11:01:13 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_ast
 	char			**argv;
 	int				heredoc_fd[2];
 	int				pipe_fd[2];
-	int				saved_fd[2];
+	//int				saved_fd[2];//not needed
 	int				pid;
 }	t_ast;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 08:59:28 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/20 09:16:42 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/02 10:55:13 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool is_builtin(char *cmd)
 
 char **build_envp_array(t_shell envp_ls)
 {
-	t_envp	*ptr;	
+	t_envp	*ptr;
 	char	**res;
 	int		i;
 	char	*tmp;
@@ -161,7 +161,7 @@ bool	redirect_io(t_ast *root, t_globe *p)
 	return (res);
 }
 
-bool	restore_io(t_ast *root, t_globe *p)
+bool	restore_io(t_ast *root, t_globe *p) //dup2 to replace old fd to new fd and close fd
 {
     if (root->saved_fd[0])
     {
@@ -175,7 +175,7 @@ bool	restore_io(t_ast *root, t_globe *p)
             return false;
         close(root->saved_fd[1]);
     }
-    
+
     return true;
 }
 int	exec_external(t_globe *p, char **argv)
@@ -193,7 +193,7 @@ int	exec_external(t_globe *p, char **argv)
     if (ft_strchr(argv[0], '/'))
         execve(argv[0], argv, p->envp_array);
 
-    
+
     path_env = envp_value("PATH", NULL, p->envp_ls);
     if (!path_env)
         execve(argv[0], argv, p->envp_array);
@@ -226,14 +226,14 @@ bool	set_pipes(t_ast *node)
 	t_ast *ptr;
 
 	i = 0;
-	ptr = node;	
+	ptr = node;
 	while (i < ptr->childcount - 1)
 	{
 		if (i == 0)
 		{
 			dup2(ptr->children[i]->pipe_fd[1], STDOUT_FILENO);
 		}
-		else 
+		else
 		{
 			dup2(ptr->children[i - 1]->pipe_fd[0], STDIN_FILENO);
 			dup2(ptr->children[i]->pipe_fd[1], STDOUT_FILENO);
@@ -280,8 +280,8 @@ void	executor(t_ast *root, t_globe *p)
 	{
 		redirect_io(root, p);
 		run_builtin_parent(root, p);
-		restore_io(root, p);
+		restore_io(root, p); //test more: has to restore to avoid messed up fds
 	}
-	else 
+	else
 		execute_pipeline(root, p);
 }
