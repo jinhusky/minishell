@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 09:00:52 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/02 11:23:34 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/04 14:26:56 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_exit(char **argv, t_globe *p)
 
 	if (!argv[1])
 	{
-		//clean (p)
+		main_free(p->node, p->token, p->result, p);
 		exit(p->exit_code[0]);
 	}
 	if (!argv[2])

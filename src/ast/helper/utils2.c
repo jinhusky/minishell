@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 18:23:30 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/04 19:27:24 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,23 @@ void	free_envp(t_envp *ptr)
 			free(tmp->value);
 		free(tmp);
 	}
+}
+
+void	loop_free(t_ast *node, t_token *token, char *result, t_globe *p)
+{
+	if (node)
+		free_treenode(node);
+	if (token)
+		free_tokens(token);
+	if (p && p->envp_array)
+	{
+		free_strv(p->envp_array);
+		p->envp_array = NULL;
+	}
+	if (p)
+		p->ptr = NULL;
+	if (result)
+		free(result);
 }
 
 void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)

@@ -43,7 +43,7 @@ void	parse_simple_command(t_ast *branch, t_globe *p)
 		&& token_peek(p) && token_peek(p)->token == WORD)
 	{
 		first_word(branch, command, p);
-		if (p->malloc_flag == 1)
+		if (p->malloc_flag == 1 || p->err_flag == 1)
 			return ;
 	}
 	if (branch->children && token_peek(p))

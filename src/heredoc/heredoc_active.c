@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 16:57:12 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/03 17:59:03 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,23 +91,23 @@ void  find_heredoc(t_ast *child, t_globe *p)
 		heredoc = child->children[i];
 		if (pipe(heredoc->heredoc_fd) == -1)
 		{
-		p->err_flag = 1;
-		ft_printf("pipe error in heredoc\n");
-		p->exit_code[0] = 2;
-		return ;
+			p->err_flag = 1;
+			ft_printf("pipe error in heredoc\n");
+			p->exit_code[0] = 2;
+			return ;
 		}
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 		kid = fork();
 		if (kid == -1)
 		{
-		/* cleanup fds */
-		close(heredoc->heredoc_fd[0]);
-		close(heredoc->heredoc_fd[1]);
-		p->err_flag = 1;
-		ft_printf("fork error in heredoc\n");
-		p->exit_code[0] = 2;
-		return ;
+			/* cleanup fds */
+			close(heredoc->heredoc_fd[0]);
+			close(heredoc->heredoc_fd[1]);
+			p->err_flag = 1;
+			ft_printf("fork error in heredoc\n");
+			p->exit_code[0] = 2;
+			return ;
 		}
 		if (kid == 0)
 		{
@@ -119,13 +119,15 @@ void  find_heredoc(t_ast *child, t_globe *p)
 			if (p->err_flag == 1)
 			{
 				close(heredoc->heredoc_fd[1]);
-				_exit(1);
+				//main_free(p->node, p->token, p->result, p);
+				exit(1);
 			}
 			line = read_content(heredoc->children[0]->token_ref->lexeme, p);
 			if (p->malloc_flag || p->err_flag)
 			{
 				close(heredoc->heredoc_fd[1]);
-				_exit(1);
+				//main_free(p->node, p->token, p->result, p);
+				exit(1);
 			}
 			if (!line)
 				write(heredoc->heredoc_fd[1], "", 1);
@@ -134,7 +136,7 @@ void  find_heredoc(t_ast *child, t_globe *p)
 			close(heredoc->heredoc_fd[1]);
 			free(line);
 			p->inside_heredoc = 0;
-			_exit(0);
+			exit(0);
 		}
 		/* parent: close write end, keep read end for later */
 		close(heredoc->heredoc_fd[1]);

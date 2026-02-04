@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 19:06:26 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/04 10:44:25 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	free_treenode(t_ast *root)
 	if (root->argv)
 		free_argv(root->argv);
 	free(root);
+	root = NULL;
 }
 
 void	invalid_token(t_token *token, char *result, t_globe *p)

@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/04 12:18:12 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/04 19:27:36 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ extern __sig_atomic_t signum;
 
 void		init_program(t_token **tkn, t_ast **nd, t_globe *p);
 void		main_free(t_ast *node, t_token *token, char *result, t_globe *p);
+void		loop_free(t_ast *node, t_token *token, char *result, t_globe *p);
 char		*trim_prompt(char *trim);
 void		empty_line(t_globe *p);
 int			readline_exit(t_ast *node, t_token *token, char *rslt, t_envp *ptr);

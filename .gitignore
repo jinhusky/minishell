@@ -1,3 +1,7 @@
 end
 outfile
+out
+intel
+built_in/(ignore)ft_export_utils.c
+built_in/(ignore)ft_export.c
 test_cases

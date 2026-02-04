@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -g3
+CFLAGS = -g3# -fsanitize=address,leak,undefined
 LDFLAGS = -lreadline
 NAME = minishell
 RM = rm -f
@@ -37,7 +37,7 @@ src/expansion/extract_expand.c src/expansion/copy_builder.c src/execution/set_en
 src/execution/build_pipeline.c src/execution/signal.c \
 src/built_in/ft_echo.c src/built_in/ft_cd.c src/built_in/ft_pwd.c \
 src/built_in/ft_unset.c src/built_in/ft_env.c src/built_in/ft_exit.c\
-src/built_in/ft_export.c
+src/built_in/ft_export.c src/built_in/ft_export_utils.c
 
 OBJ = $(SRC:.c=.o)
 

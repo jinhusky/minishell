@@ -60,14 +60,39 @@ void	strip_quotes(char *lexeme, t_globe *p)
 	return ;
 }
 
+void	quote_check_error(char *lexeme, t_globe *p)
+{
+	char	quote;
+	char	*src;
+
+	src = NULL;
+	src = lexeme;
+	quote = 0;
+	while (*src)
+	{
+		if (*src == '\'' || *src == '"')
+		{
+			if (quote == 0)
+				quote = *src;
+			else if (quote == *src)
+				quote = 0;
+		}
+		src++;
+	}
+	if (quote != 0)
+		error_quotes(quote, p);
+	return ;
+}
+
 void	parse_word(t_ast *branch, t_globe *p)
 {
 	branch->type = AST_WORD;
 	if (p->cursor)
 	{
+		branch->token_ref = p->cursor;
+		quote_check_error(branch->token_ref->lexeme, p);
 		if (p->err_flag == 1)
 			return ;
-		branch->token_ref = p->cursor;
 	}
 	return ;
 }

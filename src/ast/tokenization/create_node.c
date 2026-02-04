@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_node.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 17:50:35 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/12 15:41:19 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/04 14:28:11 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_token	*create_node(t_token *head, char *start, size_t end)
 
 	i = 0;
 	temp = malloc(sizeof(t_token));
+	//ft_printf("malloc for the first token\n");
 	if (!temp)
 		return (NULL);
 	temp->token = 0;

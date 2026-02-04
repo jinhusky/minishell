@@ -49,13 +49,13 @@ void	parse_components(t_ast *prt, t_ast *child, t_globe *p)
 		{
 			child = parse_argument(child, p);
 			attach_treenode(prt, child, p);
-			if (p->malloc_flag == 1)
+			if (p->malloc_flag == 1 || p->err_flag == 1)
 				return ;
 		}
 		else
 		{
 			token_not_word(cur_redir, prt, child, p);
-			if (p->malloc_flag == 1)
+			if (p->malloc_flag == 1 || p->err_flag == 1)
 				return ;
 		}
 		p = get_token(p);

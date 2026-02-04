@@ -29,6 +29,7 @@ t_token	*token_peek(t_globe *p)
 t_ast	*create_treenode(t_ast *treenode, t_globe *p)
 {
 	treenode = malloc(sizeof(t_ast));
+	//ft_printf("malloc for first treenode\n");
 	if (!treenode)
 	{
 		p->malloc_flag = 1;

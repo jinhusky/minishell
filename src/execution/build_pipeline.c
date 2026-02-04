@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/04 12:27:29 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/04 18:14:17 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,7 +238,15 @@ void	exec_external(t_globe *p, char **argv)
 	if (!argv || !argv[0])
 		return ;
     if (ft_strchr(argv[0], '/')) //user/bin/ls
-        execve(argv[0], argv, p->envp_array);
+	{
+		//main_free(p->node, p->token, p->result, p);
+		if (execve(argv[0], argv, p->envp_array) == -1)
+		{
+			ft_printf(strerror(127));
+			p->exit_code[0] = 127;
+			return ;
+		}
+	}
 
     path_env = envp_value("PATH", NULL, p->envp_ls);
     if (!path_env)
@@ -258,14 +266,20 @@ void	exec_external(t_globe *p, char **argv)
         if (access(fullpath, F_OK) == 0)
         {
 			cmd_notf_flag = 1;
-            execve(fullpath, argv, p->envp_array);
-            perror("execve");
+            if (execve(fullpath, argv, p->envp_array) == -1)
+			{
+				perror("execve");
+				main_free(p->node, p->token, p->result, p);
+				exit (127);
+			}
+			break ;
         }
 		free(fullpath);
         i++;
     }
 	print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
 	free_strv(paths);
+	//perror(argv[0]);//!hard code to print out which type of error message
 	return ;
 }
 
