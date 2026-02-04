@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 14:19:10 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/04 12:18:12 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 # include "includes/execution.h"
 # include "includes/builtin.h"
 # include "Libft/libft.h"
+# include "errno.h"
+
+# define CMD_NOT_FOUND 127
 
 typedef struct s_envp
 {

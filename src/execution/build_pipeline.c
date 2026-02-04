@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/02 22:42:47 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/04 12:27:29 by kationg          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,17 +209,34 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 	return (status);
 }
 
-int	exec_external(t_globe *p, char **argv)
+int	print_err_mssg(char *cmd, char *err_mssg, int err_num)
+{
+	char *str;
+
+	str = strdup("minishell :");
+	if (cmd)
+	{
+		str = ft_strjoin(str, cmd);
+		str = ft_strjoin(str, " :");
+	}
+	str = ft_strjoin(str, err_mssg);
+	ft_putendl_fd(str, 2);
+	free(str);
+	return (err_num);
+}
+
+void	exec_external(t_globe *p, char **argv)
 {
 
     char   *path_env;
     char  **paths;
     int     i;
     char   *fullpath;
+	int		cmd_notf_flag;
 
+	cmd_notf_flag = 0;
 	if (!argv || !argv[0])
-		return 0;
-
+		return ;
     if (ft_strchr(argv[0], '/')) //user/bin/ls
         execve(argv[0], argv, p->envp_array);
 
@@ -238,17 +255,18 @@ int	exec_external(t_globe *p, char **argv)
         fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
         fullpath = ft_strjoin_free(fullpath, ft_strdup(argv[0]));
 
-        if (access(fullpath, X_OK) == 0)
+        if (access(fullpath, F_OK) == 0)
         {
+			cmd_notf_flag = 1;
             execve(fullpath, argv, p->envp_array);
             perror("execve");
         }
 		free(fullpath);
         i++;
     }
+	print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
 	free_strv(paths);
-	perror(argv[0]);//!hard code to print out which type of error message
-	return (0);
+	return ;
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
