@@ -11,5 +11,6 @@ int		ft_unset(char **argv, t_globe *p);
 int		ft_env(char **argv, t_globe *p);
 void	ft_exit(char **argv, t_globe *p);
 void	print_export(t_globe *p);
+char	*export_envp_value(char *k, char *v, t_shell *envp);
 
 #endif

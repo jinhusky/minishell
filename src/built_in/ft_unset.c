@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kationg <kationg@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:58:02 by kationg           #+#    #+#             */
-/*   Updated: 2026/01/20 09:51:43 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/05 15:47:20 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	rm_env_var(t_globe *p, char *key)
 	curr = p->envp_ls->head;
 	while (curr)
 	{
-		if (!ft_strncmp(key, curr->key, ft_strlen(key)))
+		if (!ft_strncmp(key, curr->key, ft_strlen(key))
+			&& ft_strlen(key) == ft_strlen(curr->key))
 		{
 			if (prev)
 				prev->next = curr->next;
@@ -30,6 +31,7 @@ void	rm_env_var(t_globe *p, char *key)
 			free(curr->key);
 			free(curr->value);
 			free(curr);
+			p->envp_ls->size = p->envp_ls->size - 1;
 			return ;
 		}
 		prev = curr;
@@ -50,6 +52,7 @@ int	ft_unset(char **argv, t_globe *p)
 	while (argv[i])
 	{
 		rm_env_var(p, argv[i]);
+		ft_printf("size of env%d\n", p->envp_ls->size);
 		i++;
 	}
 	return (p->exit_code[0]);

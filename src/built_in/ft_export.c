@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 08:25:55 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/04 22:06:41 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/05 21:08:33 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,8 @@ int	ft_export(char **argv, t_globe *p)
 		}
 		if (ft_strchr(argv[i], '='))
 		{
-			if ((value = envp_value(argv[i], NULL, p->envp_ls)))
-			{
-				ft_printf("value:%s\n", value);
-				ft_printf("i am in here\n");
-				envp_value(argv[i], argv[i], p->envp_ls);
-			}
+			if ((value = export_envp_value(argv[i], NULL, p->envp_ls)))
+				export_envp_value(argv[i], argv[i], p->envp_ls);
 			else
 				set_env_var(argv[i], p);
 		}

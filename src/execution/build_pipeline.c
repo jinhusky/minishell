@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/04 18:14:17 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/05 19:48:13 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,14 @@ static int	open_out(const char *path, int append)
 	return (open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644));
 }
 
+void	print_redir_err(t_ast *redir)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(redir->token_ref->lexeme, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(strerror(errno), 2);
+}
+
 int	apply_redirections(t_ast *cmd)
 {
 	int		fd;
@@ -102,7 +110,10 @@ int	apply_redirections(t_ast *cmd)
 		{
 			fd = open(node->children[0]->token_ref->lexeme, O_RDONLY);
 			if (fd < 0)
-				return (1); //apply exit code to open redirection fail
+			{
+				print_redir_err(node->children[0]);
+				return (1);
+			}
 			dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
@@ -110,7 +121,10 @@ int	apply_redirections(t_ast *cmd)
 		{
 			fd = open_out(node->children[0]->token_ref->lexeme, 0);
 			if (fd < 0)
+			{
+				print_redir_err(node->children[0]);
 				return (1);
+			}
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
@@ -118,7 +132,10 @@ int	apply_redirections(t_ast *cmd)
 		{
 			fd = open_out(node->children[0]->token_ref->lexeme, 1);
 			if (fd < 0)
+			{
+				print_redir_err(node->children[0]);
 				return (1);
+			}
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
@@ -196,7 +213,11 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 	}
 	status = apply_redirections(cmd);
 	if (status != 0)
+	{
 		status = 1;
+		p->exit_code[0] = status;
+		return (status);
+	}
 	else if (!cmd->argv || !cmd->argv[0])
 		status = 0;
 	else
@@ -216,10 +237,10 @@ int	print_err_mssg(char *cmd, char *err_mssg, int err_num)
 	str = strdup("minishell :");
 	if (cmd)
 	{
-		str = ft_strjoin(str, cmd);
-		str = ft_strjoin(str, " :");
+		str = ft_strjoin_free(str, ft_strdup(cmd));
+		str = ft_strjoin_free(str, ft_strdup(" :"));
 	}
-	str = ft_strjoin(str, err_mssg);
+	str = ft_strjoin_free(str, ft_strdup(err_mssg));
 	ft_putendl_fd(str, 2);
 	free(str);
 	return (err_num);
@@ -227,7 +248,6 @@ int	print_err_mssg(char *cmd, char *err_mssg, int err_num)
 
 void	exec_external(t_globe *p, char **argv)
 {
-
     char   *path_env;
     char  **paths;
     int     i;
@@ -239,22 +259,21 @@ void	exec_external(t_globe *p, char **argv)
 		return ;
     if (ft_strchr(argv[0], '/')) //user/bin/ls
 	{
-		//main_free(p->node, p->token, p->result, p);
 		if (execve(argv[0], argv, p->envp_array) == -1)
 		{
-			ft_printf(strerror(127));
+			print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
 			p->exit_code[0] = 127;
-			return ;
+			exit (127);
 		}
 	}
 
-    path_env = envp_value("PATH", NULL, p->envp_ls);
-    if (!path_env)
-        execve(argv[0], argv, p->envp_array); //!handle exit when execve failed and free all the memory. Leak issues with child process in execution
+	path_env = envp_value("PATH", NULL, p->envp_ls);
+	if (!path_env)
+		exit(EXIT_FAILURE); //!handle exit when execve failed and free all the memory. Leak issues with child process in execution
 
 	paths = ft_split(path_env, ':');
 	if (!paths)
-		execve(argv[0], argv, p->envp_array);
+		exit (EXIT_FAILURE);
 
     i = 0;
 	while (paths[i]) ///home/welow/.cargo/bin/cat
@@ -268,19 +287,19 @@ void	exec_external(t_globe *p, char **argv)
 			cmd_notf_flag = 1;
             if (execve(fullpath, argv, p->envp_array) == -1)
 			{
-				perror("execve");
-				main_free(p->node, p->token, p->result, p);
+				print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
+				free(paths);
+				free(fullpath);
 				exit (127);
 			}
 			break ;
-        }
+		}
 		free(fullpath);
-        i++;
-    }
+		i++;
+	}
 	print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
-	free_strv(paths);
-	//perror(argv[0]);//!hard code to print out which type of error message
-	return ;
+	free_strv(paths); //!To test the error msg print//!hard code to print out which type of error message
+	exit (127);
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
@@ -394,7 +413,7 @@ void	execute(t_ast *root, t_globe *p)
 		rebuild_envp_array(p);
 		if (cmd && cmd->argv && cmd->argv[0] && is_builtin(cmd->argv[0]))
 		{
-		    run_single_cmd_in_parent(cmd, p);
+			run_single_cmd_in_parent(cmd, p);
 			return ;
 		}
 		execute_pipeline(root, p);

@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/04 19:29:12 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/05 19:59:15 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,15 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argc;
 	(void) argv;
 	ft_bzero(&p, sizeof(t_globe));
-	//p.envp_ls = (t_shell *)malloc(sizeof(t_shell));
 	set_envp_array(envp, &p.envp_ls, &p);
 	p.exit_code[0] = 0;
 	while (1)
 	{
-		//ft_printf("i am in here the main loop\n");
 		init_program(&p.token, &p.node, &p);
-		//if (!p.envp_ls)
-		//	ft_printf("envp_ls is empty\n");
-		//if (!p.ptr)
-		//	ft_printf("ptr(t_envp) is empty\n");
-		//---Jerry---//
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, SIG_IGN);
-		//---Jerry---//
 		p.result = readline("minishell$ ");
-		//---Jerry---//
 		signal_get_code(signum, &p);
-		//---Jerry---//
 		empty_line(&p);
 		if (p.err_flag == 1)
 			continue ;

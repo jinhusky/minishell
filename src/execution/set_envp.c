@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/04 22:51:48 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/05 21:09:02 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ char	*extract_key(char *eq_pos, char *k)
 	return (eq_pos);
 }
 
-
 char	*replace_value(char *new)
 {
 	char	*new_value;
@@ -75,19 +74,38 @@ char	*replace_value(char *new)
 char	*envp_value(char *k, char *v, t_shell *envp)
 {
 	t_envp	*ptr;
+
+	ptr = envp->head;
+	while (ptr)
+	{
+		if (key_equals(ptr->key, k))
+		{
+			if (v)
+			{
+				free(ptr->value);
+				ptr->value = v;
+			}
+			return (ptr->value);
+		}
+		ptr = ptr->next;
+	}
+	return NULL;
+}
+
+char	*export_envp_value(char *k, char *v, t_shell *envp)
+{
+	t_envp	*ptr;
 	char	*eq_pos;
 
 	ptr = envp->head;
 	eq_pos = 0;
 	eq_pos = extract_key(eq_pos, k);
-	printf("%s\n", eq_pos);
 	while (ptr)
 	{
 		if (key_equals(ptr->key, eq_pos))
 		{
 			if (v)
 			{
-				printf("i am not in here\n");
 				free(ptr->value);
 				ptr->value = replace_value(v);
 			}
