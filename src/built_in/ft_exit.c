@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 09:00:52 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/04 14:26:56 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/08 16:35:22 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ void	ft_exit(char **argv, t_globe *p)
 	p->exit_code[0] = get_exit_code(argv[1], p);
 }
 
+
+//exit with a numeric argument less than 0 or more than / equal to 256 must perform a wrap around(%) 256 to get the value
 //exit alksfdjh 234 - it exits with bash: exit: aklsfdjh: numeric argument required
-//exit 234 234 - it exits with bash: exit: too many arguments
+//exit 234alksfdjh - it exits with bash: exit: aklsfdjh: numeric argument required
+//exit 234 234 - it does not exits with bash: exit: too many arguments
 //exit 234 askldfj - it does not exits with bash: exit: too many arguments
 //exit asdf 234 asdf - it exits with bash: exit: aslkdfj: numeric argument required
