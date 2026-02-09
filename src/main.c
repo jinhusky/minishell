@@ -6,13 +6,50 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/05 19:59:15 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/09 22:34:31 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 __sig_atomic_t signum;
+
+void	print_SHLVL(char *str, t_shell **env)
+{
+	t_envp	*ptr;
+
+	ptr = (*env)->head;
+	while (ptr)
+	{
+		if (key_equals(ptr->key, str))
+		{
+			ft_printf("SHLVL IN MINISHELL:%s\n", ptr->value);
+			return ;
+		}
+		ptr = ptr->next;
+	}
+}
+
+void	set_SHLVL(char *str, t_shell **env)
+{
+	t_envp	*ptr;
+
+	ptr = (*env)->head;
+	while (ptr)
+	{
+		if (key_equals(ptr->key, str))
+		{
+			if (ptr->value)
+				*(ptr->value) = *(ptr->value) + 1;
+			else
+				ptr->value = "1";
+			ft_printf("what is key:%s\n", ptr->key);
+			ft_printf("SHLVL IN MINISHELL:%s\n", ptr->value);
+			return ;
+		}
+		ptr = ptr->next;
+	}
+}
 
 //!maybe refactor the set_envp call
 int	main(int argc, char *argv[], char **envp)
@@ -23,6 +60,8 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argv;
 	ft_bzero(&p, sizeof(t_globe));
 	set_envp_array(envp, &p.envp_ls, &p);
+	set_SHLVL("SHLVL", &p.envp_ls);
+	print_SHLVL("SHLVL", &p.envp_ls);
 	p.exit_code[0] = 0;
 	while (1)
 	{
@@ -82,6 +121,11 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		//ft_printf("I am here to loop again\n");
 		loop_free(p.node, p.token, p.result, &p);
+		for (t_envp *ptr = p.envp_ls->head; ptr; ptr = ptr->next)
+		{
+			ft_printf("%s=", ptr->key);
+			ft_printf("%s\n", ptr->value);
+		}
 	}
 	rl_clear_history();
 	return (0);

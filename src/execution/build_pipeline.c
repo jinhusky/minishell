@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/05 19:48:13 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/09 22:01:24 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,10 @@ static int	run_builtin(t_globe *p, char **argv, int in_parent)
 	if (!ft_strncmp(argv[0], "env", 3))
 		return (ft_env(argv, p));
 	if (!ft_strncmp(argv[0], "exit", 4))
+	{
 		ft_exit(argv, p);
+		return (p->exit_code[0]);
+	}
 	return (0);
 }
 
@@ -396,6 +399,35 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	//---Jerry---//
 	return (p->exit_code[0]);
 }
+
+bool	is_minishell(char *arg)
+{
+	if (ft_strncmp(arg, "./minishell", ft_strlen(arg) == 0)
+		&& ft_strlen(arg) == ft_strlen("./minishell"))
+			return (1);
+	return (0);
+}
+
+//void	set_SHLVL(char *str, t_shell *env)
+//{
+//	t_envp	*ptr;
+
+//	ptr = env->head;
+//	while (ptr)
+//	{
+//		if (key_equals(ptr->key, str))
+//		{
+//			if (ptr->value)
+//				*(ptr->value) = *(ptr->value) + 1;
+//			else
+//				ptr->value = "1";
+//			ft_printf("what is key:%s\n", ptr->key);
+//			ft_printf("SHLVL IN MINISHELL:%s\n", ptr->value);
+//			return ;
+//		}
+//		ptr = ptr->next;
+//	}
+//}
 
 void	execute(t_ast *root, t_globe *p)
 {

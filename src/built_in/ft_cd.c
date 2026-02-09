@@ -2,18 +2,39 @@
 #include <unistd.h>
 #include <errno.h>
 
-static void	update_pwd_vars(t_globe *p, const char *oldpwd)
+void	print_pwd(char *str, t_shell *env)
+{
+	t_envp	*ptr;
+
+	ptr = env->head;
+	while (ptr)
+	{
+		if (key_equals(ptr->key, str))
+		{
+			ft_printf("PWD IN MINISHELL:%s\n", ptr->value);
+			return ;
+		}
+		ptr = ptr->next;
+	}
+}
+
+static void	update_pwd_vars(t_globe *p, const char *oldpwd) //oldpwd is the reference to the previous pwd before cd
 {
 	char	*newpwd;
 
 	if (!p || !p->envp_ls)
 		return ;
+	ft_printf("it came in here to update\n");
 	if (oldpwd)
-		envp_value("OLDPWD", (char *)oldpwd, p->envp_ls);
-	newpwd = getcwd(NULL, 0);
+	{
+		envp_value("OLDPWD", (char *)oldpwd, p->envp_ls); //this is replacing the oldpwd with this new-oldpwd
+		print_pwd("OLDPWD", p->envp_ls);
+	}
+	newpwd = getcwd(NULL, 0); //get the new working directory as a malloc string
 	if (newpwd)
 	{
 		envp_value("PWD", newpwd, p->envp_ls);
+		print_pwd("PWD", p->envp_ls);
 		free(newpwd);
 	}
 }
