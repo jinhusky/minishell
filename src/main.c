@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/09 22:34:31 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/10 21:24:14 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	main(int argc, char *argv[], char **envp)
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, SIG_IGN);
 		p.result = readline("minishell$ ");
+		if (p.result)
+			ft_printf("Memory allocation for malloc\n");
 		signal_get_code(signum, &p);
 		empty_line(&p);
 		if (p.err_flag == 1)
@@ -81,13 +83,9 @@ int	main(int argc, char *argv[], char **envp)
 		p.node = parsing(p.node, p.token, &p);
 		if (p.malloc_flag == 1 || p.err_flag == 1)
 		{
-			ft_printf("i am in here\n");
 			loop_free(p.node, p.token, p.result, &p);
 			continue ;
 		}
-		//p.exit_flag = readline_exit(p.node, p.token, p.result, p.ptr);
-		if (p.exit_flag == 1)
-			exit (EXIT_SUCCESS);
 		if (p.node)
 		{
 			//ft_ast_visualize(p.node);
@@ -121,12 +119,13 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		//ft_printf("I am here to loop again\n");
 		loop_free(p.node, p.token, p.result, &p);
-		for (t_envp *ptr = p.envp_ls->head; ptr; ptr = ptr->next)
-		{
-			ft_printf("%s=", ptr->key);
-			ft_printf("%s\n", ptr->value);
-		}
+		//for (t_envp *ptr = p.envp_ls->head; ptr; ptr = ptr->next)
+		//{
+		//	ft_printf("%s=", ptr->key);
+		//	ft_printf("%s\n", ptr->value);
+		//}
 	}
+	//rl_free_line_state();
 	rl_clear_history();
 	return (0);
 }

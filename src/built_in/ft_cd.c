@@ -27,7 +27,7 @@ static void	update_pwd_vars(t_globe *p, const char *oldpwd) //oldpwd is the refe
 	ft_printf("it came in here to update\n");
 	if (oldpwd)
 	{
-		envp_value("OLDPWD", (char *)oldpwd, p->envp_ls); //this is replacing the oldpwd with this new-oldpwd
+		envp_value("OLDPWD", ft_strdup((char *)oldpwd), p->envp_ls); //this is replacing the oldpwd with this new-oldpwd
 		print_pwd("OLDPWD", p->envp_ls);
 	}
 	newpwd = getcwd(NULL, 0); //get the new working directory as a malloc string
@@ -35,7 +35,7 @@ static void	update_pwd_vars(t_globe *p, const char *oldpwd) //oldpwd is the refe
 	{
 		envp_value("PWD", newpwd, p->envp_ls);
 		print_pwd("PWD", p->envp_ls);
-		free(newpwd);
+		//free(newpwd);
 	}
 }
 
