@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 08:25:55 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/05 21:08:33 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/11 16:30:13 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ void	set_env_var(char *arg, t_globe *p)
 	return ;
 }
 
+void	print_error_export(char *arg)
+{
+	ft_putstr_fd("minishell: export: ", 2);
+	ft_putstr_fd("`%s': ", 2);
+	ft_putendl_fd("not a valid identifier", 2);
+}
+
 int	ft_export(char **argv, t_globe *p)
 {
 	int		i;
@@ -64,7 +71,7 @@ int	ft_export(char **argv, t_globe *p)
 	{
 		if (!valid_env_var(argv[i]))
 		{
-			ft_printf("minishell: export: `%s': not a valid identifier\n", argv[i]);
+			print_error_export(argv[i]);
 			return (EXIT_FAILURE);
 		}
 		if (ft_strchr(argv[i], '='))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   instructor.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:52:19 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/12 18:36:55 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ast_word_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
 		free_origin(p->origin);
 		return ;
 	}
-	else 
+	else
 	{
 		tokens = check_expand_space(result, sp, p);
 		copies = copy_array_split(p->origin->s_array, sp, copies, p);
@@ -91,6 +91,15 @@ void	ast_arg_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
 	}
 }
 
+bool	chd_redir(t_ast *cmd)
+{
+	if (cmd->type == AST_REDIR_IN
+	|| cmd->type == AST_REDIR_OUT
+	|| cmd->type == AST_APPEND)
+		return (true);
+	return (false);
+}
+
 void	simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_globe *p)
 {
 	int	i;
@@ -108,6 +117,12 @@ void	simple_command_instructor(t_ast *cmd, t_splt_ary *sp, t_globe *p)
 		{
 			ast_arg_argv_builder(cmd, &i, sp, p);
 			if (p->err_flag == 1 || p->malloc_flag == 1)
+				return ;
+		}
+		else if (chd_redir(cmd->children[i]))
+		{
+			strip_quotes(cmd->children[i]->children[0]->token_ref->lexeme, p);
+			if (p->err_flag == 1)
 				return ;
 		}
 		i++;

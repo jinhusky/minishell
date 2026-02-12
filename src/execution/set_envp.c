@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/09 21:57:43 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/11 15:38:36 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ char	*envp_value(char *k, char *v, t_shell *envp)
 		{
 			if (v)
 			{
-				ft_printf("value before free: %s\n", ptr->value);
+				//ft_printf("value before free: %s\n", ptr->value);
 				free(ptr->value);
 				ptr->value = v;
-				ft_printf("value: %s\n", ptr->value);
+				//ft_printf("value: %s\n", ptr->value);
 			}
 			return (ptr->value);
 		}

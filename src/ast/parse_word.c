@@ -12,12 +12,13 @@
 
 #include "../../minishell.h"
 
-void	init_quotes(char *lexeme, char **src, char **dst)
+void	init_quotes(char *lexeme, char **src, char **dst, char *quote)
 {
 	*src = NULL;
 	*dst = NULL;
 	*src = lexeme;
 	*dst = lexeme;
+	*quote = 0;
 }
 
 void	error_quotes(char quote, t_globe *p)
@@ -36,13 +37,11 @@ void	strip_quotes(char *lexeme, t_globe *p)
 	char	*src;
 	char	*dst;
 
-	init_quotes(lexeme, &src, &dst);
-	quote = 0;
+	init_quotes(lexeme, &src, &dst, &quote);
 	while (*src)
 	{
 		if (*src == '\'' || *src == '"')
 		{
-			p->heredoc_q_flag = 1;
 			if (quote == 0)
 				quote = *src;
 			else if (quote == *src)

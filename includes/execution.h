@@ -6,13 +6,14 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:14:42 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/09 17:45:29 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:38:15 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
+# include <sys/stat.h>
 # include "../minishell.h"
 
 void		execute(t_ast *root, t_globe *p);

@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:10:32 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 11:01:13 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/12 18:28:10 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void		parse_components(t_ast *prt, t_ast *child, t_globe *p);
 bool		valid_component(t_globe *p);
 t_ast		*parse_argument(t_ast *chd_ptr, t_globe *p);
 void		parse_word(t_ast *branch, t_globe *p);
-void		init_quotes(char *lexeme, char **src, char **dst);
+void		init_quotes(char *lexeme, char **src, char **dst, char *quote);
 void		strip_quotes(char *lexeme, t_globe *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_globe *p);
 void		ft_ast_visualize(t_ast *root);

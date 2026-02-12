@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/03 17:59:03 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/12 18:34:59 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,35 @@ char	*read_content(char *delimiter, t_globe *p)
 	return (result);
 }
 
+void	strip_heredoc_quotes(char *lexeme, t_globe *p)
+{
+	char	quote;
+	char	*src;
+	char	*dst;
+
+	init_quotes(lexeme, &src, &dst, &quote);
+	while (*src)
+	{
+		if (*src == '\'' || *src == '"')
+		{
+			p->heredoc_q_flag = 1;
+			if (quote == 0)
+				quote = *src;
+			else if (quote == *src)
+				quote = 0;
+			else
+				*dst++ = *src;
+		}
+		else
+			*dst++ = *src;
+		src++;
+	}
+	*dst = '\0';
+	if (quote != 0)
+		error_quotes(quote, p);
+	return ;
+}
+
 void  find_heredoc(t_ast *child, t_globe *p)
 {
 	int		i;
@@ -115,7 +144,7 @@ void  find_heredoc(t_ast *child, t_globe *p)
 			signal(SIGQUIT, SIG_IGN);
 			/* child: write heredoc content, close write end and exit */
 			close(heredoc->heredoc_fd[0]);
-			strip_quotes(heredoc->children[0]->token_ref->lexeme, p);
+			strip_heredoc_quotes(heredoc->children[0]->token_ref->lexeme, p);
 			if (p->err_flag == 1)
 			{
 				close(heredoc->heredoc_fd[1]);

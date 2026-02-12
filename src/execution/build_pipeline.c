@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/09 22:01:24 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/12 19:15:13 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,10 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 	status = apply_redirections(cmd);
 	if (status != 0)
 	{
+		//ft_printf("it went in here2\n");
 		status = 1;
+		dup2(saved_in, STDIN_FILENO);
+		dup2(saved_out, STDOUT_FILENO);
 		p->exit_code[0] = status;
 		return (status);
 	}
@@ -233,7 +236,7 @@ static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 	return (status);
 }
 
-int	print_err_mssg(char *cmd, char *err_mssg, int err_num)
+void	print_err_mssg(char *cmd, char *err_mssg)
 {
 	char *str;
 
@@ -246,7 +249,63 @@ int	print_err_mssg(char *cmd, char *err_mssg, int err_num)
 	str = ft_strjoin_free(str, ft_strdup(err_mssg));
 	ft_putendl_fd(str, 2);
 	free(str);
-	return (err_num);
+	return ;
+}
+
+void	remove_dot_slash(char *arg, char **raw)
+{
+	*raw = ft_substr(arg, 2, (ft_strlen(arg) - 2 + 1));
+	return ;
+}
+
+bool	slash_exist(char *arg)
+{
+	if (ft_strchr(arg, '/'))
+		return (true);
+	return (false);
+}
+
+int	process_fdir(char *arg)
+{
+	char	*raw;
+	struct stat statbuf;
+	if (stat(arg, &statbuf) == 0)
+	{
+		if (S_ISDIR(statbuf.st_mode))
+		{
+			print_err_mssg(arg, "Is a directory");
+			return (126);
+		}
+		else if (S_ISREG(statbuf.st_mode))
+		{
+			if (arg[0] == '.' && arg[1] == '/')
+				remove_dot_slash(arg, &raw);
+			if (open(raw, O_RDONLY | O_WRONLY) == -1)
+				print_err_mssg(arg, "Permission denied");
+			free(raw);
+			return (126);
+		}
+	}
+	else
+		print_err_mssg(arg, "No such file or directory");
+	return (127);
+}
+
+void	process_err_msg(char *arg, t_globe *p)
+{
+	int	errnum;
+
+	errnum = 0;
+	if (slash_exist(arg))
+	{
+		errnum = process_fdir(arg);
+		p->exit_code[0] = errnum;
+		return ;
+	}
+	else
+		print_err_mssg(arg, "Command not found");
+		p->exit_code[0] = 127;
+	return ;
 }
 
 void	exec_external(t_globe *p, char **argv)
@@ -264,9 +323,8 @@ void	exec_external(t_globe *p, char **argv)
 	{
 		if (execve(argv[0], argv, p->envp_array) == -1)
 		{
-			print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
-			p->exit_code[0] = 127;
-			exit (127);
+			process_err_msg(argv[0], p);
+			exit (p->exit_code[0]);
 		}
 	}
 
@@ -290,19 +348,19 @@ void	exec_external(t_globe *p, char **argv)
 			cmd_notf_flag = 1;
             if (execve(fullpath, argv, p->envp_array) == -1)
 			{
-				print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
+				process_err_msg(argv[0], p);
 				free(paths);
 				free(fullpath);
-				exit (127);
+				exit (p->exit_code[0]);
 			}
 			break ;
 		}
 		free(fullpath);
 		i++;
 	}
-	print_err_mssg(argv[0], "command not found", CMD_NOT_FOUND);
+	process_err_msg(argv[0], p);
 	free_strv(paths); //!To test the error msg print//!hard code to print out which type of error message
-	exit (127);
+	exit (p->exit_code[0]);
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
@@ -445,6 +503,7 @@ void	execute(t_ast *root, t_globe *p)
 		rebuild_envp_array(p);
 		if (cmd && cmd->argv && cmd->argv[0] && is_builtin(cmd->argv[0]))
 		{
+			//ft_printf("it went in here\n");
 			run_single_cmd_in_parent(cmd, p);
 			return ;
 		}

@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/10 18:28:41 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/11 15:19:04 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	loop_free(t_ast *node, t_token *token, char *result, t_globe *p)
 		p->ptr = NULL;
 	if (result)
 	{
-		ft_printf("freeing memory for result\n");
+		//ft_printf("freeing memory for result\n");
 		free(result);
 	}
 }
@@ -73,7 +73,7 @@ void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
 		p->ptr = NULL;
 	if (result)
 	{
-		ft_printf("freeing memory for result\n");
+		//ft_printf("freeing memory for result\n");
 		free(result);
 	}
 }

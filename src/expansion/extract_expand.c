@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_expand.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:19:04 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/11 16:12:23 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_expand(char *lxm, size_t start, size_t end, t_globe *p)
 	size_t	key_len;
 
 	value = NULL;
-	tmp = p->ptr;
+	tmp = p->envp_ls->head;
 	key_len = end - (start + 1);
 	while (tmp)
 	{

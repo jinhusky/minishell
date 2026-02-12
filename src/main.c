@@ -6,7 +6,7 @@
 /*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/10 21:24:14 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/12 18:39:36 by welow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argv;
 	ft_bzero(&p, sizeof(t_globe));
 	set_envp_array(envp, &p.envp_ls, &p);
-	set_SHLVL("SHLVL", &p.envp_ls);
-	print_SHLVL("SHLVL", &p.envp_ls);
+	//set_SHLVL("SHLVL", &p.envp_ls);
+	//print_SHLVL("SHLVL", &p.envp_ls);
 	p.exit_code[0] = 0;
 	while (1)
 	{
@@ -69,8 +69,8 @@ int	main(int argc, char *argv[], char **envp)
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, SIG_IGN);
 		p.result = readline("minishell$ ");
-		if (p.result)
-			ft_printf("Memory allocation for malloc\n");
+		//if (p.result)
+		//	ft_printf("Memory allocation for malloc\n");
 		signal_get_code(signum, &p);
 		empty_line(&p);
 		if (p.err_flag == 1)
@@ -88,15 +88,15 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		if (p.node)
 		{
-			//ft_ast_visualize(p.node);
 			ast_loop(p.node, &p);
 			if (p.malloc_flag == 1 || p.err_flag == 1)
 			{
-				ft_printf("i am in here\n");
+				//ft_printf("i am in here\n");
 				loop_free(p.node, p.token, p.result, &p);
 				continue ;
 			}
 			expansion_engine(p.node, &p);
+			//ft_ast_visualize(p.node);
             /*
 			t_ast *ptr;
             for (int i = 0; i < p.node->childcount; i++)
