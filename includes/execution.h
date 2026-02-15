@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:14:42 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/12 15:38:15 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/15 22:28:37 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@ void		set_exit_code(int status, t_globe *p);
 void		signal_handler(int signal);
 void		heredoc_signal_handler(int signal);
 void		signal_get_code(int signa, t_globe *p);
-static int	run_builtin(t_globe *p, char **argv, int in_parent);
+int	        run_builtin(t_globe *p, char **argv, int in_parent);
 void		set_hd_exit_code(int status, t_globe *p);
 void		free_strv(char **v);
-
+void	    exec_external(t_globe *p, char **argv);
+int     	run_single_cmd_in_parent(t_ast *cmd, t_globe *p);
+void	    process_err_msg(char *arg, t_globe *p);
 
 
 

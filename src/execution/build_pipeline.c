@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/12 19:15:13 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/15 22:23:01 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,164 +78,6 @@ char **build_envp_array(t_shell envp_ls)
 	return (res);
 }
 
-static int	open_out(const char *path, int append)
-{
-	if (append)
-		return (open(path, O_WRONLY | O_CREAT | O_APPEND, 0644));
-	return (open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644));
-}
-
-void	print_redir_err(t_ast *redir)
-{
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(redir->token_ref->lexeme, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(strerror(errno), 2);
-}
-
-int	apply_redirections(t_ast *cmd)
-{
-	int		fd;
-	int		i;
-	t_ast	*node;
-
-	if (!cmd || !cmd->children)
-		return (0);
-	i = 0;
-	while (i < cmd->childcount && cmd->children[i])
-	{
-		node = cmd->children[i];
-		fd = -1;
-		if (node->type == AST_REDIR_IN)
-		{
-			fd = open(node->children[0]->token_ref->lexeme, O_RDONLY);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_REDIR_OUT)
-		{
-			fd = open_out(node->children[0]->token_ref->lexeme, 0);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_APPEND)
-		{
-			fd = open_out(node->children[0]->token_ref->lexeme, 1);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_HEREDOC)
-		{
-			dup2(node->heredoc_fd[0], STDIN_FILENO);
-			close(node->heredoc_fd[0]);
-		}
-		i++;
-	}
-	return (0);
-}
-
-static int	run_builtin(t_globe *p, char **argv, int in_parent)
-{
-	(void)in_parent;
-	if (!argv || !argv[0])
-		return (0);
-	if (!ft_strncmp(argv[0], "echo", 4))
-		return (ft_echo(argv, p));
-	if (!ft_strncmp(argv[0], "cd", 2))
-		return (ft_cd(argv, p));
-	if (!ft_strncmp(argv[0], "pwd", 3))
-		return (ft_pwd(argv, p));
-	if (!ft_strncmp(argv[0], "export", 6))
-		return (ft_export(argv, p));
-	if (!ft_strncmp(argv[0], "unset", 5))
-		return (ft_unset(argv, p));
-	if (!ft_strncmp(argv[0], "env", 3))
-		return (ft_env(argv, p));
-	if (!ft_strncmp(argv[0], "exit", 4))
-	{
-		ft_exit(argv, p);
-		return (p->exit_code[0]);
-	}
-	return (0);
-}
-
-/*
-int	run_builtin(t_globe *p, char **argv, int in_parent)
-{
-	int	status;
-
-	if (!argv || !argv[0])
-		return (0);
-	if (!ft_strncmp(argv[0], "echo", 5))
-		status = ft_echo(argv);
-	else if (!ft_strncmp(argv[0], "pwd", 4))
-		status = ft_pwd();
-	else if (!ft_strncmp(argv[0], "env", 4))
-		status = ft_env(p);
-	else if (!ft_strncmp(argv[0], "cd", 3))
-		status = ft_cd(p, argv);
-	else if (!ft_strncmp(argv[0], "export", 7))
-		status = ft_export(p, argv);
-	else if (!ft_strncmp(argv[0], "unset", 6))
-		status = ft_unset(p, argv);
-	else if (!ft_strncmp(argv[0], "exit", 5))
-		status = ft_exit(p, argv, in_parent);
-	else
-		status = 0;
-	p->ptr = p->envp_ls.head;
-	return (status);
-}
-*/
-static int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
-{
-	int	saved_in;
-	int	saved_out;
-	int	status;
-
-	saved_in = dup(STDIN_FILENO);
-	saved_out = dup(STDOUT_FILENO);
-	if (saved_in < 0 || saved_out < 0)
-	{
-		p->exit_code[0] = 1;
-		return (1);
-	}
-	status = apply_redirections(cmd);
-	if (status != 0)
-	{
-		//ft_printf("it went in here2\n");
-		status = 1;
-		dup2(saved_in, STDIN_FILENO);
-		dup2(saved_out, STDOUT_FILENO);
-		p->exit_code[0] = status;
-		return (status);
-	}
-	else if (!cmd->argv || !cmd->argv[0])
-		status = 0;
-	else
-		status = run_builtin(p, cmd->argv, 1);
-	dup2(saved_in, STDIN_FILENO); //why need to restore fds when running single builtin cmds. Restore fds in parent to align in fds
-	dup2(saved_out, STDOUT_FILENO);
-	close(saved_in);
-	close(saved_out);
-	p->exit_code[0] = status;
-	return (status);
-}
-
 void	print_err_mssg(char *cmd, char *err_mssg)
 {
 	char *str;
@@ -267,8 +109,9 @@ bool	slash_exist(char *arg)
 
 int	process_fdir(char *arg)
 {
-	char	*raw;
-	struct stat statbuf;
+	char		*raw;
+	struct stat	statbuf;
+
 	if (stat(arg, &statbuf) == 0)
 	{
 		if (S_ISDIR(statbuf.st_mode))
@@ -306,61 +149,6 @@ void	process_err_msg(char *arg, t_globe *p)
 		print_err_mssg(arg, "Command not found");
 		p->exit_code[0] = 127;
 	return ;
-}
-
-void	exec_external(t_globe *p, char **argv)
-{
-    char   *path_env;
-    char  **paths;
-    int     i;
-    char   *fullpath;
-	int		cmd_notf_flag;
-
-	cmd_notf_flag = 0;
-	if (!argv || !argv[0])
-		return ;
-    if (ft_strchr(argv[0], '/')) //user/bin/ls
-	{
-		if (execve(argv[0], argv, p->envp_array) == -1)
-		{
-			process_err_msg(argv[0], p);
-			exit (p->exit_code[0]);
-		}
-	}
-
-	path_env = envp_value("PATH", NULL, p->envp_ls);
-	if (!path_env)
-		exit(EXIT_FAILURE); //!handle exit when execve failed and free all the memory. Leak issues with child process in execution
-
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		exit (EXIT_FAILURE);
-
-    i = 0;
-	while (paths[i]) ///home/welow/.cargo/bin/cat
-    {
-        fullpath = ft_strdup(paths[i]);
-        fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
-        fullpath = ft_strjoin_free(fullpath, ft_strdup(argv[0]));
-
-        if (access(fullpath, F_OK) == 0)
-        {
-			cmd_notf_flag = 1;
-            if (execve(fullpath, argv, p->envp_array) == -1)
-			{
-				process_err_msg(argv[0], p);
-				free(paths);
-				free(fullpath);
-				exit (p->exit_code[0]);
-			}
-			break ;
-		}
-		free(fullpath);
-		i++;
-	}
-	process_err_msg(argv[0], p);
-	free_strv(paths); //!To test the error msg print//!hard code to print out which type of error message
-	exit (p->exit_code[0]);
 }
 
 static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
@@ -457,35 +245,6 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 	//---Jerry---//
 	return (p->exit_code[0]);
 }
-
-bool	is_minishell(char *arg)
-{
-	if (ft_strncmp(arg, "./minishell", ft_strlen(arg) == 0)
-		&& ft_strlen(arg) == ft_strlen("./minishell"))
-			return (1);
-	return (0);
-}
-
-//void	set_SHLVL(char *str, t_shell *env)
-//{
-//	t_envp	*ptr;
-
-//	ptr = env->head;
-//	while (ptr)
-//	{
-//		if (key_equals(ptr->key, str))
-//		{
-//			if (ptr->value)
-//				*(ptr->value) = *(ptr->value) + 1;
-//			else
-//				ptr->value = "1";
-//			ft_printf("what is key:%s\n", ptr->key);
-//			ft_printf("SHLVL IN MINISHELL:%s\n", ptr->value);
-//			return ;
-//		}
-//		ptr = ptr->next;
-//	}
-//}
 
 void	execute(t_ast *root, t_globe *p)
 {

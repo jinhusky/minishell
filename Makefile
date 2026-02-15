@@ -34,7 +34,8 @@ src/expansion/expand_check.c src/expansion/expand_split.c \
 src/expansion/expand_split_helper.c src/expansion/assign_mark.c \
 src/expansion/token_double.c src/expansion/token_single.c \
 src/expansion/extract_expand.c src/expansion/copy_builder.c src/execution/set_envp.c \
-src/execution/build_pipeline.c src/execution/signal.c \
+src/execution/redirection.c src/execution/exec_builtin.c src/execution/ext_cmd.c \
+src/execution/single_cmd.c src/execution/build_pipeline.c src/execution/signal.c \
 src/built_in/ft_echo.c src/built_in/ft_cd.c src/built_in/ft_pwd.c \
 src/built_in/ft_unset.c src/built_in/ft_env.c src/built_in/ft_exit.c\
 src/built_in/ft_export.c src/built_in/ft_export_utils.c

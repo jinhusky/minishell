@@ -23,11 +23,11 @@ void	init_quotes(char *lexeme, char **src, char **dst, char *quote)
 
 void	error_quotes(char quote, t_globe *p)
 {
-	ft_putstr_fd("bash: unexpected EOF ", 2);
+	ft_putstr_fd("minishell: unexpected EOF ", 2);
 	ft_putstr_fd("while looking for matching `", 2);
 	ft_putchar_fd(quote, 2);
 	ft_putstr_fd("'\n", 2);
-	ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+	ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
 	p->err_flag = 1;
 }
 

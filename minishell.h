@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/04 19:27:36 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/15 18:18:05 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <stdbool.h>
+# include <errno.h>
+# include <unistd.h>
 # include "includes/parsing.h"
 # include "includes/expansion.h"
 # include "includes/execution.h"
 # include "includes/builtin.h"
 # include "Libft/libft.h"
-# include "errno.h"
 
 # define CMD_NOT_FOUND 127
 
