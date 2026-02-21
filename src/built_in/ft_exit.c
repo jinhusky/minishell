@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 09:00:52 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/09 16:50:28 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/21 19:44:37 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	invalid_numeric_msg(char *arg, t_globe *p)
 {
 	ft_putstr_fd("minishell: exit: ", 2);
 	ft_putstr_fd(arg, 2);
-	ft_putendl_fd(": numeric argument require", 2);
+	ft_putendl_fd(": numeric argument required", 2);
 	p->exit_code[0] = 2;
 }
 

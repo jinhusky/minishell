@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:10:32 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/12 18:28:10 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/22 01:47:48 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,6 @@ typedef struct s_ast
 	int				argc;
 	char			**argv;
 	int				heredoc_fd[2];
-	int				pipe_fd[2];
-	//int				saved_fd[2];//not needed
-	int				pid;
 }	t_ast;
 
 typedef struct s_globe t_globe;
@@ -98,6 +95,6 @@ void		init_quotes(char *lexeme, char **src, char **dst, char *quote);
 void		strip_quotes(char *lexeme, t_globe *p);
 t_ast		*parsing(t_ast *node, t_token *token, t_globe *p);
 void		ft_ast_visualize(t_ast *root);
-void		ast_loop(t_ast *root, t_globe *p);
+void		heredoc_ast(t_ast *root, t_globe *p);
 
 #endif

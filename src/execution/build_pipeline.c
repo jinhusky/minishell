@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/15 22:23:01 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/21 22:33:36 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,76 +173,79 @@ static void	child_execute_cmd(t_ast *cmd, t_globe *p, int in_fd, int out_fd)
 	exec_external(p, cmd->argv);
 }
 
-static int	execute_pipeline(t_ast *root, t_globe *p)
+void	parent_clean_up(int prev_read, t_ast *root, pid_t *pids, t_globe *p)
 {
-	int		count;
-	int		i;
-	int		pipefd[2];
-	int		prev_read;
-	pid_t	pids[1024];
-	int		status;
-	pid_t	pid;
+	int	i;
+	int	status;
 
-	status = 0;
-	//---Jerry---//
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	//---Jerry---//
-	count = root->childcount;
-	if (count <= 0)
-		return (0);
-	prev_read = STDIN_FILENO; //ask chatgpt
 	i = 0;
-	while (i < count)
-	{
-		if (i < count - 1 && pipe(pipefd) == -1)
-		{
-			perror("pipe");
-			p->exit_code[0] = 1;
-			return (1);
-		}
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			p->exit_code[0] = 1;
-			return (1);
-		}
-		if (pid == 0)
-		{
-			//---Jerry---//
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			//---Jerry---//
-			if (i < count - 1)
-			{
-				close(pipefd[0]);
-				child_execute_cmd(root->children[i], p, prev_read, pipefd[1]);
-			}
-			else //single pipe
-				child_execute_cmd(root->children[i], p, prev_read, STDOUT_FILENO);
-		}
-		pids[i] = pid;
-		if (prev_read != STDIN_FILENO)
-			close(prev_read);
-		if (i < count - 1)
-		{
-			close(pipefd[1]); //write end of pipe
-			prev_read = pipefd[0]; //read end of pipe
-		}
-		i++;
-	}
+	status = 0;
 	if (prev_read != STDIN_FILENO)
 		close(prev_read);
-	i = 0;
-	while (i < count)
+	while (i < root->childcount)
 	{
 		waitpid(pids[i], &status, 0);
 		i++;
 	}
-	//---Jerry---//
 	set_exit_code(status, p); //This function gets the exit status of child or signal and return
-	//---Jerry---//
+}
+
+void	child_process(int *i, t_globe *p, int readpipe, int writepipe)
+{
+	if (*i < p->node->childcount - 1)
+	{
+		close(readpipe);
+		child_execute_cmd(p->node->children[*i], p, p->prev_read, writepipe);
+	}
+	else //single pipe
+		child_execute_cmd(p->node->children[*i], p, p->prev_read, STDOUT_FILENO);
+}
+
+bool	fork_child(pid_t *pid, t_globe *p)
+{
+	*pid = fork();
+	if (*pid == -1)
+		return (false);
+	return (true);
+}
+
+void	assign_pipe(int *i, t_globe *p, int readpipe, int writepipe)
+{
+	if (p->prev_read != STDIN_FILENO) //close previous exec SC read_end pipe
+		close(p->prev_read);
+	if (*i < p->node->childcount - 1)
+	{
+		close(writepipe); //write end of pipe
+		p->prev_read = readpipe; //read end of pipe
+	}
+}
+
+static int	execute_pipeline(t_ast *root, t_globe *p)
+{
+	int		i;
+	int		pipefd[2];
+	pid_t	pids[1024];
+	pid_t	pid;
+
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	i = -1;
+	while (++i < root->childcount)
+	{
+		if (i < root->childcount - 1 && pipe(pipefd) == -1)
+			return (perror("pipe"), p->exit_code[0] = 1, 1);
+		if (!fork_child(&pid, p))
+			return (perror("fork"), p->exit_code[0] = 1, 1);
+		if (pid == 0)
+		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+			child_process(&i, p, pipefd[0], pipefd[1]);
+		}
+		pids[i] = pid;
+		assign_pipe(&i, p, pipefd[0], pipefd[1]);
+	}
+	parent_clean_up(p->prev_read, root, pids, p);
 	return (p->exit_code[0]);
 }
 
@@ -262,7 +265,6 @@ void	execute(t_ast *root, t_globe *p)
 		rebuild_envp_array(p);
 		if (cmd && cmd->argv && cmd->argv[0] && is_builtin(cmd->argv[0]))
 		{
-			//ft_printf("it went in here\n");
 			run_single_cmd_in_parent(cmd, p);
 			return ;
 		}

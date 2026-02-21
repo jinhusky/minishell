@@ -6,11 +6,26 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 22:20:04 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/15 22:24:10 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/21 17:12:13 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+bool	failed_status(int status, int svd_in, int svd_out, t_globe *p)
+{
+	if (status != 0)
+	{
+		status = 1;
+		dup2(svd_in, STDIN_FILENO);
+		dup2(svd_out, STDOUT_FILENO);
+		close(svd_in);
+		close(svd_out);
+		p->exit_code[0] = status;
+		return (true);
+	}
+	return (false);
+}
 
 int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 {
@@ -26,16 +41,8 @@ int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 		return (1);
 	}
 	status = apply_redirections(cmd);
-	if (status != 0)
-	{
-		status = 1;
-		dup2(saved_in, STDIN_FILENO);
-		dup2(saved_out, STDOUT_FILENO);
-		close(saved_in);
-		close(saved_out);
-		p->exit_code[0] = status;
+	if (failed_status(status, saved_in, saved_out, p))
 		return (status);
-	}
 	else if (!cmd->argv || !cmd->argv[0])
 		status = 0;
 	else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 17:47:02 by welow             #+#    #+#             */
-/*   Updated: 2026/02/02 22:20:51 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/21 23:39:22 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	signal_get_code(int signa, t_globe *p)
 
 void	signal_handler(int signal)
 {
-	//printf("entered here\n");
 	signum = signal;
 	write(1, "\n", 1);
 	rl_on_new_line();

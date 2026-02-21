@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/15 18:18:05 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/21 21:41:59 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@
 # include "includes/execution.h"
 # include "includes/builtin.h"
 # include "Libft/libft.h"
-
-# define CMD_NOT_FOUND 127
 
 typedef struct s_envp
 {
@@ -64,6 +62,7 @@ typedef struct s_globe
 	int			exit_code[1];
 	t_splt_ary	sp;
 	char		**envp_array;
+	int			prev_read;
 }	t_globe;
 
 extern __sig_atomic_t signum;

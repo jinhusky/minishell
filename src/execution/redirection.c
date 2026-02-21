@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 21:16:46 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/15 21:25:55 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/21 23:31:54 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,50 @@ void	print_redir_err(t_ast *redir)
 	ft_putendl_fd(strerror(errno), 2);
 }
 
+int	redir_out_append(int fd, t_ast *cmd)
+{
+	if (cmd->type == AST_REDIR_OUT)
+		fd = open_out(cmd->children[0]->token_ref->lexeme, 0);
+	if (cmd->type == AST_APPEND)
+		fd = open_out(cmd->children[0]->token_ref->lexeme, 1);
+	if (fd < 0)
+	{
+		print_redir_err(cmd->children[0]);
+		return (1);
+	}
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
+}
+
+int	redir_in(int fd, t_ast *cmd)
+{
+	fd = open(cmd->children[0]->token_ref->lexeme, O_RDONLY);
+	if (fd < 0)
+	{
+		print_redir_err(cmd->children[0]);
+		return (1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+int	in_out_append(t_ast *node, int fd)
+{
+	if (node->type == AST_REDIR_IN)
+	{
+		if (redir_in(fd, node) == 1)
+			return (1);
+	}
+	else if (node->type == AST_REDIR_OUT || node->type == AST_APPEND)
+	{
+		if (redir_out_append(fd, node) == 1)
+			return (1);
+	}
+	return (0);
+}
+
 int	apply_redirections(t_ast *cmd)
 {
 	int		fd;
@@ -40,40 +84,9 @@ int	apply_redirections(t_ast *cmd)
 	{
 		node = cmd->children[i];
 		fd = -1;
-		if (node->type == AST_REDIR_IN)
-		{
-			fd = open(node->children[0]->token_ref->lexeme, O_RDONLY);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_REDIR_OUT)
-		{
-			fd = open_out(node->children[0]->token_ref->lexeme, 0);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_APPEND)
-		{
-			fd = open_out(node->children[0]->token_ref->lexeme, 1);
-			if (fd < 0)
-			{
-				print_redir_err(node->children[0]);
-				return (1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		else if (node->type == AST_HEREDOC)
+		if (in_out_append(node, fd) == 1)
+			return (1);
+		if (node->type == AST_HEREDOC)
 		{
 			dup2(node->heredoc_fd[0], STDIN_FILENO);
 			close(node->heredoc_fd[0]);

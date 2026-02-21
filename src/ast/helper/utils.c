@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 20:26:28 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/04 10:44:25 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/21 21:42:40 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,5 @@ void	init_program(t_token **tkn, t_ast **nd, t_globe *p)
 	p->heredoc_flag = 0;
 	p->p_exec_flag = 0;
 	p->inside_heredoc = 0;
+	p->prev_read = STDIN_FILENO;
 }

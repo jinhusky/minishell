@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_active.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/12 18:34:59 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/22 01:47:48 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void  find_heredoc(t_ast *child, t_globe *p)
 	}
 }
 
-void	ast_loop(t_ast *root, t_globe *p)
+void	heredoc_ast(t_ast *root, t_globe *p)
 {
 	int		i = 0;
 	t_ast	*cur_cmd;
