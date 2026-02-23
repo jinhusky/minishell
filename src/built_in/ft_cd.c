@@ -1,24 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/23 23:03:47 by jhor              #+#    #+#             */
+/*   Updated: 2026/02/23 23:04:36 by jhor             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
-#include <unistd.h>
-#include <errno.h>
 
-//void	print_pwd(char *str, t_shell *env)
-//{
-//	t_envp	*ptr;
-
-//	ptr = env->head;
-//	while (ptr)
-//	{
-//		if (key_equals(ptr->key, str))
-//		{
-//			ft_printf("PWD IN MINISHELL:%s\n", ptr->value);
-//			return ;
-//		}
-//		ptr = ptr->next;
-//	}
-//}
-
-static void	update_pwd_vars(t_globe *p, const char *oldpwd) //oldpwd is the reference to the previous pwd before cd
+static void	update_pwd_vars(t_globe *p, const char *oldpwd)
 {
 	char	*newpwd;
 
@@ -26,9 +20,9 @@ static void	update_pwd_vars(t_globe *p, const char *oldpwd) //oldpwd is the refe
 		return ;
 	if (oldpwd)
 	{
-		envp_value("OLDPWD", ft_strdup((char *)oldpwd), p->envp_ls); //this is replacing the oldpwd with this new-oldpwd
+		envp_value("OLDPWD", ft_strdup((char *)oldpwd), p->envp_ls);
 	}
-	newpwd = getcwd(NULL, 0); //get the new working directory as a malloc string
+	newpwd = getcwd(NULL, 0);
 	if (newpwd)
 		envp_value("PWD", newpwd, p->envp_ls);
 }

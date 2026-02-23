@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/29 17:47:02 by welow             #+#    #+#             */
-/*   Updated: 2026/02/23 16:53:19 by jhor             ###   ########.fr       */
+/*   Created: 2026/02/24 01:20:45 by jhor              #+#    #+#             */
+/*   Updated: 2026/02/24 01:21:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,7 @@ void	heredoc_signal_handler(int signal)
 		exit (128 + SIGINT);
 	}
 	else if (g_signum == SIGQUIT)
-	{
-
-	}
+		return ;
 }
 
 void	set_exit_code(int status, t_globe *p)

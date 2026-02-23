@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   instructor.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:52:19 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/12 18:36:55 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/24 00:04:23 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,6 @@ void	init_sc_instructor(char **result, char ***tokens, t_expand ***copies)
 	*result = NULL;
 	*tokens = NULL;
 	*copies = NULL;
-}
-
-void	free_origin(t_expand *origin)
-{
-	if (origin->s_array)
-		free(origin->s_array);
-	if (origin->mark)
-		free(origin->mark);
-	if (origin)
-		free(origin);
-}
-
-void	free_all(char *result, char **tokens, t_expand **copies, t_globe *p)
-{
-	free(result);
-	if (tokens && p->malloc_flag == 1)
-		free_argv(tokens);
-	if (copies)
-		free_copies(copies);
-	free_origin(p->origin);
 }
 
 void	ast_word_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
@@ -94,8 +74,8 @@ void	ast_arg_argv_builder(t_ast *cmd, int *i, t_splt_ary *sp, t_globe *p)
 bool	chd_redir(t_ast *cmd)
 {
 	if (cmd->type == AST_REDIR_IN
-	|| cmd->type == AST_REDIR_OUT
-	|| cmd->type == AST_APPEND)
+		|| cmd->type == AST_REDIR_OUT
+		|| cmd->type == AST_APPEND)
 		return (true);
 	return (false);
 }

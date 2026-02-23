@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_active.c                                   :+:      :+:    :+:   */
+/*   instructor_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 16:01:33 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/24 01:18:46 by jhor             ###   ########.fr       */
+/*   Created: 2026/02/23 23:58:31 by jhor              #+#    #+#             */
+/*   Updated: 2026/02/24 00:03:30 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	heredoc_ast(t_ast *root, t_globe *p)
+void	free_origin(t_expand *origin)
 {
-	int		i;
-	t_ast	*cur_cmd;
+	if (origin->s_array)
+		free(origin->s_array);
+	if (origin->mark)
+		free(origin->mark);
+	if (origin)
+		free(origin);
+}
 
-	i = 0;
-	cur_cmd = NULL;
-	if (root->children)
-	{
-		while (i < root->childcount && root->children[i])
-		{
-			cur_cmd = root->children[i];
-			find_heredoc(cur_cmd, p);
-			if (p->err_flag == 1)
-				break ;
-			i++;
-		}
-	}
+void	free_all(char *result, char **tokens, t_expand **copies, t_globe *p)
+{
+	free(result);
+	if (tokens && p->malloc_flag == 1)
+		free_argv(tokens);
+	if (copies)
+		free_copies(copies);
+	free_origin(p->origin);
 }

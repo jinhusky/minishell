@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:15:09 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:57:57 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:32:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,24 +45,24 @@ char	*init_result(char *result, t_globe *p)
 	return (result);
 }
 
-char	*token_double_statements(char *lxm, size_t *end, char *result, t_globe *p)
+char	*token_double_statements(char *lxm, size_t *end, char *rs, t_globe *p)
 {
 	if (lxm[*end] == '$')
 	{
-		result = expand_token_double(lxm, result, end, p);
+		rs = expand_token_double(lxm, rs, end, p);
 		if (p->malloc_flag == 1)
-			return (result);
+			return (rs);
 	}
 	else if (lxm[*end] && lxm[*end] != '$' && lxm[*end] != '"')
-		result = char_join_str_mark(lxm, result, end, p);
-	return (result);
+		rs = char_join_str_mark(lxm, rs, end, p);
+	return (rs);
 }
 
 char	*token_double_only(char *lxm, size_t *i, t_globe *p)
 {
 	size_t	end;
 	char	*result;
-	
+
 	result = NULL;
 	result = init_result(result, p);
 	if (!result && p->malloc_flag == 1)

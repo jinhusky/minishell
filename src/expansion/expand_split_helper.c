@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:05:14 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:51:35 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*substring_split(char *result, int start, int end, t_globe *p)
 {
 	char	*str;
 	int		i;
-	
+
 	str = NULL;
 	i = 0;
 	str = malloc(sizeof(char) * (end - start) + 1);

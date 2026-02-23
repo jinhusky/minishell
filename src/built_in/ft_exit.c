@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 09:00:52 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/21 19:44:37 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:12:39 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,11 @@
 // if exit with pipes then only exit subprocess and not shell
 // shell stores the process exit status as an unsigned 8-bit value (modulo 256)
 
-void	invalid_numeric_msg(char *arg, t_globe *p)
+static int	get_exit_code(char *arg, t_globe *p)
 {
-	ft_putstr_fd("minishell: exit: ", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putendl_fd(": numeric argument required", 2);
-	p->exit_code[0] = 2;
-}
-
-static int  get_exit_code(char *arg, t_globe *p)
-{
-	int i;
-	int negative;
-	int number;
+	int	i;
+	int	negative;
+	int	number;
 
 	i = 0;
 	negative = 1;
@@ -46,7 +38,7 @@ static int  get_exit_code(char *arg, t_globe *p)
 		number = number * 10 + (arg[i] - '0');
 		i++;
 	}
-	return ((number *negative) % 256);
+	return ((number * negative) % 256);
 }
 
 int	argv_count(char **argv, int count)
@@ -101,7 +93,7 @@ int	validate_exit(char **argv, t_globe *p)
 
 void	ft_exit(char **argv, t_globe *p)
 {
-	int exit_code;
+	int	exit_code;
 
 	if (!argv[1])
 	{
@@ -122,11 +114,3 @@ void	ft_exit(char **argv, t_globe *p)
 		return ;
 	}
 }
-
-
-//exit with a numeric argument less than 0 or more than / equal to 256 must perform a wrap around(%) 256 to get the value
-//exit alksfdjh 234 - it exits with bash: exit: aklsfdjh: numeric argument required
-//exit 234alksfdjh - it exits with bash: exit: aklsfdjh: numeric argument required
-//exit 234 234 - it does not exits with bash: exit: too many arguments
-//exit 234 askldfj - it does not exits with bash: exit: too many arguments
-//exit asdf 234 asdf - it exits with bash: exit: aslkdfj: numeric argument required

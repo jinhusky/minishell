@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 22:15:31 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/21 22:32:34 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:04:32 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	exec_absolute(char **argv, t_globe *p)
 {
-    if (ft_strchr(argv[0], '/')) //user/bin/ls
+	if (ft_strchr(argv[0], '/'))
 	{
 		if (execve(argv[0], argv, p->envp_array) == -1)
 		{
@@ -26,19 +26,19 @@ void	exec_absolute(char **argv, t_globe *p)
 
 void	exec_relative(char **argv, char **paths, t_globe *p)
 {
-	int	i;
-	char *fullpath;
+	int		i;
+	char	*fullpath;
 
 	i = -1;
-	while (paths[++i]) ///home/welow/.cargo/bin/cat
-    {
+	while (paths[++i])
+	{
 		fullpath = NULL;
-        fullpath = ft_strdup(paths[i]);
-        fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
-        fullpath = ft_strjoin_free(fullpath, ft_strdup(argv[0]));
-        if (access(fullpath, F_OK) == 0)
-        {
-            if (execve(fullpath, argv, p->envp_array) == -1)
+		fullpath = ft_strdup(paths[i]);
+		fullpath = ft_strjoin_free(fullpath, ft_strdup("/"));
+		fullpath = ft_strjoin_free(fullpath, ft_strdup(argv[0]));
+		if (access(fullpath, F_OK) == 0)
+		{
+			if (execve(fullpath, argv, p->envp_array) == -1)
 			{
 				process_err_msg(argv[0], p);
 				free(paths);
@@ -53,8 +53,8 @@ void	exec_relative(char **argv, char **paths, t_globe *p)
 
 void	exec_external(t_globe *p, char **argv)
 {
-    char   *path_env;
-    char	**paths;
+	char	*path_env;
+	char	**paths;
 
 	if (!argv || !argv[0])
 		return ;

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 15:09:08 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/15 18:16:29 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:01:17 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 void	error_redir(t_token *token)
 {
 	if (!token)
-		ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+	}
 	else if (token->token == REDIR_IN || token->token == REDIR_OUT
 		|| token->token == HEREDOC || token->token == APPEND
 		|| token->token == PIPE)
@@ -30,7 +33,10 @@ void	error_redir(t_token *token)
 void	error_pipe(t_token *token)
 {
 	if (!token)
-		ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+	}
 	else if (token->token == PIPE)
 		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
 	return ;

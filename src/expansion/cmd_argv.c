@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:28:13 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:29:25 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	**populate_argv(int *argc, char **argv, char **tokens, t_globe *p)
 	while (tokens[tokens_len])
 		tokens_len++;
 	argv = ft_realloc(argv, (*argc) * sizeof(char *),
-		(*argc + tokens_len + 1) * sizeof(char *));
+			(*argc + tokens_len + 1) * sizeof(char *));
 	if (!argv)
 	{
 		p->malloc_flag = 1;

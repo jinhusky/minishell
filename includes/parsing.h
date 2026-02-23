@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:10:32 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/22 01:47:48 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:27:03 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_ast
 	int				heredoc_fd[2];
 }	t_ast;
 
-typedef struct s_globe t_globe;
+typedef struct s_globe	t_globe;
 
 void		quote_check(char *result, int *i, char quote);
 t_token		*init_node(t_token *token);
@@ -76,7 +76,7 @@ void		error_redir(t_token *token);
 void		error_pipe(t_token *token);
 void		error_quotes(char quote, t_globe *p);
 t_ast		*init_ast(t_ast *node, t_globe *p, t_token *token);
-t_globe	*get_token(t_globe *p);
+t_globe		*get_token(t_globe *p);
 t_token		*token_peek(t_globe *p);
 t_ast		*create_treenode(t_ast *treenode, t_globe *p);
 void		free_treenode(t_ast *root);

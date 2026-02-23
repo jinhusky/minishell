@@ -6,13 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 10:34:23 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/28 09:18:07 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:30:41 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void *ft_realloc(void *ptr, size_t old_size, size_t new_size)
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 {
 	void	*new_block;
 	size_t	min;

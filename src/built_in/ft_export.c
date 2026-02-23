@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/02 08:25:55 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/11 16:30:13 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 23:22:38 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-//#include <cstdlib.h>
 
-//first char of a env var must be alpha or _
 static bool	valid_env_var(char *key)
 {
 	int	i;
@@ -59,10 +57,26 @@ void	print_error_export(char *arg)
 	ft_putendl_fd("not a valid identifier", 2);
 }
 
+void	print_export(t_globe *p)
+{
+	int		i;
+	char	**array;
+
+	i = 0;
+	array = NULL;
+	array = build_array_list(p->envp_ls, p);
+	array = bubble_sort_alpha(array, p);
+	while (array[i])
+	{
+		ft_printf("declare -x %s\n", array[i]);
+		i++;
+	}
+	free_array_list(array, p);
+}
+
 int	ft_export(char **argv, t_globe *p)
 {
 	int		i;
-	char	*value;
 
 	i = 0;
 	if (!argv[1])
@@ -76,7 +90,7 @@ int	ft_export(char **argv, t_globe *p)
 		}
 		if (ft_strchr(argv[i], '='))
 		{
-			if ((value = export_envp_value(argv[i], NULL, p->envp_ls)))
+			if ((export_envp_value(argv[i], NULL, p->envp_ls)))
 				export_envp_value(argv[i], argv[i], p->envp_ls);
 			else
 				set_env_var(argv[i], p);

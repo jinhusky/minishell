@@ -46,6 +46,15 @@ char	*char_join_str(char *lxm, char *result, size_t *i, t_globe *p)
 	return (result);
 }
 
+int	invalid_result(char *result, t_globe *p)
+{
+	if (!result && p->malloc_flag == 1)
+		return (1);
+	else if (p->err_flag == 1)
+		return (1);
+	return (0);
+}
+
 char	*line_expandable_check(char *line, t_globe *p)
 {
 	size_t	i;
@@ -66,9 +75,7 @@ char	*line_expandable_check(char *line, t_globe *p)
 		else
 		{
 			result = find_expand_line(line, result, &i, p);
-			if (!result && p->malloc_flag == 1)
-				return (NULL);
-			else if (p->err_flag == 1)
+			if (invalid_result(result, p) == 1)
 				return (NULL);
 		}
 		i++;

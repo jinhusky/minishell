@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 14:25:52 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/02 09:14:19 by kationg          ###   ########.fr       */
+/*   Updated: 2026/02/24 01:26:39 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "../minishell.h"
 
-typedef struct s_envp t_envp;
-typedef struct s_shell t_shell;
+typedef struct s_envp	t_envp;
+typedef struct s_shell	t_shell;
 
 typedef enum e_expd_e
 {
@@ -54,9 +54,12 @@ void		free_argv(char **argv);
 char		**populate_argv(int *argc, char **argv, char **tokens, t_globe *p);
 char		*substring_split(char *result, int start, int end, t_globe *p);
 t_expand	*node_copy_builder(char *result, int i, int start, t_globe *p);
-t_expand	*token_mark_copy(t_globe *p, char *result, size_t start, size_t len);
-t_expand	**append_expand_token(t_expand **tkns, int *count, t_expand *new, t_globe *p);
-t_expand	**copy_array_split(char *result, t_splt_ary *sp, t_expand **cpy, t_globe *p);
+t_expand	*token_mark_copy(t_globe *p, char *result,
+				size_t start, size_t len);
+t_expand	**append_expand_token(t_expand **tkns, int *count,
+				t_expand *new, t_globe *p);
+t_expand	**copy_array_split(char *result, t_splt_ary *sp,
+				t_expand **cpy, t_globe *p);
 char		*token_expandable_check(char *lxm, char *result, t_globe *p);
 char		*stage_expand_check(t_ast *child, t_globe *p);
 char		**token_append(char **arr, char *sub, int *count, t_globe *p);
@@ -70,7 +73,15 @@ char		*extract_token_expand(char *lxm, size_t *i, t_globe *p);
 char		*ft_expand(char *lxm, size_t start, size_t end, t_globe *p);
 void		init_split(t_splt_ary *split);
 void		quote_indicator(char *result, t_splt_ary *sp, t_globe *p);
-char		*char_join_str_mark(char *lxm, char *result, size_t *i, t_globe *p);
+t_expand	**copy_split_engine(char *result, t_splt_ary *sp,
+				t_expand **cpy, t_globe *p);
+char		*char_join_str_mark(char *lxm, char *result,
+				size_t *i, t_globe *p);
+char		*expandable_loop_condition(char *lxm, char *result,
+				size_t *i, t_globe *p);
 char		*heredoc_expand_check(char *line, t_globe *p);
+void		free_origin(t_expand *origin);
+void		free_all(char *result, char **tokens,
+				t_expand **copies, t_globe *p);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 16:28:24 by jhor              #+#    #+#             */
-/*   Updated: 2025/11/27 16:48:03 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:30:56 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char			*ft_strnstr(const char *str, const char *substr, size_t n);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strtrim(char const *s1, char const *set);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
-void *			ft_realloc(void *ptr, size_t old_size, size_t new_size);
+void			*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 int				ft_tolower(int c);
 int				ft_toupper(int c);
 void			ft_lstiter(t_nodes *lst, void (*f)(void *));

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 20:21:04 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 23:34:56 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	free_copy(t_expand *new)
 
 t_expand	*node_copy_builder(char *result, int i, int start, t_globe *p)
 {
-	char	*sub;
-	t_expand *new;
-	
+	char		*sub;
+	t_expand	*new;
+
 	sub = NULL;
 	new = NULL;
 	sub = substring_split(result, start, i, p);

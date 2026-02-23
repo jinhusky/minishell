@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:06:44 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/11 15:19:04 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 22:59:15 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	free_envp(t_envp *ptr)
 {
-	t_envp *tmp;
+	t_envp	*tmp;
+
 	while (ptr)
 	{
 		tmp = ptr;
@@ -41,10 +42,7 @@ void	loop_free(t_ast *node, t_token *token, char *result, t_globe *p)
 	if (p)
 		p->ptr = NULL;
 	if (result)
-	{
-		//ft_printf("freeing memory for result\n");
 		free(result);
-	}
 }
 
 void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
@@ -72,10 +70,7 @@ void	main_free(t_ast *node, t_token *token, char *result, t_globe *p)
 	if (p)
 		p->ptr = NULL;
 	if (result)
-	{
-		//ft_printf("freeing memory for result\n");
 		free(result);
-	}
 }
 
 void	ast_exit(t_token *token, t_ast *node, t_globe *p)

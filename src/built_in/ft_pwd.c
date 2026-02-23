@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:25:51 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/11 16:52:07 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 23:25:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	print_pwd_error(void)
 
 int	ft_pwd(char **argv, t_globe *p)
 {
-	char *pwd;
+	char	*pwd;
 
 	if (ft_strncmp(argv[0], "pwd", 3) == 0
 		&& ft_strlen(argv[0]) == ft_strlen("pwd"))

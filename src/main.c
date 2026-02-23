@@ -6,29 +6,13 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/23 16:56:29 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 00:05:08 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 __sig_atomic_t	g_signum;
-
-void	print_shlvl(char *str, t_shell **env)
-{
-	t_envp	*ptr;
-
-	ptr = (*env)->head;
-	while (ptr)
-	{
-		if (key_equals(ptr->key, str))
-		{
-			ft_printf("SHLVL IN MINISHELL:%s\n", ptr->value);
-			return ;
-		}
-		ptr = ptr->next;
-	}
-}
 
 void	set_shlvl(char *str, t_shell **env)
 {

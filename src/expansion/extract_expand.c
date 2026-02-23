@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_expand.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 11:19:04 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/11 16:12:23 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 23:56:09 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*extract_token_expand(char *lxm, size_t *i, t_globe *p)
 		while (ft_isalpha(lxm[*i]) || lxm[*i] == '_')
 			(*i)++;
 		value = ft_expand(lxm, start, *i, p);
-			(*i)--;
+		(*i)--;
 		return (value);
 	}
 	else if (lxm[start + 1] == '?')

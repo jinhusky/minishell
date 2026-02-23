@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 22:20:04 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/21 17:12:13 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 00:46:34 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	run_single_cmd_in_parent(t_ast *cmd, t_globe *p)
 		status = 0;
 	else
 		status = run_builtin(p, cmd->argv, 1);
-	dup2(saved_in, STDIN_FILENO); //why need to restore fds when running single builtin cmds. Restore fds in parent to align in fds
+	dup2(saved_in, STDIN_FILENO);
 	dup2(saved_out, STDOUT_FILENO);
 	close(saved_in);
 	close(saved_out);

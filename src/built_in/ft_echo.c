@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 13:00:42 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/10 16:46:50 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 23:06:00 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int is_n(char *arg)
+int	is_n(char *arg)
 {
 	int		i;
 	bool	n_flag;
@@ -26,22 +26,17 @@ int is_n(char *arg)
 			while (arg[i] && arg[i] == 'n')
 				i++;
 			if (arg[i] && arg[i] != 'n')
-			{
-				//ft_printf("%d\n", n_flag);
 				return (n_flag);
-			}
 			n_flag = true;
 		}
 	}
-	//ft_printf("%d\n", n_flag);
 	return (n_flag);
-
 }
 
-int ft_echo(char **argv, t_globe *p)
+int	ft_echo(char **argv, t_globe *p)
 {
-	int     i;
-	bool    n_flag;
+	int		i;
+	bool	n_flag;
 
 	n_flag = false;
 	i = 1;
@@ -63,9 +58,3 @@ int ft_echo(char **argv, t_globe *p)
 	}
 	return (EXIT_SUCCESS);
 }
-/*
-test case
-echo -n hello
-echo -nnnnnnnnnn -nnnnnnnnnnnnn -nnnnnnn -nnnnnnn hello
-echo -nn__++++nnnnnnnn -nnnnnnnnnnnnn -nnnnnnnasdf-nnnnnnn hello
-*/

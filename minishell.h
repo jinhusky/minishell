@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/23 16:52:18 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:29:34 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@
 
 typedef struct s_envp
 {
-	char *key;
-	char *value;
-	struct s_envp *next;
+	char			*key;
+	char			*value;
+	struct s_envp	*next;
 }	t_envp;
 
 typedef struct s_shell
 {
-	t_envp *head;
+	t_envp	*head;
 	int		size;
 }	t_shell;
 
@@ -54,7 +54,6 @@ typedef struct s_globe
 	int			malloc_flag;
 	int			heredoc_flag;
 	int			inside_heredoc;
-    int         p_exec_flag;
 	int			heredoc_q_flag;
 	t_shell		*envp_ls;
 	t_envp		*ptr;

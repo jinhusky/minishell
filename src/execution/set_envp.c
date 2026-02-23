@@ -6,63 +6,11 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 14:37:53 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/22 01:35:03 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:02:40 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-int	key_equals(const char *a, const char *b)
-{
-	size_t	la;
-	size_t	lb;
-
-	if (!a || !b)
-		return (0);
-	la = ft_strlen(a);
-	lb = ft_strlen(b);
-	if (la != lb)
-		return (0);
-	return (ft_strncmp(a, b, la) == 0);
-}
-
-void	free_envp_ls(t_shell *shell)
-{
-	t_envp	*ptr;
-	t_envp	*tmp;
-
-	if (!shell)
-		return ;
-	ptr = shell->head;
-	while (ptr)
-	{
-		tmp = ptr;
-		ptr = ptr->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
-	shell->head = NULL;
-	shell->size = 0;
-}
-
-char	*extract_key(char *eq_pos, char *k)
-{
-	char	*pinpoint;
-	pinpoint = ft_strchr(k, '=');
-	eq_pos = ft_substr(k, 0, ft_strlen(k) - ft_strlen(pinpoint));
-	return (eq_pos);
-}
-
-char	*replace_value(char *new)
-{
-	char	*new_value;
-	char	*pinpoint;
-
-	pinpoint = ft_strchr(new, '=');
-	new_value = ft_strdup(pinpoint + 1);
-	return (new_value);
-}
 
 char	*envp_value(char *k, char *v, t_shell *envp)
 {
@@ -82,33 +30,7 @@ char	*envp_value(char *k, char *v, t_shell *envp)
 		}
 		ptr = ptr->next;
 	}
-	return NULL;
-}
-
-char	*export_envp_value(char *k, char *v, t_shell *envp)
-{
-	t_envp	*ptr;
-	char	*eq_pos;
-
-	ptr = envp->head;
-	eq_pos = 0;
-	eq_pos = extract_key(eq_pos, k);
-	while (ptr)
-	{
-		if (key_equals(ptr->key, eq_pos))
-		{
-			if (v)
-			{
-				free(ptr->value);
-				ptr->value = replace_value(v);
-			}
-			free(eq_pos);
-			return (ptr->value);
-		}
-		ptr = ptr->next;
-	}
-	free(eq_pos);
-	return NULL;
+	return (NULL);
 }
 
 t_shell	*init_shell(t_shell *shell)
@@ -135,7 +57,8 @@ void	set_key_value(int *i, t_envp **node, char **envp)
 	else
 	{
 		(*node)->key = ft_substr(envp[*i], 0, delim - envp[*i]);
-		(*node)->value = ft_substr(envp[*i],  delim - envp[*i] + 1, ft_strlen(delim + 1));
+		(*node)->value = ft_substr(envp[*i],
+				delim - envp[*i] + 1, ft_strlen(delim + 1));
 	}
 }
 

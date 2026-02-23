@@ -1,32 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   set_envp_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/03 18:23:28 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/23 23:06:40 by jhor             ###   ########.fr       */
+/*   Created: 2026/02/24 00:57:52 by jhor              #+#    #+#             */
+/*   Updated: 2026/02/24 00:58:11 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	ft_env(char **argv, t_globe *p)
+int	key_equals(const char *a, const char *b)
+{
+	size_t	la;
+	size_t	lb;
+
+	if (!a || !b)
+		return (0);
+	la = ft_strlen(a);
+	lb = ft_strlen(b);
+	if (la != lb)
+		return (0);
+	return (ft_strncmp(a, b, la) == 0);
+}
+
+void	free_envp_ls(t_shell *shell)
 {
 	t_envp	*ptr;
+	t_envp	*tmp;
 
-	if (!p->envp_ls)
-		return (EXIT_FAILURE);
-	if (argv[1] == NULL)
+	if (!shell)
+		return ;
+	ptr = shell->head;
+	while (ptr)
 	{
-		ptr = p->envp_ls->head;
-		while (ptr)
-		{
-			ft_printf("%s=%s\n", ptr->key, ptr->value);
-			ptr = ptr->next;
-		}
+		tmp = ptr;
+		ptr = ptr->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
 	}
-	p->exit_code[0] = EXIT_SUCCESS;
-	return (p->exit_code[0]);
+	shell->head = NULL;
+	shell->size = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 21:16:46 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/21 23:31:54 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 01:00:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,6 @@ static int	open_out(const char *path, int append)
 	if (append)
 		return (open(path, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	return (open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644));
-}
-
-void	print_redir_err(t_ast *redir)
-{
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(redir->token_ref->lexeme, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(strerror(errno), 2);
 }
 
 int	redir_out_append(int fd, t_ast *cmd)

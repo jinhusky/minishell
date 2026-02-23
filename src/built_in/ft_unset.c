@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: welow <welow@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:58:02 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/11 15:37:31 by welow            ###   ########.fr       */
+/*   Updated: 2026/02/23 23:25:42 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	rm_env_var(t_globe *p, char *key)
 {
-	t_envp *curr;
-	t_envp *prev;
+	t_envp	*curr;
+	t_envp	*prev;
 
 	prev = NULL;
 	curr = p->envp_ls->head;
@@ -52,9 +52,7 @@ int	ft_unset(char **argv, t_globe *p)
 	while (argv[i])
 	{
 		rm_env_var(p, argv[i]);
-		//ft_printf("size of env%d\n", p->envp_ls->size);
 		i++;
 	}
 	return (p->exit_code[0]);
 }
-

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:00:15 by jhor              #+#    #+#             */
-/*   Updated: 2025/12/03 15:00:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 22:56:31 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,20 @@ void	assign_enum(t_token *token)
 	}
 }
 
+void	init_tokenizer(int *i, int *start, char *quote)
+{
+	*i = 0;
+	*start = 0;
+	*quote = '\0';
+}
+
 t_token	*tokenizer(t_token *tokens, t_globe *p)
 {
 	int		i;
 	int		start;
 	char	quote;
 
-	i = 0;
-	start = 0;
-	quote = '\0';
+	init_tokenizer(&i, &start, &quote);
 	while (p->result[i])
 	{
 		if (p->result[i] == ' ' || p->result[i] == '\t')
@@ -76,7 +81,8 @@ t_token	*tokenizer(t_token *tokens, t_globe *p)
 			while (p->result[i] == ' ' || p->result[i] == '\t')
 				i++;
 		}
-		else if (p->result[i] == '|' || p->result[i] == '<' || p->result[i] == '>')
+		else if (p->result[i] == '|' || p->result[i] == '<'
+			|| p->result[i] == '>')
 			tokens = tokenize_operator(p->result, tokens, &i, p);
 		else if (p->result[i] && p->result[i] != ' ')
 		{
