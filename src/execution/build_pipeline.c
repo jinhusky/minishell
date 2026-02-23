@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 05:04:58 by kationg           #+#    #+#             */
-/*   Updated: 2026/02/21 22:33:36 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:37:51 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,22 +38,22 @@ static void	rebuild_envp_array(t_globe *p)
 	p->envp_array = build_envp_array(*p->envp_ls);
 }
 
-bool is_builtin(char *cmd)
+bool	is_builtin(char *cmd)
 {
 	if (!cmd)
-		return false;
-	if (ft_strncmp(cmd, "echo", 4) == 0 || \
-		ft_strncmp(cmd, "cd", 2) == 0 || \
-		ft_strncmp(cmd, "pwd", 3) == 0 || \
-		ft_strncmp(cmd, "export", 6) == 0 || \
-		ft_strncmp(cmd, "unset", 5) == 0 || \
-		ft_strncmp(cmd, "env", 3) == 0 || \
-		ft_strncmp(cmd, "exit", 4) == 0)
-		return true;
-	return false;
+		return (false);
+	if (ft_strncmp(cmd, "echo", 4) == 0
+		|| ft_strncmp(cmd, "cd", 2) == 0
+		|| ft_strncmp(cmd, "pwd", 3) == 0
+		|| ft_strncmp(cmd, "export", 6) == 0
+		|| ft_strncmp(cmd, "unset", 5) == 0
+		|| ft_strncmp(cmd, "env", 3) == 0
+		|| ft_strncmp(cmd, "exit", 4) == 0)
+		return (true);
+	return (false);
 }
 
-char **build_envp_array(t_shell envp_ls)
+char	**build_envp_array(t_shell envp_ls)
 {
 	t_envp	*ptr;
 	char	**res;
@@ -80,7 +80,7 @@ char **build_envp_array(t_shell envp_ls)
 
 void	print_err_mssg(char *cmd, char *err_mssg)
 {
-	char *str;
+	char	*str;
 
 	str = strdup("minishell :");
 	if (cmd)
@@ -147,7 +147,7 @@ void	process_err_msg(char *arg, t_globe *p)
 	}
 	else
 		print_err_mssg(arg, "Command not found");
-		p->exit_code[0] = 127;
+	p->exit_code[0] = 127;
 	return ;
 }
 
@@ -198,7 +198,8 @@ void	child_process(int *i, t_globe *p, int readpipe, int writepipe)
 		child_execute_cmd(p->node->children[*i], p, p->prev_read, writepipe);
 	}
 	else //single pipe
-		child_execute_cmd(p->node->children[*i], p, p->prev_read, STDOUT_FILENO);
+		child_execute_cmd(p->node->children[*i], p,
+			p->prev_read, STDOUT_FILENO);
 }
 
 bool	fork_child(pid_t *pid, t_globe *p)
@@ -251,7 +252,7 @@ static int	execute_pipeline(t_ast *root, t_globe *p)
 
 void	execute(t_ast *root, t_globe *p)
 {
-	int	count;
+	int		count;
 	t_ast	*cmd;
 
 	if (!root)
@@ -274,4 +275,3 @@ void	execute(t_ast *root, t_globe *p)
 	rebuild_envp_array(p);
 	execute_pipeline(root, p);
 }
-

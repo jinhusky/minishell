@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 17:47:02 by welow             #+#    #+#             */
-/*   Updated: 2026/02/21 23:39:22 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:53:19 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	signal_get_code(int signa, t_globe *p)
 
 void	signal_handler(int signal)
 {
-	signum = signal;
+	g_signum = signal;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -35,13 +35,13 @@ void	signal_handler(int signal)
 
 void	heredoc_signal_handler(int signal)
 {
-	signum = signal;
-	if (signum == SIGINT)
+	g_signum = signal;
+	if (g_signum == SIGINT)
 	{
 		write(1, "\n", 1);
 		exit (128 + SIGINT);
 	}
-	else if (signum == SIGQUIT)
+	else if (g_signum == SIGQUIT)
 	{
 
 	}
@@ -53,13 +53,13 @@ void	set_exit_code(int status, t_globe *p)
 		p->exit_code[0] = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		signum = WTERMSIG(status);
-		if (signum == SIGQUIT)
+		g_signum = WTERMSIG(status);
+		if (g_signum == SIGQUIT)
 			printf("Quit (core dumped)\n");
-		else if (signum == SIGINT)
+		else if (g_signum == SIGINT)
 			printf("\n");
-		p->exit_code[0] = 128 + signum;
-		signum = 0;
+		p->exit_code[0] = 128 + g_signum;
+		g_signum = 0;
 	}
 }
 
@@ -69,12 +69,12 @@ void	set_hd_exit_code(int status, t_globe *p)
 		p->exit_code[0] = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		signum = WTERMSIG(status);
-		if (signum == SIGINT)
+		g_signum = WTERMSIG(status);
+		if (g_signum == SIGINT)
 		{
-			p->exit_code[0] = 128 + signum;
+			p->exit_code[0] = 128 + g_signum;
 			p->err_flag = 1;
 		}
-		signum = 0;
+		g_signum = 0;
 	}
 }

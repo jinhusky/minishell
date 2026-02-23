@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 18:01:03 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/21 21:41:59 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:52:18 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_globe
 	int			prev_read;
 }	t_globe;
 
-extern __sig_atomic_t signum;
+extern __sig_atomic_t	g_signum;
 
 void		init_program(t_token **tkn, t_ast **nd, t_globe *p);
 void		main_free(t_ast *node, t_token *token, char *result, t_globe *p);

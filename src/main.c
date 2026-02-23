@@ -6,15 +6,15 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 15:56:57 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/22 02:07:30 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:56:29 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-__sig_atomic_t signum;
+__sig_atomic_t	g_signum;
 
-void	print_SHLVL(char *str, t_shell **env)
+void	print_shlvl(char *str, t_shell **env)
 {
 	t_envp	*ptr;
 
@@ -30,7 +30,7 @@ void	print_SHLVL(char *str, t_shell **env)
 	}
 }
 
-void	set_SHLVL(char *str, t_shell **env)
+void	set_shlvl(char *str, t_shell **env)
 {
 	t_envp	*ptr;
 
@@ -49,7 +49,7 @@ void	set_SHLVL(char *str, t_shell **env)
 	}
 }
 
-void	set_envp_SHLVL_Exitcode(char **envp, t_globe *p)
+void	set_envp_shlvl_exitcode(char **envp, t_globe *p)
 {
 	set_envp_array(envp, &p->envp_ls, p);
 	if (p->malloc_flag == 1)
@@ -59,7 +59,7 @@ void	set_envp_SHLVL_Exitcode(char **envp, t_globe *p)
 		ft_putendl_fd("minishell: env error", 2);
 		exit (1);
 	}
-	set_SHLVL("SHLVL", &p->envp_ls);
+	set_shlvl("SHLVL", &p->envp_ls);
 	p->exit_code[0] = 0;
 }
 
@@ -89,13 +89,12 @@ void	minishell_core(t_globe *p)
 	}
 }
 
-
 void	check_signal_postreadline(t_globe *p)
 {
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
 	p->result = readline("minishell$ ");
-	signal_get_code(signum, p);
+	signal_get_code(g_signum, p);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -105,7 +104,7 @@ int	main(int argc, char *argv[], char **envp)
 	(void) argc;
 	(void) argv;
 	ft_bzero(&p, sizeof(t_globe));
-	set_envp_SHLVL_Exitcode(envp, &p);
+	set_envp_shlvl_exitcode(envp, &p);
 	while (1)
 	{
 		init_program(&p.token, &p.node, &p);
