@@ -23,7 +23,7 @@ t_ast	*parse_argument(t_ast *chd_ptr, t_globe *p)
 	chd_ptr->type = AST_ARGUMENT;
 	if (!token_peek(p))
 	{
-		printf("*parse argument* Error: end of link-list\n");
+		ft_printf("*parse argument* Error: end of link-list\n");
 		p->err_flag = 1;
 		return (NULL);
 	}

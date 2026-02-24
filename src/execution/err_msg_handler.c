@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 01:13:44 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/24 01:13:52 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 17:03:52 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	print_err_mssg(char *cmd, char *err_mssg)
 {
 	char	*str;
 
-	str = strdup("minishell :");
+	str = strdup("minishell: ");
 	if (cmd)
 	{
 		str = ft_strjoin_free(str, ft_strdup(cmd));
-		str = ft_strjoin_free(str, ft_strdup(" :"));
+		str = ft_strjoin_free(str, ft_strdup(": "));
 	}
 	str = ft_strjoin_free(str, ft_strdup(err_mssg));
 	ft_putendl_fd(str, 2);
@@ -80,7 +80,12 @@ void	process_err_msg(char *arg, t_globe *p)
 		return ;
 	}
 	else
-		print_err_mssg(arg, "Command not found");
+	{
+		if (!envp_value("PATH", NULL, p->envp_ls))
+			print_err_mssg(arg, "No such file or directory");
+		else
+			print_err_mssg(arg, "Command not found");
+	}
 	p->exit_code[0] = 127;
 	return ;
 }

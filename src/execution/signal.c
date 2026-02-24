@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 01:20:45 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/24 01:21:24 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 17:16:30 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void	set_exit_code(int status, t_globe *p)
 	{
 		g_signum = WTERMSIG(status);
 		if (g_signum == SIGQUIT)
-			printf("Quit (core dumped)\n");
+			ft_printf("Quit (core dumped)\n");
 		else if (g_signum == SIGINT)
-			printf("\n");
+			ft_printf("\n");
 		p->exit_code[0] = 128 + g_signum;
 		g_signum = 0;
 	}

@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 22:15:31 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/24 01:04:32 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 15:44:25 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ void	exec_external(t_globe *p, char **argv)
 	exec_absolute(argv, p);
 	path_env = envp_value("PATH", NULL, p->envp_ls);
 	if (!path_env)
-		exit(EXIT_FAILURE);
+	{
+		process_err_msg(argv[0], p);
+		exit(p->exit_code[0]);
+	}
 	paths = ft_split(path_env, ':');
 	if (!paths)
 		exit (EXIT_FAILURE);

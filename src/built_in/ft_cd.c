@@ -6,7 +6,7 @@
 /*   By: jhor <jhor@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 23:03:47 by jhor              #+#    #+#             */
-/*   Updated: 2026/02/23 23:04:36 by jhor             ###   ########.fr       */
+/*   Updated: 2026/02/24 16:22:24 by jhor             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@ static void	update_pwd_vars(t_globe *p, const char *oldpwd)
 	{
 		envp_value("OLDPWD", ft_strdup((char *)oldpwd), p->envp_ls);
 	}
-	newpwd = getcwd(NULL, 0);
-	if (newpwd)
-		envp_value("PWD", newpwd, p->envp_ls);
+	if (envp_value("PWD", NULL, p->envp_ls))
+	{
+		newpwd = getcwd(NULL, 0);
+		if (newpwd)
+			envp_value("PWD", newpwd, p->envp_ls);
+	}
 }
 
 void	cd_into_target(char **argv, char **target, t_globe *p)
@@ -62,6 +65,7 @@ int	ft_cd(char **argv, t_globe *p)
 		cd_into_target(argv, &target, p);
 		if (chdir(target) != 0)
 		{
+			ft_putstr_fd("minishell: ", 2);
 			perror("cd");
 			p->exit_code[0] = 1;
 			return (p->exit_code[0]);
